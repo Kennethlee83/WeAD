@@ -1,7 +1,7 @@
 # WeAD - Web3 Advertising Ecosystem
 
 [![BNB Chain](https://img.shields.io/badge/BNB%20Chain-Supported-yellow)](https://www.bnbchain.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![License: Proprietary](https://img.shields.io/badge/License-Proprietary-red.svg)](LICENSE)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Solidity 0.8.19](https://img.shields.io/badge/solidity-0.8.19-orange.svg)](https://soliditylang.org/)
 
@@ -325,7 +325,13 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is **proprietary and confidential**. The code is made publicly visible for verification purposes only (blockchain directories, partners, investors). 
+
+**All Rights Reserved** - Unauthorized use, copying, modification, or distribution is strictly prohibited.
+
+For commercial licensing inquiries: licensing@wead.io
+
+See the [LICENSE](LICENSE) file for complete terms and conditions.
 
 ## 📞 Contact & Community
 

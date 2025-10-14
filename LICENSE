@@ -1,22 +1,73 @@
-MIT License
+WeAD Proprietary License
 
 Copyright (c) 2025 WeAD (WeADvertise Platform)
+All Rights Reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+TERMS AND CONDITIONS
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+1. GRANT OF LICENSE
+   This code is made available for viewing and reference purposes only to demonstrate
+   active development on BNB Chain and for verification by blockchain directories and
+   potential partners.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+2. RESTRICTIONS
+   You are NOT permitted to:
+   - Use this code for any commercial or non-commercial purposes
+   - Copy, modify, merge, or create derivative works
+   - Distribute, sublicense, or sell copies of this software
+   - Use this code to create competing products or services
+   - Deploy smart contracts based on this code without written permission
+   - Incorporate any part of this code into your own projects
 
+3. VIEWING ONLY
+   This repository is made public solely for:
+   - Verification of active development on BNB Chain
+   - Review by blockchain directories (e.g., DappBay)
+   - Due diligence by potential partners and investors
+   - Demonstration of technical capabilities
+
+4. INTELLECTUAL PROPERTY
+   All code, smart contracts, documentation, and associated materials remain the
+   exclusive intellectual property of WeAD. No rights are transferred by viewing
+   this repository.
+
+5. SMART CONTRACTS
+   Smart contracts deployed on public blockchains are subject to blockchain
+   transparency. However, copying, modifying, or deploying similar contracts
+   for commercial purposes without written permission is prohibited.
+
+6. NO WARRANTY
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+
+7. LIMITATION OF LIABILITY
+   IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+   DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+   ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+   DEALINGS IN THE SOFTWARE.
+
+8. COMMERCIAL USE
+   For licensing inquiries or to obtain commercial usage rights, contact:
+   - Email: licensing@wead.io
+   - Website: https://weadretrogameplatform.com
+
+9. TERMINATION
+   Any unauthorized use of this software will result in immediate termination of
+   viewing rights and may result in legal action.
+
+10. GOVERNING LAW
+    This license shall be governed by and construed in accordance with applicable
+    international copyright and intellectual property laws.
+
+NOTICE TO DEVELOPERS:
+If you are considering using any part of this code, you MUST obtain written
+permission from WeAD. Unauthorized use will be prosecuted to the fullest
+extent of the law.
+
+For permissions and licensing: licensing@wead.io
+
+---
+
+WeAD (WeADvertise Platform)
+Building the future of Web3 advertising on BNB Chain

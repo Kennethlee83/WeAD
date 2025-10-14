@@ -132,7 +132,7 @@ Security updates are released as soon as possible after a vulnerability is confi
 
 ## Contact
 
-- **Security Email**: security@wead.io
+- **Security Email**: radiojack31@gmail.com
 - **PGP Key**: [Available on request]
 - **Response Time**: Within 48 hours
 

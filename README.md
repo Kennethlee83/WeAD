@@ -258,30 +258,23 @@ const tx = await adViewing.recordAdDisplay(
 - **Total Commits**: Active development
 - **Smart Contract Tests**: Comprehensive test coverage
 - **On-Chain Transactions**: Real-world usage on BSC Mainnet
-- **Active Partners**: 250+ network partners
-
-## 🌟 Key Partnerships
-
-- **Honda** - Automotive advertising integration
-- **Gonana Farm** - Agricultural sector outreach
-- **El Dorado Three** - Retail partnerships
-- **250+ Network Partners** - Growing ecosystem
+- **Network Partners**: Growing ecosystem of 250+ partners
 
 ## 🗺️ Roadmap
 
-### Q4 2024
+### Q4 2025
 - [x] BSC Mainnet deployment
 - [x] Core platform launch
 - [x] Mobile app beta
 - [ ] DappBay listing
 
-### Q1 2025
+### Q1 2026
 - [ ] Cross-chain expansion (Base, Polygon)
 - [ ] Advanced analytics dashboard
 - [ ] Partner API v2
 - [ ] AI-powered ad targeting
 
-### Q2 2025
+### Q2 2026
 - [ ] NFT-based device ownership
 - [ ] DAO governance launch
 - [ ] Global expansion

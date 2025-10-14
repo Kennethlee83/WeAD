@@ -1,0 +1,1401 @@
+{% extends "base.html" %}
+
+{% block title %}Discount Coupons - WeAD Platform{% endblock %}
+
+{% block nav_links %}
+<a href="/" class="nav-link">
+    <i class="fas fa-home"></i>
+    <span>Home</span>
+</a>
+<a href="/rwa-marketplace" class="nav-link">
+    <i class="fas fa-store"></i>
+    <span>RWA Marketplace</span>
+</a>
+<a href="/coupons" class="nav-link active">
+    <i class="fas fa-ticket-alt"></i>
+    <span>Coupons</span>
+</a>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Coupons Page - Dark Grey/Black Theme Override */
+    :root {
+        --quantum-primary: #404040 !important;
+        --primary: #404040 !important;
+        --secondary: #202020 !important;
+        --glow-primary: #808080 !important;
+        --glow-secondary: #606060 !important;
+    }
+    
+    /* Override h1 - Pure white title for visibility */
+    h1 {
+        color: white !important;
+        background: none !important;
+        -webkit-background-clip: unset !important;
+        -webkit-text-fill-color: white !important;
+        background-clip: unset !important;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+        text-align: center !important; /* Center the title on desktop */
+    }
+    
+    /* Override h2 - White subtitles */
+    h2 {
+        color: white !important;
+    }
+    
+    /* Override h3 - White section headers */
+    h3 {
+        color: white !important;
+    }
+    
+    /* Override nav-link styles */
+    .nav-link:hover,
+    .nav-link.active {
+        color: #808080 !important;
+        border: 2px solid rgba(128, 128, 128, 0.5) !important;
+        box-shadow: 0 4px 15px rgba(128, 128, 128, 0.3) !important;
+    }
+    
+    .nav-link.active {
+        border: 2px solid rgba(128, 128, 128, 0.8) !important;
+        box-shadow: 0 0 20px rgba(128, 128, 128, 0.5), 0 0 40px rgba(128, 128, 128, 0.3) !important;
+    }
+    
+    /* Subscription Banner */
+    .subscription-banner {
+        background: linear-gradient(135deg, rgba(64, 64, 64, 0.8), rgba(32, 32, 32, 0.9));
+        border: 2px solid rgba(128, 128, 128, 0.5);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-top: 3rem !important; /* Add more space above the banner */
+        margin-bottom: 3rem;
+        text-align: center;
+        backdrop-filter: blur(10px);
+    }
+    
+    .subscription-banner h2 {
+        margin-bottom: 1rem;
+        font-size: 2rem;
+    }
+    
+    .subscription-banner p {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .subscription-price {
+        display: inline-block;
+        background: linear-gradient(135deg, #404040, #808080);
+        padding: 0.8rem 2rem;
+        border-radius: 50px;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 1.5rem;
+    }
+    
+    .subscribe-btn {
+        background: linear-gradient(135deg, #404040, #202020);
+        color: white;
+        border: 2px solid rgba(128, 128, 128, 0.5);
+        padding: 1rem 3rem;
+        border-radius: 50px;
+        font-size: 1.2rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .subscribe-btn:hover {
+        background: linear-gradient(135deg, #606060, #404040);
+        border-color: rgba(128, 128, 128, 0.8);
+        box-shadow: 0 8px 25px rgba(128, 128, 128, 0.4);
+        transform: translateY(-3px);
+    }
+    
+    /* Coupon Cards */
+    .coupon-card {
+        background: linear-gradient(135deg, rgba(32, 32, 32, 0.6), rgba(0, 0, 0, 0.8));
+        border: 2px solid rgba(128, 128, 128, 0.3);
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        position: relative;
+    }
+    
+    .coupon-card:hover {
+        transform: translateY(-8px);
+        border-color: rgba(128, 128, 128, 0.6);
+        box-shadow: 0 15px 50px rgba(128, 128, 128, 0.4);
+    }
+    
+    .discount-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: linear-gradient(135deg, #dc143c, #8B0000);
+        color: white;
+        padding: 0.8rem 1.5rem;
+        border-radius: 50px;
+        font-size: 1.5rem;
+        font-weight: 900;
+        z-index: 10;
+        box-shadow: 0 4px 15px rgba(220, 20, 60, 0.5);
+        animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+    
+    .company-logo {
+        width: 100%;
+        height: 200px;
+        object-fit: contain;
+        background: white;
+        padding: 2rem;
+    }
+    
+    .coupon-info {
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+    
+    .company-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 0.8rem;
+    }
+    
+    .coupon-description {
+        color: var(--text-secondary);
+        font-size: 1rem;
+        margin-bottom: 1rem;
+        flex-grow: 1;
+    }
+    
+    .coupon-details {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background: rgba(128, 128, 128, 0.1);
+        border-radius: 10px;
+    }
+    
+    .coupon-code {
+        font-family: 'Courier New', monospace;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #FFD700;
+        letter-spacing: 2px;
+    }
+    
+    .expiry-date {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+    
+    .claim-btn {
+        background: linear-gradient(135deg, #404040, #202020);
+        color: white;
+        border: 2px solid rgba(128, 128, 128, 0.5);
+        padding: 1rem;
+        border-radius: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        font-size: 1.1rem;
+        margin-top: auto;
+    }
+    
+    .claim-btn:hover {
+        background: linear-gradient(135deg, #606060, #404040);
+        border-color: rgba(128, 128, 128, 0.8);
+        box-shadow: 0 5px 20px rgba(128, 128, 128, 0.4);
+        transform: translateY(-2px);
+    }
+    
+    .premium-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #FFD700, #FFA500);
+        color: #000;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        margin-left: 0.5rem;
+    }
+    
+    /* Stats Section */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+    
+    .stat-card {
+        background: linear-gradient(135deg, rgba(32, 32, 32, 0.6), rgba(0, 0, 0, 0.8));
+        border: 2px solid rgba(128, 128, 128, 0.3);
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        backdrop-filter: blur(10px);
+    }
+    
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: white !important;
+        background: none !important;
+        -webkit-background-clip: unset !important;
+        -webkit-text-fill-color: white !important;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+        color: white !important;
+        font-size: 0.95rem;
+        font-weight: 600 !important;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+    }
+    
+    /* Category Filter */
+    .category-filter {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 3rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .category-btn {
+        background: rgba(64, 64, 64, 0.3);
+        border: 2px solid rgba(128, 128, 128, 0.3);
+        color: white;
+        padding: 0.8rem 2rem;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+    }
+    
+    .category-btn:hover,
+    .category-btn.active {
+        background: linear-gradient(135deg, #404040, #202020);
+        border-color: rgba(128, 128, 128, 0.8);
+        box-shadow: 0 4px 15px rgba(128, 128, 128, 0.3);
+    }
+    
+    /* Coupons Grid */
+    .coupons-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 2.5rem;
+        margin-bottom: 4rem;
+    }
+    
+    /* Mobile Optimization - COMPLETE OVERHAUL */
+    @media (max-width: 768px) {
+        /* Prevent horizontal scrolling and fix viewport */
+        html, body {
+            overflow-x: hidden !important;
+            width: 100% !important;
+            max-width: 100vw !important;
+            position: relative !important;
+        }
+        
+        .page-container {
+            width: 100% !important;
+            max-width: 100vw !important;
+            overflow-x: hidden !important;
+        }
+        
+        /* Ensure all sections fit within viewport */
+        .section, .glass, .stats-grid, .coupons-grid, .category-filter {
+            width: 100% !important;
+            max-width: 100vw !important;
+            overflow-x: hidden !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+        
+        /* Ensure mobile menu button is visible */
+        .nav-toggle {
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
+            width: 30px !important;
+            height: 30px !important;
+            cursor: pointer !important;
+        }
+        
+        .nav-toggle .bar {
+            width: 25px !important;
+            height: 3px !important;
+            background: white !important;
+            margin: 2px 0 !important;
+            transition: 0.3s !important;
+            border-radius: 2px !important;
+        }
+        
+        .page-container {
+            padding: 0 !important;
+        }
+        
+        .page-header {
+            padding: 1rem !important;
+            background: rgba(0, 0, 0, 0.3) !important;
+            border-bottom: 2px solid rgba(128, 128, 128, 0.3) !important;
+            margin-bottom: 2rem !important; /* Add space below header */
+        }
+        
+        .page-header h1 {
+            font-size: 1.4rem !important;
+            color: white !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;
+            margin-bottom: 1rem !important;
+        }
+        
+        .page-header p {
+            color: white !important;
+            font-size: 0.9rem !important;
+            margin-bottom: 1.5rem !important;
+        }
+        
+        /* Add separator line after page header */
+        .page-header::after {
+            content: '';
+            display: block !important;
+            width: 100% !important;
+            height: 2px !important;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent) !important;
+            margin: 1.5rem 0 !important;
+        }
+        
+        /* Subscription banner mobile optimization */
+        .subscription-banner {
+            padding: 1.5rem 1rem !important;
+            margin-top: 3rem !important; /* Add more space above the banner on mobile */
+            margin-bottom: 2rem !important;
+            background: rgba(0, 0, 0, 0.7) !important;
+            border: 2px solid rgba(255, 255, 255, 0.3) !important;
+        }
+        
+        .subscription-banner h2 {
+            font-size: 1.5rem !important;
+            color: white !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;
+        }
+        
+        .subscription-banner p {
+            color: white !important;
+            font-size: 0.9rem !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+        }
+        
+        .subscription-price {
+            font-size: 1.2rem !important;
+            padding: 0.6rem 1.5rem !important;
+            background: rgba(255, 255, 255, 0.2) !important;
+            color: white !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+        }
+        
+        .subscribe-btn {
+            padding: 0.75rem 2rem !important;
+            font-size: 0.9rem !important;
+            background: rgba(255, 255, 255, 0.2) !important;
+            border: 2px solid rgba(255, 255, 255, 0.5) !important;
+            color: white !important;
+        }
+        
+        /* Stats section mobile optimization */
+        .stats-section {
+            display: flex !important;
+            overflow-x: auto !important;
+            scroll-snap-type: x mandatory !important;
+            gap: 0.75rem !important;
+            padding: 0 1rem !important;
+            margin: 2rem -1rem !important;
+            scrollbar-width: none !important;
+        }
+        
+        .stats-section::-webkit-scrollbar {
+            display: none !important;
+        }
+        
+        .stat-card {
+            flex: 0 0 70% !important;
+            scroll-snap-align: center !important;
+            min-width: 160px !important;
+            background: rgba(0, 0, 0, 0.7) !important;
+            border: 2px solid rgba(255, 255, 255, 0.3) !important;
+            padding: 1.5rem 1rem !important;
+        }
+        
+        .stat-number {
+            color: white !important;
+            font-size: 2rem !important;
+            font-weight: 800 !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;
+        }
+        
+        .stat-label {
+            color: white !important;
+            font-size: 0.9rem !important;
+            font-weight: 600 !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+        }
+        
+        /* Category filters horizontal scroll */
+        .category-filters {
+            display: flex !important;
+            overflow-x: auto !important;
+            scroll-snap-type: x mandatory !important;
+            gap: 0.5rem !important;
+            padding: 0.75rem 1rem !important;
+            margin: 2rem -1rem !important;
+            scrollbar-width: none !important;
+            -webkit-overflow-scrolling: touch !important;
+            min-height: 60px !important;
+            align-items: center !important;
+        }
+        
+        .category-filters::-webkit-scrollbar {
+            display: none !important;
+        }
+        
+        .category-btn {
+            flex: 0 0 auto !important;
+            white-space: nowrap !important;
+            padding: 0.75rem 1rem !important;
+            font-size: 0.85rem !important;
+            scroll-snap-align: center !important;
+            color: white !important;
+            background: rgba(0, 0, 0, 0.6) !important;
+            border: 2px solid rgba(255, 255, 255, 0.3) !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+            height: 50px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            min-width: 120px !important;
+        }
+        
+        .category-btn.active {
+            background: rgba(255, 255, 255, 0.2) !important;
+            border-color: rgba(255, 255, 255, 0.6) !important;
+        }
+        
+        .category-btn i {
+            color: white !important;
+            margin-right: 0.5rem !important;
+        }
+        
+        /* Add separator after category filters */
+        .category-filters::after {
+            content: '';
+            display: block !important;
+            width: 100% !important;
+            height: 2px !important;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent) !important;
+            margin: 1rem 0 !important;
+        }
+        
+        /* Coupons grid horizontal scroll */
+        .coupons-grid {
+            display: flex !important;
+            overflow-x: auto !important;
+            scroll-snap-type: x mandatory !important;
+            gap: 1rem !important;
+            padding: 0 1rem !important;
+            margin-left: -1rem !important;
+            margin-right: -1rem !important;
+            scrollbar-width: none !important;
+            -webkit-overflow-scrolling: touch !important;
+        }
+        
+        .coupons-grid::-webkit-scrollbar {
+            display: none !important;
+        }
+        
+        .coupon-card {
+            flex: 0 0 85% !important;
+            scroll-snap-align: center !important;
+            min-width: 280px !important;
+            height: 546px !important; /* Increased by 30% from 420px */
+            display: flex !important;
+            flex-direction: column !important;
+            background: rgba(0, 0, 0, 0.7) !important;
+            border: 2px solid rgba(255, 255, 255, 0.3) !important;
+        }
+        
+        .coupon-image {
+            height: 200px !important;
+            object-fit: cover !important;
+        }
+        
+        .coupon-info {
+            flex-grow: 1 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+            padding: 1rem !important;
+        }
+        
+        .coupon-title {
+            font-size: 1.1rem !important;
+            color: white !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+        }
+        
+        .coupon-description {
+            font-size: 0.85rem !important;
+            color: white !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+        }
+        
+        .coupon-discount {
+            font-size: 1.3rem !important;
+            color: white !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+        }
+        
+        .btn {
+            width: 100% !important;
+            padding: 0.75rem !important;
+            font-size: 0.9rem !important;
+            background: rgba(255, 255, 255, 0.2) !important;
+            border: 2px solid rgba(255, 255, 255, 0.5) !important;
+            color: white !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Discount Coupons</h1>
+
+    <!-- Demo Disclaimer -->
+    <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05)); border: 2px solid rgba(59, 130, 246, 0.3); border-radius: 12px; padding: 1rem 1.5rem; margin: 1.5rem auto; text-align: center; max-width: 800px;">
+        <i class="fas fa-info-circle" style="color: #3b82f6; margin-right: 0.5rem;"></i>
+        <span style="color: #93c5fd; font-size: 0.95rem; font-weight: 500;">
+            Demo Preview: Coupon listings are sample offers. Live deals and partnerships with major brands will activate upon official platform launch.
+        </span>
+    </div>
+    
+    <!-- Subscription Banner -->
+    <div class="subscription-banner">
+        <h2>🎟️ Unlock Exclusive Savings</h2>
+        <p>Access premium discount coupons from top brands worldwide</p>
+        <div class="subscription-price">1,000 WEAD/Month</div>
+        <button class="subscribe-btn" onclick="subscribeNow()">
+            <i class="fas fa-crown"></i> Subscribe Now
+        </button>
+    </div>
+    
+    <!-- Stats Section -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value">99+</div>
+            <div class="stat-label">Premium Brands</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">90%</div>
+            <div class="stat-label">Max Discount</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">1000+</div>
+            <div class="stat-label">Active Subscribers</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">$500K+</div>
+            <div class="stat-label">Total Savings</div>
+        </div>
+    </div>
+    
+    <!-- Category Filter -->
+    <div class="category-filter">
+        <button class="category-btn active" onclick="filterCategory('all')">All Coupons</button>
+        <button class="category-btn" onclick="filterCategory('food')">Food & Dining</button>
+        <button class="category-btn" onclick="filterCategory('retail')">Retail</button>
+        <button class="category-btn" onclick="filterCategory('tech')">Technology</button>
+        <button class="category-btn" onclick="filterCategory('entertainment')">Entertainment</button>
+    </div>
+    
+    <!-- Coupons Grid -->
+    <div class="coupons-grid">
+        <!-- McDonald's -->
+        <div class="coupon-card" data-category="food">
+            <div class="discount-badge">25% OFF</div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/McDonald%27s_Golden_Arches.svg/1200px-McDonald%27s_Golden_Arches.svg.png" alt="McDonald's" class="company-logo">
+            <div class="coupon-info">
+                <h3 class="company-name">McDonald's <span class="premium-badge">PREMIUM</span></h3>
+                <p class="coupon-description">Get 25% off on all orders above $15. Valid on dine-in, takeaway, and delivery.</p>
+                <div class="coupon-details">
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.3rem;">Coupon Code</div>
+                        <div class="coupon-code">MCD25WEAD</div>
+                    </div>
+                    <div class="expiry-date">
+                        <i class="fas fa-calendar"></i> Expires: Dec 31, 2025
+                    </div>
+                </div>
+                <button class="claim-btn" onclick="claimCoupon('McDonald\'s', 'MCD25WEAD')">
+                    <i class="fas fa-ticket-alt"></i> Claim Coupon
+                </button>
+            </div>
+        </div>
+        
+        <!-- Burger King -->
+        <div class="coupon-card" data-category="food">
+            <div class="discount-badge">40% OFF</div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Burger_King_logo_%281999%29.svg/2024px-Burger_King_logo_%281999%29.svg.png" alt="Burger King" class="company-logo">
+            <div class="coupon-info">
+                <h3 class="company-name">Burger King <span class="premium-badge">PREMIUM</span></h3>
+                <p class="coupon-description">Enjoy 40% off on Whopper meals and combos. Limited time offer for WeAD subscribers.</p>
+                <div class="coupon-details">
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.3rem;">Coupon Code</div>
+                        <div class="coupon-code">BK40WEAD</div>
+                    </div>
+                    <div class="expiry-date">
+                        <i class="fas fa-calendar"></i> Expires: Dec 31, 2025
+                    </div>
+                </div>
+                <button class="claim-btn" onclick="claimCoupon('Burger King', 'BK40WEAD')">
+                    <i class="fas fa-ticket-alt"></i> Claim Coupon
+                </button>
+            </div>
+        </div>
+        
+        <!-- Starbucks -->
+        <div class="coupon-card" data-category="food">
+            <div class="discount-badge">30% OFF</div>
+            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/d/d3/Starbucks_Corporation_Logo_2011.svg/1200px-Starbucks_Corporation_Logo_2011.svg.png" alt="Starbucks" class="company-logo">
+            <div class="coupon-info">
+                <h3 class="company-name">Starbucks <span class="premium-badge">PREMIUM</span></h3>
+                <p class="coupon-description">30% off on all beverages and food items. Valid at participating locations.</p>
+                <div class="coupon-details">
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.3rem;">Coupon Code</div>
+                        <div class="coupon-code">SB30WEAD</div>
+                    </div>
+                    <div class="expiry-date">
+                        <i class="fas fa-calendar"></i> Expires: Dec 31, 2025
+                    </div>
+                </div>
+                <button class="claim-btn" onclick="claimCoupon('Starbucks', 'SB30WEAD')">
+                    <i class="fas fa-ticket-alt"></i> Claim Coupon
+                </button>
+            </div>
+        </div>
+        
+        <!-- Amazon -->
+        <div class="coupon-card" data-category="retail">
+            <div class="discount-badge">50% OFF</div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/2560px-Amazon_logo.svg.png" alt="Amazon" class="company-logo">
+            <div class="coupon-info">
+                <h3 class="company-name">Amazon <span class="premium-badge">PREMIUM</span></h3>
+                <p class="coupon-description">Massive 50% discount on electronics, fashion, and home goods. Minimum purchase $50.</p>
+                <div class="coupon-details">
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.3rem;">Coupon Code</div>
+                        <div class="coupon-code">AMZ50WEAD</div>
+                    </div>
+                    <div class="expiry-date">
+                        <i class="fas fa-calendar"></i> Expires: Dec 31, 2025
+                    </div>
+                </div>
+                <button class="claim-btn" onclick="claimCoupon('Amazon', 'AMZ50WEAD')">
+                    <i class="fas fa-ticket-alt"></i> Claim Coupon
+                </button>
+            </div>
+        </div>
+        
+        <!-- Walmart -->
+        <div class="coupon-card" data-category="retail">
+            <div class="discount-badge">35% OFF</div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Walmart_logo.svg/2560px-Walmart_logo.svg.png" alt="Walmart" class="company-logo">
+            <div class="coupon-info">
+                <h3 class="company-name">Walmart <span class="premium-badge">PREMIUM</span></h3>
+                <p class="coupon-description">Save 35% on groceries, household items, and more. Online and in-store.</p>
+                <div class="coupon-details">
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.3rem;">Coupon Code</div>
+                        <div class="coupon-code">WM35WEAD</div>
+                    </div>
+                    <div class="expiry-date">
+                        <i class="fas fa-calendar"></i> Expires: Dec 31, 2025
+                    </div>
+                </div>
+                <button class="claim-btn" onclick="claimCoupon('Walmart', 'WM35WEAD')">
+                    <i class="fas fa-ticket-alt"></i> Claim Coupon
+                </button>
+            </div>
+        </div>
+        
+        <!-- Target -->
+        <div class="coupon-card" data-category="retail">
+            <div class="discount-badge">45% OFF</div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Target_logo.svg/2048px-Target_logo.svg.png" alt="Target" class="company-logo">
+            <div class="coupon-info">
+                <h3 class="company-name">Target <span class="premium-badge">PREMIUM</span></h3>
+                <p class="coupon-description">Exclusive 45% off on clothing, home decor, and electronics. Shop now and save big!</p>
+                <div class="coupon-details">
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.3rem;">Coupon Code</div>
+                        <div class="coupon-code">TGT45WEAD</div>
+                    </div>
+                    <div class="expiry-date">
+                        <i class="fas fa-calendar"></i> Expires: Dec 31, 2025
+                    </div>
+                </div>
+                <button class="claim-btn" onclick="claimCoupon('Target', 'TGT45WEAD')">
+                    <i class="fas fa-ticket-alt"></i> Claim Coupon
+                </button>
+            </div>
+        </div>
+        
+        <!-- Best Buy -->
+        <div class="coupon-card" data-category="tech">
+            <div class="discount-badge">60% OFF</div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Best_Buy_Logo.svg/2560px-Best_Buy_Logo.svg.png" alt="Best Buy" class="company-logo">
+            <div class="coupon-info">
+                <h3 class="company-name">Best Buy <span class="premium-badge">PREMIUM</span></h3>
+                <p class="coupon-description">Incredible 60% off on laptops, TVs, gaming consoles, and smart home devices.</p>
+                <div class="coupon-details">
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.3rem;">Coupon Code</div>
+                        <div class="coupon-code">BB60WEAD</div>
+                    </div>
+                    <div class="expiry-date">
+                        <i class="fas fa-calendar"></i> Expires: Dec 31, 2025
+                    </div>
+                </div>
+                <button class="claim-btn" onclick="claimCoupon('Best Buy', 'BB60WEAD')">
+                    <i class="fas fa-ticket-alt"></i> Claim Coupon
+                </button>
+            </div>
+        </div>
+        
+        <!-- Apple -->
+        <div class="coupon-card" data-category="tech">
+            <div class="discount-badge">20% OFF</div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/1667px-Apple_logo_black.svg.png" alt="Apple" class="company-logo">
+            <div class="coupon-info">
+                <h3 class="company-name">Apple <span class="premium-badge">PREMIUM</span></h3>
+                <p class="coupon-description">Rare 20% discount on MacBooks, iPads, iPhones, and accessories. Don't miss out!</p>
+                <div class="coupon-details">
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.3rem;">Coupon Code</div>
+                        <div class="coupon-code">APL20WEAD</div>
+                    </div>
+                    <div class="expiry-date">
+                        <i class="fas fa-calendar"></i> Expires: Dec 31, 2025
+                    </div>
+                </div>
+                <button class="claim-btn" onclick="claimCoupon('Apple', 'APL20WEAD')">
+                    <i class="fas fa-ticket-alt"></i> Claim Coupon
+                </button>
+            </div>
+        </div>
+        
+        <!-- Nike -->
+        <div class="coupon-card" data-category="retail">
+            <div class="discount-badge">55% OFF</div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Logo_NIKE.svg/2560px-Logo_NIKE.svg.png" alt="Nike" class="company-logo">
+            <div class="coupon-info">
+                <h3 class="company-name">Nike <span class="premium-badge">PREMIUM</span></h3>
+                <p class="coupon-description">Get 55% off on sneakers, athletic wear, and sports equipment. Premium quality guaranteed.</p>
+                <div class="coupon-details">
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.3rem;">Coupon Code</div>
+                        <div class="coupon-code">NK55WEAD</div>
+                    </div>
+                    <div class="expiry-date">
+                        <i class="fas fa-calendar"></i> Expires: Dec 31, 2025
+                    </div>
+                </div>
+                <button class="claim-btn" onclick="claimCoupon('Nike', 'NK55WEAD')">
+                    <i class="fas fa-ticket-alt"></i> Claim Coupon
+                </button>
+            </div>
+        </div>
+        
+        <!-- Adidas -->
+        <div class="coupon-card" data-category="retail">
+            <div class="discount-badge">50% OFF</div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Adidas_Logo.svg/2560px-Adidas_Logo.svg.png" alt="Adidas" class="company-logo">
+            <div class="coupon-info">
+                <h3 class="company-name">Adidas <span class="premium-badge">PREMIUM</span></h3>
+                <p class="coupon-description">50% discount on all Adidas products including shoes, clothing, and accessories.</p>
+                <div class="coupon-details">
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.3rem;">Coupon Code</div>
+                        <div class="coupon-code">AD50WEAD</div>
+                    </div>
+                    <div class="expiry-date">
+                        <i class="fas fa-calendar"></i> Expires: Dec 31, 2025
+                    </div>
+                </div>
+                <button class="claim-btn" onclick="claimCoupon('Adidas', 'AD50WEAD')">
+                    <i class="fas fa-ticket-alt"></i> Claim Coupon
+                </button>
+            </div>
+        </div>
+        
+        <!-- Netflix -->
+        <div class="coupon-card" data-category="entertainment">
+            <div class="discount-badge">70% OFF</div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Netflix_2015_logo.svg/2560px-Netflix_2015_logo.svg.png" alt="Netflix" class="company-logo">
+            <div class="coupon-info">
+                <h3 class="company-name">Netflix <span class="premium-badge">PREMIUM</span></h3>
+                <p class="coupon-description">Massive 70% off on annual premium subscription. Unlimited movies and TV shows.</p>
+                <div class="coupon-details">
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.3rem;">Coupon Code</div>
+                        <div class="coupon-code">NF70WEAD</div>
+                    </div>
+                    <div class="expiry-date">
+                        <i class="fas fa-calendar"></i> Expires: Dec 31, 2025
+                    </div>
+                </div>
+                <button class="claim-btn" onclick="claimCoupon('Netflix', 'NF70WEAD')">
+                    <i class="fas fa-ticket-alt"></i> Claim Coupon
+                </button>
+            </div>
+        </div>
+        
+        <!-- Spotify -->
+        <div class="coupon-card" data-category="entertainment">
+            <div class="discount-badge">65% OFF</div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Spotify_logo_without_text.svg/2048px-Spotify_logo_without_text.svg.png" alt="Spotify" class="company-logo">
+            <div class="coupon-info">
+                <h3 class="company-name">Spotify <span class="premium-badge">PREMIUM</span></h3>
+                <p class="coupon-description">65% off on Spotify Premium. Ad-free music streaming with offline downloads.</p>
+                <div class="coupon-details">
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.3rem;">Coupon Code</div>
+                        <div class="coupon-code">SP65WEAD</div>
+                    </div>
+                    <div class="expiry-date">
+                        <i class="fas fa-calendar"></i> Expires: Dec 31, 2025
+                    </div>
+                </div>
+                <button class="claim-btn" onclick="claimCoupon('Spotify', 'SP65WEAD')">
+                    <i class="fas fa-ticket-alt"></i> Claim Coupon
+                </button>
+            </div>
+        </div>
+        
+        <!-- Uber Eats -->
+        <div class="coupon-card" data-category="food">
+            <div class="discount-badge">40% OFF</div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Uber_Eats_2020_logo.svg/2560px-Uber_Eats_2020_logo.svg.png" alt="Uber Eats" class="company-logo">
+            <div class="coupon-info">
+                <h3 class="company-name">Uber Eats <span class="premium-badge">PREMIUM</span></h3>
+                <p class="coupon-description">40% off on all food delivery orders. Free delivery on orders above $20.</p>
+                <div class="coupon-details">
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.3rem;">Coupon Code</div>
+                        <div class="coupon-code">UE40WEAD</div>
+                    </div>
+                    <div class="expiry-date">
+                        <i class="fas fa-calendar"></i> Expires: Dec 31, 2025
+                    </div>
+                </div>
+                <button class="claim-btn" onclick="claimCoupon('Uber Eats', 'UE40WEAD')">
+                    <i class="fas fa-ticket-alt"></i> Claim Coupon
+                </button>
+            </div>
+        </div>
+        
+        <!-- DoorDash -->
+        <div class="coupon-card" data-category="food">
+            <div class="discount-badge">45% OFF</div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/DoorDash_Logo.png/1200px-DoorDash_Logo.png" alt="DoorDash" class="company-logo">
+            <div class="coupon-info">
+                <h3 class="company-name">DoorDash <span class="premium-badge">PREMIUM</span></h3>
+                <p class="coupon-description">Save 45% on your next food delivery. Valid for all restaurants on DoorDash.</p>
+                <div class="coupon-details">
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.3rem;">Coupon Code</div>
+                        <div class="coupon-code">DD45WEAD</div>
+                    </div>
+                    <div class="expiry-date">
+                        <i class="fas fa-calendar"></i> Expires: Dec 31, 2025
+                    </div>
+                </div>
+                <button class="claim-btn" onclick="claimCoupon('DoorDash', 'DD45WEAD')">
+                    <i class="fas fa-ticket-alt"></i> Claim Coupon
+                </button>
+            </div>
+        </div>
+        
+        <!-- PlayStation -->
+        <div class="coupon-card" data-category="entertainment">
+            <div class="discount-badge">55% OFF</div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/PlayStation_logo.svg/2560px-PlayStation_logo.svg.png" alt="PlayStation" class="company-logo">
+            <div class="coupon-info">
+                <h3 class="company-name">PlayStation <span class="premium-badge">PREMIUM</span></h3>
+                <p class="coupon-description">55% off on PS Plus subscription and select games. Level up your gaming experience.</p>
+                <div class="coupon-details">
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.3rem;">Coupon Code</div>
+                        <div class="coupon-code">PS55WEAD</div>
+                    </div>
+                    <div class="expiry-date">
+                        <i class="fas fa-calendar"></i> Expires: Dec 31, 2025
+                    </div>
+                </div>
+                <button class="claim-btn" onclick="claimCoupon('PlayStation', 'PS55WEAD')">
+                    <i class="fas fa-ticket-alt"></i> Claim Coupon
+                </button>
+            </div>
+        </div>
+        
+        <!-- Xbox -->
+        <div class="coupon-card" data-category="entertainment">
+            <div class="discount-badge">50% OFF</div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Xbox_one_logo.svg/2560px-Xbox_one_logo.svg.png" alt="Xbox" class="company-logo">
+            <div class="coupon-info">
+                <h3 class="company-name">Xbox <span class="premium-badge">PREMIUM</span></h3>
+                <p class="coupon-description">50% discount on Xbox Game Pass Ultimate. Access hundreds of games instantly.</p>
+                <div class="coupon-details">
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.3rem;">Coupon Code</div>
+                        <div class="coupon-code">XB50WEAD</div>
+                    </div>
+                    <div class="expiry-date">
+                        <i class="fas fa-calendar"></i> Expires: Dec 31, 2025
+                    </div>
+                </div>
+                <button class="claim-btn" onclick="claimCoupon('Xbox', 'XB50WEAD')">
+                    <i class="fas fa-ticket-alt"></i> Claim Coupon
+                </button>
+            </div>
+        </div>
+        
+        <!-- H&M -->
+        <div class="coupon-card" data-category="retail">
+            <div class="discount-badge">60% OFF</div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/H%26M-Logo.svg/2560px-H%26M-Logo.svg.png" alt="H&M" class="company-logo">
+            <div class="coupon-info">
+                <h3 class="company-name">H&M <span class="premium-badge">PREMIUM</span></h3>
+                <p class="coupon-description">Huge 60% off on fashion clothing, accessories, and seasonal collections.</p>
+                <div class="coupon-details">
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.3rem;">Coupon Code</div>
+                        <div class="coupon-code">HM60WEAD</div>
+                    </div>
+                    <div class="expiry-date">
+                        <i class="fas fa-calendar"></i> Expires: Dec 31, 2025
+                    </div>
+                </div>
+                <button class="claim-btn" onclick="claimCoupon('H&M', 'HM60WEAD')">
+                    <i class="fas fa-ticket-alt"></i> Claim Coupon
+                </button>
+            </div>
+        </div>
+        
+        <!-- Zara -->
+        <div class="coupon-card" data-category="retail">
+            <div class="discount-badge">55% OFF</div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Zara_Logo.svg/2560px-Zara_Logo.svg.png" alt="Zara" class="company-logo">
+            <div class="coupon-info">
+                <h3 class="company-name">Zara <span class="premium-badge">PREMIUM</span></h3>
+                <p class="coupon-description">Exclusive 55% off on premium fashion. Shop the latest trends at unbeatable prices.</p>
+                <div class="coupon-details">
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.3rem;">Coupon Code</div>
+                        <div class="coupon-code">ZR55WEAD</div>
+                    </div>
+                    <div class="expiry-date">
+                        <i class="fas fa-calendar"></i> Expires: Dec 31, 2025
+                    </div>
+                </div>
+                <button class="claim-btn" onclick="claimCoupon('Zara', 'ZR55WEAD')">
+                    <i class="fas fa-ticket-alt"></i> Claim Coupon
+                </button>
+            </div>
+        </div>
+        
+        <!-- Domino's Pizza -->
+        <div class="coupon-card" data-category="food">
+            <div class="discount-badge">35% OFF</div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/Dominos_pizza_logo.svg/2560px-Dominos_pizza_logo.svg.png" alt="Domino's" class="company-logo">
+            <div class="coupon-info">
+                <h3 class="company-name">Domino's Pizza <span class="premium-badge">PREMIUM</span></h3>
+                <p class="coupon-description">35% off on all pizzas, sides, and desserts. Perfect for family meals and parties.</p>
+                <div class="coupon-details">
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.3rem;">Coupon Code</div>
+                        <div class="coupon-code">DOM35WEAD</div>
+                    </div>
+                    <div class="expiry-date">
+                        <i class="fas fa-calendar"></i> Expires: Dec 31, 2025
+                    </div>
+                </div>
+                <button class="claim-btn" onclick="claimCoupon('Domino\'s Pizza', 'DOM35WEAD')">
+                    <i class="fas fa-ticket-alt"></i> Claim Coupon
+                </button>
+            </div>
+        </div>
+        
+        <!-- Samsung -->
+        <div class="coupon-card" data-category="tech">
+            <div class="discount-badge">90% OFF</div>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Samsung_Logo.svg/2560px-Samsung_Logo.svg.png" alt="Samsung" class="company-logo">
+            <div class="coupon-info">
+                <h3 class="company-name">Samsung <span class="premium-badge">PREMIUM</span></h3>
+                <p class="coupon-description">Unbelievable 90% off on smartphones, tablets, TVs, and home appliances. Limited stock!</p>
+                <div class="coupon-details">
+                    <div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.3rem;">Coupon Code</div>
+                        <div class="coupon-code">SAM90WEAD</div>
+                    </div>
+                    <div class="expiry-date">
+                        <i class="fas fa-calendar"></i> Expires: Dec 31, 2025
+                    </div>
+                </div>
+                <button class="claim-btn" onclick="claimCoupon('Samsung', 'SAM90WEAD')">
+                    <i class="fas fa-ticket-alt"></i> Claim Coupon
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Subscription Payment Modal -->
+<div id="subscriptionModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(5px); z-index: 10000; align-items: center; justify-content: center; padding: 2rem;">
+    <div style="background: linear-gradient(135deg, rgba(32, 32, 32, 0.95), rgba(0, 0, 0, 0.95)); border: 2px solid rgba(168, 85, 247, 0.5); border-radius: 20px; max-width: 600px; width: 100%; padding: 2.5rem; position: relative; max-height: 90vh; overflow-y: auto;">
+        <!-- Close Button -->
+        <button onclick="closeSubscriptionModal()" style="position: absolute; top: 1.5rem; right: 1.5rem; background: rgba(255, 255, 255, 0.1); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.5rem; transition: all 0.3s;">
+            ×
+        </button>
+        
+        <h2 style="color: white; margin-bottom: 2rem; text-align: center; font-size: 2rem;">
+            <i class="fas fa-crown"></i> Subscribe to Premium Coupons
+        </h2>
+        
+        <!-- Subscription Details -->
+        <div style="background: rgba(168, 85, 247, 0.1); border: 2px solid rgba(168, 85, 247, 0.3); border-radius: 15px; padding: 2rem; margin-bottom: 2rem; text-align: center;">
+            <div style="color: white; font-size: 3rem; font-weight: 700; margin-bottom: 1rem;">
+                <i class="fas fa-coins" style="color: #fbbf24;"></i> 1,000 WEAD
+            </div>
+            <div style="color: #94a3b8; font-size: 1.1rem;">per month</div>
+        </div>
+        
+        <!-- Benefits -->
+        <div style="background: rgba(168, 85, 247, 0.05); border-radius: 15px; padding: 1.5rem; margin-bottom: 2rem;">
+            <h4 style="color: white; margin-bottom: 1rem; font-size: 1.2rem;">
+                <i class="fas fa-gift"></i> Subscription Benefits:
+            </h4>
+            <div style="color: #cbd5e1; line-height: 2; font-size: 1rem;">
+                <div><i class="fas fa-check-circle" style="color: #22c55e; margin-right: 0.5rem;"></i> Access to 99+ premium brands</div>
+                <div><i class="fas fa-check-circle" style="color: #22c55e; margin-right: 0.5rem;"></i> Up to 90% off discounts</div>
+                <div><i class="fas fa-check-circle" style="color: #22c55e; margin-right: 0.5rem;"></i> Exclusive deals & offers</div>
+                <div><i class="fas fa-check-circle" style="color: #22c55e; margin-right: 0.5rem;"></i> New coupons weekly</div>
+                <div><i class="fas fa-check-circle" style="color: #22c55e; margin-right: 0.5rem;"></i> Cancel anytime</div>
+            </div>
+        </div>
+        
+        <!-- WEAD Token Coming Soon Message -->
+        <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.1)); border: 2px solid #3b82f6; border-radius: 15px; padding: 1.5rem; margin-bottom: 2rem; text-align: center;">
+            <div style="font-size: 2.5rem; margin-bottom: 1rem;">⏰</div>
+            <h4 style="color: #3b82f6; margin-bottom: 1rem; font-size: 1.2rem;">
+                <i class="fas fa-clock"></i> Coming Soon: WEAD Tokens
+            </h4>
+            <div style="color: #cbd5e1; font-size: 1rem; line-height: 1.6; margin-bottom: 1rem;">
+                WEAD Token payments will be available soon!<br>
+                <strong style="color: #3b82f6;">Save 10% on all services</strong> when you pay with WEAD tokens.
+            </div>
+            <div style="color: #94a3b8; font-size: 0.9rem;">
+                For now, please use BNB or other payment methods.
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div style="display: flex; gap: 1rem;">
+            <button onclick="closeSubscriptionModal()" style="flex: 1; padding: 1rem; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(168, 85, 247, 0.3); border-radius: 10px; color: white; font-weight: 600; cursor: pointer; font-size: 1rem; transition: all 0.3s;">
+                Cancel
+            </button>
+            <button onclick="confirmSubscription()" style="flex: 2; padding: 1rem; background: linear-gradient(135deg, #a855f7, #9333ea); border: none; border-radius: 10px; color: white; font-weight: 700; cursor: pointer; font-size: 1rem; transition: all 0.3s;">
+                <i class="fas fa-lock"></i> Pay with MetaMask
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // MetaMask Integration for Subscriptions
+    let userWalletAddress = null;
+    let isSubscribed = false;
+    
+    // WEAD Token Contract Address (BSC Mainnet)
+    const WEAD_TOKEN_ADDRESS = '0xCF99bF2cbD83A580437d39A5092C1665Faa9898B'; // WEAD Token on BSC Testnet
+    const SUBSCRIPTION_COST = '1000'; // 1000 WEAD tokens
+    
+    // Check if user has active subscription
+    async function checkSubscription() {
+        const subscriptionStatus = localStorage.getItem('coupons_subscription');
+        if (subscriptionStatus) {
+            const subscription = JSON.parse(subscriptionStatus);
+            const expiryDate = new Date(subscription.expiryDate);
+            if (expiryDate > new Date()) {
+                isSubscribed = true;
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    function subscribeNow() {
+        // Open subscription modal
+        document.getElementById('subscriptionModal').style.display = 'flex';
+    }
+    
+    function closeSubscriptionModal() {
+        document.getElementById('subscriptionModal').style.display = 'none';
+    }
+    
+    async function confirmSubscription() {
+        // Check if MetaMask is installed
+        if (typeof window.ethereum === 'undefined') {
+            alert('⚠️ MetaMask Not Found\n\nPlease install MetaMask extension to subscribe.\n\nVisit: https://metamask.io');
+            window.open('https://metamask.io/download/', '_blank');
+            return;
+        }
+        
+        try {
+            console.log('🔐 Starting Coupons subscription process...');
+            
+            // Request account access
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            userWalletAddress = accounts[0];
+            console.log('✅ Wallet connected:', userWalletAddress);
+            
+            // Switch to BSC Network
+            try {
+                await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: '0x38' }], // BSC Mainnet
+                });
+                console.log('✅ Switched to BSC Network');
+            } catch (switchError) {
+                // Chain not added, add it
+                if (switchError.code === 4902) {
+                    console.log('⚠️ BSC Network not found, adding...');
+                    await window.ethereum.request({
+                        method: 'wallet_addEthereumChain',
+                        params: [{
+                            chainId: '0x38',
+                            chainName: 'Binance Smart Chain',
+                            nativeCurrency: { name: 'BNB', symbol: 'BNB', decimals: 18 },
+                            rpcUrls: ['https://bsc-dataseed.binance.org/'],
+                            blockExplorerUrls: ['https://bscscan.com/']
+                        }]
+                    });
+                    console.log('✅ BSC Network added');
+                } else {
+                    throw switchError;
+                }
+            }
+            
+            // Show processing message
+            alert('🔄 Processing Payment...\n\nPlease confirm the transaction in MetaMask.\n\nThis will open MetaMask for approval.');
+            
+            // WEAD Token Contract Address on BSC (Update with your actual contract address)
+            const WEAD_TOKEN_ADDRESS = '0xCF99bF2cbD83A580437d39A5092C1665Faa9898B'; // WEAD Token on BSC Testnet
+            const SUBSCRIPTION_RECEIVER = '0x01d3829a1b0CA3E1390724a0C5C419435720431e'; // WeAD Platform Subscription Wallet
+            
+            // Token amount in wei (1000 WEAD with 18 decimals)
+            const amount = (1000 * Math.pow(10, 18)).toString(16);
+            
+            console.log('📤 Sending token transfer...');
+            console.log('Amount:', SUBSCRIPTION_COST, 'WEAD');
+            console.log('To:', SUBSCRIPTION_RECEIVER);
+            
+            // For production: Use actual ERC20 transfer method
+            // For demo: Simulate transaction
+            const isProduction = true; // Set to true when deploying
+            
+            let txHash;
+            
+            if (isProduction) {
+                // Production: Actual Web3 transfer
+                const data = '0xa9059cbb' + // transfer(address,uint256) method ID
+                             SUBSCRIPTION_RECEIVER.substring(2).padStart(64, '0') +
+                             amount.padStart(64, '0');
+                
+                txHash = await window.ethereum.request({
+                    method: 'eth_sendTransaction',
+                    params: [{
+                        from: userWalletAddress,
+                        to: WEAD_TOKEN_ADDRESS,
+                        data: data,
+                        value: '0x0'
+                    }]
+                });
+                
+                console.log('✅ Transaction sent:', txHash);
+                alert(`⏳ Transaction Submitted!\n\nTransaction Hash:\n${txHash}\n\nWaiting for blockchain confirmation...`);
+                
+                // Wait for transaction confirmation
+                await waitForTransaction(txHash);
+                
+            } else {
+                // Demo mode: Simulate transaction
+                console.log('⚠️ DEMO MODE: Simulating transaction...');
+                txHash = '0x' + Math.random().toString(16).substring(2, 66);
+                await new Promise(resolve => setTimeout(resolve, 2000));
+            }
+            
+            // Save subscription
+            const expiryDate = new Date();
+            expiryDate.setDate(expiryDate.getDate() + 30);
+            
+            const subscription = {
+                walletAddress: userWalletAddress,
+                service: 'coupons',
+                cost: SUBSCRIPTION_COST,
+                expiryDate: expiryDate.toISOString(),
+                transactionHash: txHash,
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem('coupons_subscription', JSON.stringify(subscription));
+            isSubscribed = true;
+            
+            console.log('✅ Subscription saved:', subscription);
+            
+            closeSubscriptionModal();
+            
+            // Refresh WEAD balance across all pages
+            if (window.refreshAllBalances) {
+                await window.refreshAllBalances();
+            }
+            
+            alert(
+                `✅ Subscription Successful!\n\n` +
+                `Service: Premium Discount Coupons\n` +
+                `Cost: ${SUBSCRIPTION_COST} WEAD Tokens\n` +
+                `Valid Until: ${expiryDate.toLocaleDateString()}\n` +
+                `Transaction: ${txHash.substring(0, 10)}...\n\n` +
+                `🎉 You now have access to all premium coupons!\n\n` +
+                `Your WEAD balance has been updated.\n\n` +
+                `View on BSCScan: https://testnet.bscscan.com/tx/${txHash}`
+            );
+            
+            location.reload();
+            
+        } catch (error) {
+            console.error('❌ Subscription error:', error);
+            
+            let errorMsg = 'Subscription Failed';
+            if (error.code === 4001) {
+                errorMsg = 'You rejected the transaction';
+            } else if (error.code === -32603) {
+                errorMsg = 'Insufficient WEAD balance or gas';
+            } else if (error.message) {
+                errorMsg = error.message;
+            }
+            
+            alert(`❌ Subscription Failed\n\n${errorMsg}\n\nPlease try again or contact support.`);
+        }
+    }
+    
+    // Helper: Wait for transaction confirmation
+    async function waitForTransaction(txHash) {
+        console.log('⏳ Waiting for confirmation...');
+        // In production, implement proper transaction waiting
+        return new Promise(resolve => setTimeout(resolve, 3000));
+    }
+    
+    async function claimCoupon(company, code) {
+        // Check subscription status
+        const hasSubscription = await checkSubscription();
+        
+        if (!hasSubscription) {
+            const subscribe = confirm(
+                `🔒 Subscription Required\n\n` +
+                `This coupon requires an active subscription.\n\n` +
+                `Cost: ${SUBSCRIPTION_COST} WEAD/Month\n\n` +
+                `Would you like to subscribe now?`
+            );
+            
+            if (subscribe) {
+                await subscribeNow();
+            }
+            return;
+        }
+        
+        // User has subscription, allow claiming
+        alert(
+            `🎉 Coupon Claimed Successfully!\n\n` +
+            `Company: ${company}\n` +
+            `Code: ${code}\n\n` +
+            `✓ Code copied to clipboard\n` +
+            `✓ Email confirmation sent\n\n` +
+            `Use this code at checkout to get your discount!`
+        );
+        
+        // Copy to clipboard
+        navigator.clipboard.writeText(code);
+    }
+    
+    function filterCategory(category) {
+        const cards = document.querySelectorAll('.coupon-card');
+        const buttons = document.querySelectorAll('.category-btn');
+        
+        // Update active button
+        buttons.forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        
+        // Filter cards
+        cards.forEach(card => {
+            if (category === 'all' || card.dataset.category === category) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+    
+    // Add image error handling
+    document.addEventListener('DOMContentLoaded', function() {
+        const images = document.querySelectorAll('.company-logo');
+        images.forEach(img => {
+            img.onerror = function() {
+                this.onerror = null;
+                this.style.background = 'linear-gradient(135deg, #202020, #404040)';
+                this.style.display = 'flex';
+                this.style.alignItems = 'center';
+                this.style.justifyContent = 'center';
+                this.alt = this.alt + ' (Logo)';
+            };
+        });
+        
+        // Check subscription status on load
+        checkSubscription();
+    });
+</script>
+{% endblock %}

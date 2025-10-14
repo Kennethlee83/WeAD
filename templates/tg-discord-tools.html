@@ -1,0 +1,1156 @@
+{% extends "base.html" %}
+
+{% block title %}TG/Discord Tools - WeAD Platform{% endblock %}
+
+{% block nav_links %}
+<a href="/" class="nav-link">
+    <i class="fas fa-home"></i>
+    <span>Home</span>
+</a>
+<a href="/tg-discord-tools" class="nav-link active">
+    <i class="fas fa-tools"></i>
+    <span>TG/Discord Tools</span>
+</a>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* TG/Discord Tools - Dark Yellow Theme */
+    :root {
+        --quantum-primary: #B8860B !important;
+        --primary: #B8860B !important;
+        --secondary: #8B7500 !important;
+        --glow-primary: #DAA520 !important;
+        --glow-secondary: #B8860B !important;
+    }
+    
+    h1 {
+        background: linear-gradient(135deg, #B8860B, #DAA520, #FFD700) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        background-clip: text !important;
+        text-shadow: none !important;
+    }
+    
+    h2, h3 {
+        color: white !important;
+    }
+    
+    .nav-link:hover,
+    .nav-link.active {
+        color: #DAA520 !important;
+        border: 2px solid rgba(218, 165, 32, 0.5) !important;
+        box-shadow: 0 4px 15px rgba(218, 165, 32, 0.3) !important;
+    }
+    
+    .nav-link.active {
+        border: 2px solid rgba(218, 165, 32, 0.8) !important;
+        box-shadow: 0 0 20px rgba(218, 165, 32, 0.5), 0 0 40px rgba(218, 165, 32, 0.3) !important;
+    }
+    
+    /* Category Tabs */
+    .category-tabs {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 3rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .category-tab {
+        padding: 1rem 2rem;
+        background: rgba(184, 134, 11, 0.2);
+        border: 2px solid rgba(218, 165, 32, 0.3);
+        border-radius: 30px;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .category-tab:hover {
+        background: rgba(184, 134, 11, 0.4);
+        border-color: rgba(218, 165, 32, 0.6);
+        transform: translateY(-2px);
+    }
+    
+    .category-tab.active {
+        background: linear-gradient(135deg, #B8860B, #DAA520);
+        border-color: rgba(218, 165, 32, 0.8);
+        box-shadow: 0 5px 20px rgba(218, 165, 32, 0.4);
+    }
+    
+    /* Tools Grid */
+    .tools-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+    
+    @media (max-width: 768px) {
+        .tools-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    /* Tool Card */
+    .tool-card {
+        background: linear-gradient(135deg, rgba(139, 117, 0, 0.2), rgba(0, 0, 0, 0.6));
+        border: 2px solid rgba(218, 165, 32, 0.3);
+        border-radius: 20px;
+        padding: 2rem;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    
+    .tool-card:hover {
+        transform: translateY(-8px);
+        border-color: rgba(218, 165, 32, 0.7);
+        box-shadow: 0 15px 50px rgba(218, 165, 32, 0.4);
+        background: linear-gradient(135deg, rgba(184, 134, 11, 0.3), rgba(0, 0, 0, 0.7));
+    }
+    
+    .tool-icon {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(135deg, #B8860B, #DAA520);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .tool-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 1rem;
+    }
+    
+    .tool-description {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        flex-grow: 1;
+    }
+    
+    .tool-badge {
+        display: inline-block;
+        padding: 0.4rem 0.8rem;
+        background: rgba(218, 165, 32, 0.2);
+        border: 1px solid rgba(218, 165, 32, 0.4);
+        border-radius: 8px;
+        font-size: 0.8rem;
+        color: #DAA520;
+        font-weight: 600;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .tool-action {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, #B8860B, #DAA520);
+        color: white;
+        border: none;
+        border-radius: 15px;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+    
+    .tool-action:hover {
+        background: linear-gradient(135deg, #DAA520, #FFD700);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(218, 165, 32, 0.5);
+    }
+    
+    .tool-price {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        padding: 0.8rem;
+        background: rgba(218, 165, 32, 0.1);
+        border: 2px solid rgba(218, 165, 32, 0.3);
+        border-radius: 12px;
+    }
+    
+    .price-amount {
+        font-size: 1.3rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #DAA520, #FFD700);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .price-period {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+    
+    /* Subscription Banner */
+    .subscription-banner {
+        background: linear-gradient(135deg, rgba(184, 134, 11, 0.3), rgba(0, 0, 0, 0.7));
+        border: 2px solid rgba(218, 165, 32, 0.5);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 3rem;
+        text-align: center;
+    }
+    
+    .subscription-banner h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+    
+    .subscription-banner p {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .subscribe-button {
+        padding: 1.2rem 3rem;
+        background: linear-gradient(135deg, #B8860B, #DAA520);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        font-weight: 700;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.8rem;
+    }
+    
+    .subscribe-button:hover {
+        background: linear-gradient(135deg, #DAA520, #FFD700);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 30px rgba(218, 165, 32, 0.5);
+    }
+    
+    /* Stats Section */
+    .tools-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+    
+    .stat-box {
+        background: linear-gradient(135deg, rgba(184, 134, 11, 0.2), rgba(0, 0, 0, 0.5));
+        border: 2px solid rgba(218, 165, 32, 0.3);
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+    }
+    
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #DAA520, #FFD700);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .stat-label {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
+    
+    /* Mobile Optimization */
+    @media (max-width: 768px) {
+        /* Prevent horizontal scrolling and fix viewport */
+        html, body {
+            overflow-x: hidden !important;
+            width: 100% !important;
+            max-width: 100vw !important;
+            position: relative !important;
+        }
+        
+        .page-container {
+            padding: 0 !important;
+            width: 100% !important;
+            max-width: 100vw !important;
+            overflow-x: hidden !important;
+        }
+        
+        .page-header {
+            padding: 1rem !important;
+            width: 100% !important;
+            max-width: 100vw !important;
+            overflow-x: hidden !important;
+        }
+        
+        /* Ensure all sections fit within viewport */
+        .section, .glass, .stats-grid, .tools-grid {
+            width: 100% !important;
+            max-width: 100vw !important;
+            overflow-x: hidden !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+        
+        /* Make mobile title white */
+        .page-header h1 {
+            color: white !important;
+            background: none !important;
+            -webkit-background-clip: unset !important;
+            -webkit-text-fill-color: white !important;
+            background-clip: unset !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;
+        }
+        
+        .page-header h1 {
+            font-size: 1.5rem !important;
+        }
+        
+        .section.glass {
+            background: transparent !important;
+            border: none !important;
+            padding: 0.5rem 1rem !important;
+        }
+        
+        .tools-grid {
+            display: flex !important;
+            overflow-x: auto !important;
+            scroll-snap-type: x mandatory !important;
+            gap: 1rem !important;
+            padding: 0 1rem !important;
+            margin-left: -1rem !important;
+            margin-right: -1rem !important;
+            scrollbar-width: none !important;
+        }
+        
+        .tools-grid::-webkit-scrollbar {
+            display: none !important;
+        }
+        
+        .tool-card {
+            flex: 0 0 85% !important;
+            scroll-snap-align: center !important;
+            min-width: 280px !important;
+        }
+        
+        .btn {
+            width: 100% !important;
+            padding: 0.875rem 1rem !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1>TG/Discord Tools</h1>
+        <p>20+ powerful tools for content creation, gaming, and AI-powered automation</p>
+        
+        <!-- Demo Disclaimer -->
+        <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05)); border: 2px solid rgba(59, 130, 246, 0.3); border-radius: 12px; padding: 1rem 1.5rem; margin-top: 1.5rem; text-align: center;">
+            <i class="fas fa-info-circle" style="color: #3b82f6; margin-right: 0.5rem;"></i>
+            <span style="color: #93c5fd; font-size: 0.95rem; font-weight: 500;">
+                Demo Preview: Tools shown are feature demonstrations. Full functionality will be unlocked with premium subscription upon official launch.
+            </span>
+        </div>
+    </div>
+
+    <!-- Subscription Banner -->
+    <div class="subscription-banner glass">
+        <h2>🚀 Unlock All Premium Tools</h2>
+        <p>Get unlimited access to 20+ professional tools for just 1,000 WEAD per month</p>
+        <button class="subscribe-button" onclick="subscribeNow()">
+            <i class="fas fa-crown"></i> Subscribe Now - 1,000 WEAD/Month
+        </button>
+        <p style="margin-top: 1rem; font-size: 0.9rem;">
+            <i class="fas fa-check-circle" style="color: #22c55e;"></i> Cancel anytime • 
+            <i class="fas fa-check-circle" style="color: #22c55e;"></i> Priority support • 
+            <i class="fas fa-check-circle" style="color: #22c55e;"></i> New tools added monthly
+        </p>
+    </div>
+
+    <!-- Stats -->
+    <div class="tools-stats">
+        <div class="stat-box glass">
+            <div class="stat-value">20+</div>
+            <div class="stat-label">Premium Tools</div>
+        </div>
+        <div class="stat-box glass">
+            <div class="stat-value">50K+</div>
+            <div class="stat-label">Active Subscribers</div>
+        </div>
+        <div class="stat-box glass">
+            <div class="stat-value">24/7</div>
+            <div class="stat-label">Priority Support</div>
+        </div>
+        <div class="stat-box glass">
+            <div class="stat-value">1,000</div>
+            <div class="stat-label">WEAD/Month</div>
+        </div>
+    </div>
+
+    <!-- Category Tabs -->
+    <div class="category-tabs">
+        <button class="category-tab active" onclick="filterTools('all')">
+            <i class="fas fa-th"></i> All Tools
+        </button>
+        <button class="category-tab" onclick="filterTools('content')">
+            <i class="fas fa-pen-fancy"></i> Content Creation
+        </button>
+        <button class="category-tab" onclick="filterTools('game')">
+            <i class="fas fa-gamepad"></i> Gaming Tools
+        </button>
+        <button class="category-tab" onclick="filterTools('ai')">
+            <i class="fas fa-robot"></i> AI Tools
+        </button>
+        <button class="category-tab" onclick="filterTools('utility')">
+            <i class="fas fa-wrench"></i> Utilities
+        </button>
+    </div>
+
+    <!-- Tools Grid -->
+    <div class="tools-grid" id="toolsGrid">
+        
+        <!-- Tool 1: Meme Generator -->
+        <div class="tool-card" data-category="content">
+            <div class="tool-icon">
+                <i class="fas fa-images"></i>
+            </div>
+            <h3 class="tool-title">Meme Generator</h3>
+            <p class="tool-description">
+                Create viral memes instantly with AI-powered templates and custom text overlay. Perfect for community engagement.
+            </p>
+            <div>
+                <span class="tool-badge">Content</span>
+                <span class="tool-badge">Premium</span>
+            </div>
+            <div class="tool-price">
+                <i class="fas fa-coins" style="color: #DAA520;"></i>
+                <span class="price-amount">1,000 WEAD</span>
+                <span class="price-period">/month</span>
+            </div>
+            <button class="tool-action" onclick="subscribeTool('meme-generator')">
+                <i class="fas fa-lock"></i> Subscribe to Access
+            </button>
+        </div>
+
+        <!-- Tool 2: GIF Maker -->
+        <div class="tool-card" data-category="content">
+            <div class="tool-icon">
+                <i class="fas fa-film"></i>
+            </div>
+            <h3 class="tool-title">GIF Maker</h3>
+            <p class="tool-description">
+                Convert videos to GIFs, add effects, and create animated content for your community channels.
+            </p>
+            <div>
+                <span class="tool-badge">Content</span>
+                <span class="tool-badge">Premium</span>
+            </div>
+            <div class="tool-price">
+                <i class="fas fa-coins" style="color: #DAA520;"></i>
+                <span class="price-amount">1,000 WEAD</span>
+                <span class="price-period">/month</span>
+            </div>
+            <button class="tool-action" onclick="subscribeTool('gif-maker')">
+                <i class="fas fa-lock"></i> Subscribe to Access
+            </button>
+        </div>
+
+        <!-- Tool 3: Poll Creator -->
+        <div class="tool-card" data-category="utility">
+            <div class="tool-icon">
+                <i class="fas fa-poll"></i>
+            </div>
+            <h3 class="tool-title">Advanced Poll Creator</h3>
+            <p class="tool-description">
+                Create interactive polls with multiple choice, ranking, and real-time results visualization.
+            </p>
+            <div>
+                <span class="tool-badge">Utility</span>
+                <span class="tool-badge">Premium</span>
+            </div>
+            <div class="tool-price">
+                <i class="fas fa-coins" style="color: #DAA520;"></i>
+                <span class="price-amount">1,000 WEAD</span>
+                <span class="price-period">/month</span>
+            </div>
+            <button class="tool-action" onclick="subscribeTool('poll-creator')">
+                <i class="fas fa-lock"></i> Subscribe to Access
+            </button>
+        </div>
+
+        <!-- Tool 4: Tournament Manager -->
+        <div class="tool-card" data-category="game">
+            <div class="tool-icon">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <h3 class="tool-title">Tournament Manager</h3>
+            <p class="tool-description">
+                Organize gaming tournaments with brackets, scheduling, and automated notifications for participants.
+            </p>
+            <div>
+                <span class="tool-badge">Gaming</span>
+                <span class="tool-badge">Premium</span>
+            </div>
+            <div class="tool-price">
+                <i class="fas fa-coins" style="color: #DAA520;"></i>
+                <span class="price-amount">1,000 WEAD</span>
+                <span class="price-period">/month</span>
+            </div>
+            <button class="tool-action" onclick="subscribeTool('tournament-manager')">
+                <i class="fas fa-lock"></i> Subscribe to Access
+            </button>
+        </div>
+
+        <!-- Tool 5: AI Chatbot -->
+        <div class="tool-card" data-category="ai">
+            <div class="tool-icon">
+                <i class="fas fa-robot"></i>
+            </div>
+            <h3 class="tool-title">AI Chatbot</h3>
+            <p class="tool-description">
+                Deploy intelligent chatbots powered by GPT-4 for automated customer support and community management.
+            </p>
+            <div>
+                <span class="tool-badge">AI</span>
+                <span class="tool-badge">Premium</span>
+            </div>
+            <div class="tool-price">
+                <i class="fas fa-coins" style="color: #DAA520;"></i>
+                <span class="price-amount">1,000 WEAD</span>
+                <span class="price-period">/month</span>
+            </div>
+            <button class="tool-action" onclick="subscribeTool('ai-chatbot')">
+                <i class="fas fa-lock"></i> Subscribe to Access
+            </button>
+        </div>
+
+        <!-- Tool 6: Voice Changer -->
+        <div class="tool-card" data-category="content">
+            <div class="tool-icon">
+                <i class="fas fa-microphone"></i>
+            </div>
+            <h3 class="tool-title">Voice Changer</h3>
+            <p class="tool-description">
+                Real-time voice modulation with 50+ effects. Perfect for gaming streams and content creation.
+            </p>
+            <div>
+                <span class="tool-badge">Content</span>
+                <span class="tool-badge">Premium</span>
+            </div>
+            <div class="tool-price">
+                <i class="fas fa-coins" style="color: #DAA520;"></i>
+                <span class="price-amount">1,000 WEAD</span>
+                <span class="price-period">/month</span>
+            </div>
+            <button class="tool-action" onclick="subscribeTool('voice-changer')">
+                <i class="fas fa-lock"></i> Subscribe to Access
+            </button>
+        </div>
+
+        <!-- Tool 7: Giveaway Manager -->
+        <div class="tool-card" data-category="utility">
+            <div class="tool-icon">
+                <i class="fas fa-gift"></i>
+            </div>
+            <h3 class="tool-title">Giveaway Manager</h3>
+            <p class="tool-description">
+                Run fair and transparent giveaways with automatic winner selection and verification.
+            </p>
+            <div>
+                <span class="tool-badge">Utility</span>
+                <span class="tool-badge">Premium</span>
+            </div>
+            <div class="tool-price">
+                <i class="fas fa-coins" style="color: #DAA520;"></i>
+                <span class="price-amount">1,000 WEAD</span>
+                <span class="price-period">/month</span>
+            </div>
+            <button class="tool-action" onclick="subscribeTool('giveaway-manager')">
+                <i class="fas fa-lock"></i> Subscribe to Access
+            </button>
+        </div>
+
+        <!-- Tool 8: Leaderboard System -->
+        <div class="tool-card" data-category="game">
+            <div class="tool-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <h3 class="tool-title">Leaderboard System</h3>
+            <p class="tool-description">
+                Track player stats, rankings, and achievements with real-time updates and rewards.
+            </p>
+            <div>
+                <span class="tool-badge">Gaming</span>
+                <span class="tool-badge">Premium</span>
+            </div>
+            <div class="tool-price">
+                <i class="fas fa-coins" style="color: #DAA520;"></i>
+                <span class="price-amount">1,000 WEAD</span>
+                <span class="price-period">/month</span>
+            </div>
+            <button class="tool-action" onclick="subscribeTool('leaderboard')">
+                <i class="fas fa-lock"></i> Subscribe to Access
+            </button>
+        </div>
+
+        <!-- Tool 9: AI Image Generator -->
+        <div class="tool-card" data-category="ai">
+            <div class="tool-icon">
+                <i class="fas fa-palette"></i>
+            </div>
+            <h3 class="tool-title">AI Image Generator</h3>
+            <p class="tool-description">
+                Generate stunning images from text descriptions using advanced AI models like DALL-E and Stable Diffusion.
+            </p>
+            <div>
+                <span class="tool-badge">AI</span>
+                <span class="tool-badge">Premium</span>
+            </div>
+            <div class="tool-price">
+                <i class="fas fa-coins" style="color: #DAA520;"></i>
+                <span class="price-amount">1,000 WEAD</span>
+                <span class="price-period">/month</span>
+            </div>
+            <button class="tool-action" onclick="subscribeTool('ai-image-gen')">
+                <i class="fas fa-lock"></i> Subscribe to Access
+            </button>
+        </div>
+
+        <!-- Tool 10: Music Bot -->
+        <div class="tool-card" data-category="content">
+            <div class="tool-icon">
+                <i class="fas fa-music"></i>
+            </div>
+            <h3 class="tool-title">Music Bot</h3>
+            <p class="tool-description">
+                High-quality music streaming bot with playlist management, queue system, and audio effects.
+            </p>
+            <div>
+                <span class="tool-badge">Content</span>
+                <span class="tool-badge">Premium</span>
+            </div>
+            <div class="tool-price">
+                <i class="fas fa-coins" style="color: #DAA520;"></i>
+                <span class="price-amount">1,000 WEAD</span>
+                <span class="price-period">/month</span>
+            </div>
+            <button class="tool-action" onclick="subscribeTool('music-bot')">
+                <i class="fas fa-lock"></i> Subscribe to Access
+            </button>
+        </div>
+
+        <!-- Tool 11: Screen Recorder -->
+        <div class="tool-card" data-category="content">
+            <div class="tool-icon">
+                <i class="fas fa-video"></i>
+            </div>
+            <h3 class="tool-title">Screen Recorder</h3>
+            <p class="tool-description">
+                Record gameplay, tutorials, and streams with customizable overlays and real-time editing.
+            </p>
+            <div>
+                <span class="tool-badge">Content</span>
+                <span class="tool-badge">Premium</span>
+            </div>
+            <button class="tool-action" onclick="launchTool('screen-recorder')">
+                <i class="fas fa-lock"></i> Subscribe to Access
+            </button>
+        </div>
+
+        <!-- Tool 12: Moderation Bot -->
+        <div class="tool-card" data-category="utility">
+            <div class="tool-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h3 class="tool-title">Auto Moderation</h3>
+            <p class="tool-description">
+                AI-powered moderation with spam detection, profanity filter, and automated warnings.
+            </p>
+            <div>
+                <span class="tool-badge">Utility</span>
+                <span class="tool-badge">Premium</span>
+            </div>
+            <div class="tool-price">
+                <i class="fas fa-coins" style="color: #DAA520;"></i>
+                <span class="price-amount">1,000 WEAD</span>
+                <span class="price-period">/month</span>
+            </div>
+            <button class="tool-action" onclick="subscribeTool('auto-mod')">
+                <i class="fas fa-lock"></i> Subscribe to Access
+            </button>
+        </div>
+
+        <!-- Tool 13: Team Finder -->
+        <div class="tool-card" data-category="game">
+            <div class="tool-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <h3 class="tool-title">Team Finder</h3>
+            <p class="tool-description">
+                Match players based on skill level, game preferences, and availability for team formation.
+            </p>
+            <div>
+                <span class="tool-badge">Gaming</span>
+                <span class="tool-badge">Premium</span>
+            </div>
+            <div class="tool-price">
+                <i class="fas fa-coins" style="color: #DAA520;"></i>
+                <span class="price-amount">1,000 WEAD</span>
+                <span class="price-period">/month</span>
+            </div>
+            <button class="tool-action" onclick="subscribeTool('team-finder')">
+                <i class="fas fa-lock"></i> Subscribe to Access
+            </button>
+        </div>
+
+        <!-- Tool 14: AI Content Writer -->
+        <div class="tool-card" data-category="ai">
+            <div class="tool-icon">
+                <i class="fas fa-pen"></i>
+            </div>
+            <h3 class="tool-title">AI Content Writer</h3>
+            <p class="tool-description">
+                Generate engaging posts, announcements, and articles with AI-powered writing assistance.
+            </p>
+            <div>
+                <span class="tool-badge">AI</span>
+                <span class="tool-badge">Premium</span>
+            </div>
+            <div class="tool-price">
+                <i class="fas fa-coins" style="color: #DAA520;"></i>
+                <span class="price-amount">1,000 WEAD</span>
+                <span class="price-period">/month</span>
+            </div>
+            <button class="tool-action" onclick="subscribeTool('ai-writer')">
+                <i class="fas fa-lock"></i> Subscribe to Access
+            </button>
+        </div>
+
+        <!-- Tool 15: Emoji Manager -->
+        <div class="tool-card" data-category="utility">
+            <div class="tool-icon">
+                <i class="fas fa-smile"></i>
+            </div>
+            <h3 class="tool-title">Custom Emoji Manager</h3>
+            <p class="tool-description">
+                Create, upload, and manage custom emojis with bulk operations and organization tools.
+            </p>
+            <div>
+                <span class="tool-badge">Utility</span>
+                <span class="tool-badge">Premium</span>
+            </div>
+            <div class="tool-price">
+                <i class="fas fa-coins" style="color: #DAA520;"></i>
+                <span class="price-amount">1,000 WEAD</span>
+                <span class="price-period">/month</span>
+            </div>
+            <button class="tool-action" onclick="subscribeTool('emoji-manager')">
+                <i class="fas fa-lock"></i> Subscribe to Access
+            </button>
+        </div>
+
+        <!-- Tool 16: Stats Tracker -->
+        <div class="tool-card" data-category="game">
+            <div class="tool-icon">
+                <i class="fas fa-chart-bar"></i>
+            </div>
+            <h3 class="tool-title">Game Stats Tracker</h3>
+            <p class="tool-description">
+                Track player performance across multiple games with detailed analytics and insights.
+            </p>
+            <div>
+                <span class="tool-badge">Gaming</span>
+                <span class="tool-badge">Premium</span>
+            </div>
+            <div class="tool-price">
+                <i class="fas fa-coins" style="color: #DAA520;"></i>
+                <span class="price-amount">1,000 WEAD</span>
+                <span class="price-period">/month</span>
+            </div>
+            <button class="tool-action" onclick="subscribeTool('stats-tracker')">
+                <i class="fas fa-lock"></i> Subscribe to Access
+            </button>
+        </div>
+
+        <!-- Tool 17: AI Voice Cloner -->
+        <div class="tool-card" data-category="ai">
+            <div class="tool-icon">
+                <i class="fas fa-user-secret"></i>
+            </div>
+            <h3 class="tool-title">AI Voice Cloner</h3>
+            <p class="tool-description">
+                Clone any voice with AI technology for voiceovers, narration, and character voices.
+            </p>
+            <div>
+                <span class="tool-badge">AI</span>
+                <span class="tool-badge">Premium</span>
+            </div>
+            <div class="tool-price">
+                <i class="fas fa-coins" style="color: #DAA520;"></i>
+                <span class="price-amount">1,000 WEAD</span>
+                <span class="price-period">/month</span>
+            </div>
+            <button class="tool-action" onclick="subscribeTool('voice-cloner')">
+                <i class="fas fa-lock"></i> Subscribe to Access
+            </button>
+        </div>
+
+        <!-- Tool 18: Announcement Scheduler -->
+        <div class="tool-card" data-category="utility">
+            <div class="tool-icon">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <h3 class="tool-title">Announcement Scheduler</h3>
+            <p class="tool-description">
+                Schedule messages, announcements, and reminders with timezone support and recurring posts.
+            </p>
+            <div>
+                <span class="tool-badge">Utility</span>
+                <span class="tool-badge">Premium</span>
+            </div>
+            <div class="tool-price">
+                <i class="fas fa-coins" style="color: #DAA520;"></i>
+                <span class="price-amount">1,000 WEAD</span>
+                <span class="price-period">/month</span>
+            </div>
+            <button class="tool-action" onclick="subscribeTool('scheduler')">
+                <i class="fas fa-lock"></i> Subscribe to Access
+            </button>
+        </div>
+
+        <!-- Tool 19: Clip Creator -->
+        <div class="tool-card" data-category="content">
+            <div class="tool-icon">
+                <i class="fas fa-cut"></i>
+            </div>
+            <h3 class="tool-title">Clip Creator</h3>
+            <p class="tool-description">
+                Extract and edit highlights from streams and videos with AI-powered moment detection.
+            </p>
+            <div>
+                <span class="tool-badge">Content</span>
+                <span class="tool-badge">Premium</span>
+            </div>
+            <button class="tool-action" onclick="launchTool('clip-creator')">
+                <i class="fas fa-lock"></i> Subscribe to Access
+            </button>
+        </div>
+
+        <!-- Tool 20: AI Translator -->
+        <div class="tool-card" data-category="ai">
+            <div class="tool-icon">
+                <i class="fas fa-language"></i>
+            </div>
+            <h3 class="tool-title">AI Translator</h3>
+            <p class="tool-description">
+                Real-time translation for 100+ languages with context awareness and slang detection.
+            </p>
+            <div>
+                <span class="tool-badge">AI</span>
+                <span class="tool-badge">Premium</span>
+            </div>
+            <div class="tool-price">
+                <i class="fas fa-coins" style="color: #DAA520;"></i>
+                <span class="price-amount">1,000 WEAD</span>
+                <span class="price-period">/month</span>
+            </div>
+            <button class="tool-action" onclick="subscribeTool('ai-translator')">
+                <i class="fas fa-lock"></i> Subscribe to Access
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<!-- Subscription Payment Modal -->
+<div id="subscriptionModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(5px); z-index: 10000; align-items: center; justify-content: center; padding: 2rem;">
+    <div style="background: linear-gradient(135deg, rgba(32, 32, 32, 0.95), rgba(0, 0, 0, 0.95)); border: 2px solid rgba(99, 102, 241, 0.5); border-radius: 20px; max-width: 600px; width: 100%; padding: 2.5rem; position: relative; max-height: 90vh; overflow-y: auto;">
+        <!-- Close Button -->
+        <button onclick="closeSubscriptionModal()" style="position: absolute; top: 1.5rem; right: 1.5rem; background: rgba(255, 255, 255, 0.1); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.5rem; transition: all 0.3s;">
+            ×
+        </button>
+        
+        <h2 style="color: white; margin-bottom: 2rem; text-align: center; font-size: 2rem;">
+            <i class="fas fa-crown"></i> Subscribe to TG/Discord Tools
+        </h2>
+        
+        <!-- Subscription Details -->
+        <div style="background: rgba(99, 102, 241, 0.1); border: 2px solid rgba(99, 102, 241, 0.3); border-radius: 15px; padding: 2rem; margin-bottom: 2rem; text-align: center;">
+            <div style="color: white; font-size: 3rem; font-weight: 700; margin-bottom: 1rem;">
+                <i class="fas fa-coins" style="color: #fbbf24;"></i> 1,000 WEAD
+            </div>
+            <div style="color: #94a3b8; font-size: 1.1rem;">per month</div>
+        </div>
+        
+        <!-- Benefits -->
+        <div style="background: rgba(99, 102, 241, 0.05); border-radius: 15px; padding: 1.5rem; margin-bottom: 2rem;">
+            <h4 style="color: white; margin-bottom: 1rem; font-size: 1.2rem;">
+                <i class="fas fa-gift"></i> Subscription Benefits:
+            </h4>
+            <div style="color: #cbd5e1; line-height: 2; font-size: 1rem;">
+                <div><i class="fas fa-check-circle" style="color: #22c55e; margin-right: 0.5rem;"></i> All 20+ tools unlocked</div>
+                <div><i class="fas fa-check-circle" style="color: #22c55e; margin-right: 0.5rem;"></i> Priority support</div>
+                <div><i class="fas fa-check-circle" style="color: #22c55e; margin-right: 0.5rem;"></i> New tools added monthly</div>
+                <div><i class="fas fa-check-circle" style="color: #22c55e; margin-right: 0.5rem;"></i> Unlimited usage</div>
+                <div><i class="fas fa-check-circle" style="color: #22c55e; margin-right: 0.5rem;"></i> Cancel anytime</div>
+            </div>
+        </div>
+        
+        <!-- WEAD Token Coming Soon Message -->
+        <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.1)); border: 2px solid #3b82f6; border-radius: 15px; padding: 1.5rem; margin-bottom: 2rem; text-align: center;">
+            <div style="font-size: 2.5rem; margin-bottom: 1rem;">⏰</div>
+            <h4 style="color: #3b82f6; margin-bottom: 1rem; font-size: 1.2rem;">
+                <i class="fas fa-clock"></i> Coming Soon: WEAD Tokens
+            </h4>
+            <div style="color: #cbd5e1; font-size: 1rem; line-height: 1.6; margin-bottom: 1rem;">
+                WEAD Token payments will be available soon!<br>
+                <strong style="color: #3b82f6;">Save 10% on all services</strong> when you pay with WEAD tokens.
+            </div>
+            <div style="color: #94a3b8; font-size: 0.9rem;">
+                For now, please use BNB or other payment methods.
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div style="display: flex; gap: 1rem;">
+            <button onclick="closeSubscriptionModal()" style="flex: 1; padding: 1rem; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(99, 102, 241, 0.3); border-radius: 10px; color: white; font-weight: 600; cursor: pointer; font-size: 1rem; transition: all 0.3s;">
+                Cancel
+            </button>
+            <button onclick="confirmSubscription()" style="flex: 2; padding: 1rem; background: linear-gradient(135deg, #6366f1, #4f46e5); border: none; border-radius: 10px; color: white; font-weight: 700; cursor: pointer; font-size: 1rem; transition: all 0.3s;">
+                <i class="fas fa-lock"></i> Pay with MetaMask
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Filter tools by category
+    function filterTools(category) {
+        const tools = document.querySelectorAll('.tool-card');
+        const tabs = document.querySelectorAll('.category-tab');
+        
+        // Update active tab
+        tabs.forEach(tab => tab.classList.remove('active'));
+        event.target.closest('.category-tab').classList.add('active');
+        
+        // Filter tools
+        tools.forEach(tool => {
+            if (category === 'all' || tool.dataset.category === category) {
+                tool.style.display = 'flex';
+            } else {
+                tool.style.display = 'none';
+            }
+        });
+    }
+    
+    // MetaMask Integration for TG/Discord Tools
+    let userWalletAddress = null;
+    let isSubscribed = false;
+    const SUBSCRIPTION_COST = '1000'; // 1000 WEAD tokens
+    
+    // Check if user has active subscription
+    async function checkSubscription() {
+        const subscriptionStatus = localStorage.getItem('tools_subscription');
+        if (subscriptionStatus) {
+            const subscription = JSON.parse(subscriptionStatus);
+            const expiryDate = new Date(subscription.expiryDate);
+            if (expiryDate > new Date()) {
+                isSubscribed = true;
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    // Subscribe to tool
+    async function subscribeTool(toolId) {
+        subscribeNow(); // All tools require the same subscription
+    }
+    
+    // Subscribe now (main button) - Opens modal
+    function subscribeNow() {
+        document.getElementById('subscriptionModal').style.display = 'flex';
+    }
+    
+    function closeSubscriptionModal() {
+        document.getElementById('subscriptionModal').style.display = 'none';
+    }
+    
+    // Confirm subscription - Handles payment
+    async function confirmSubscription() {
+        // Check if MetaMask is installed
+        if (typeof window.ethereum === 'undefined') {
+            alert('⚠️ MetaMask Not Found\n\nPlease install MetaMask extension to subscribe.\n\nVisit: https://metamask.io');
+            window.open('https://metamask.io/download/', '_blank');
+            return;
+        }
+        
+        try {
+            console.log('🔐 Starting TG/Discord Tools subscription process...');
+            
+            // Request account access
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            userWalletAddress = accounts[0];
+            console.log('✅ Wallet connected:', userWalletAddress);
+            
+            // Switch to BSC Network
+            try {
+                await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: '0x38' }], // BSC Mainnet
+                });
+            } catch (switchError) {
+                if (switchError.code === 4902) {
+                    await window.ethereum.request({
+                        method: 'wallet_addEthereumChain',
+                        params: [{
+                            chainId: '0x38',
+                            chainName: 'Binance Smart Chain',
+                            nativeCurrency: { name: 'BNB', symbol: 'BNB', decimals: 18 },
+                            rpcUrls: ['https://bsc-dataseed.binance.org/'],
+                            blockExplorerUrls: ['https://bscscan.com/']
+                        }]
+                    });
+                }
+            }
+            
+            // Show processing message
+            alert('🔄 Processing Payment...\n\nPlease confirm the transaction in MetaMask.\n\nThis will open MetaMask for approval.');
+            
+            // WEAD Token Contract Address on BSC (Update with your actual contract address)
+            const WEAD_TOKEN_ADDRESS = '0xCF99bF2cbD83A580437d39A5092C1665Faa9898B'; // WEAD Token on BSC Testnet
+            const SUBSCRIPTION_RECEIVER = '0x01d3829a1b0CA3E1390724a0C5C419435720431e'; // WeAD Platform Subscription Wallet
+            
+            // Token amount in wei (1000 WEAD with 18 decimals)
+            const amount = (1000 * Math.pow(10, 18)).toString(16);
+            
+            console.log('📤 Sending token transfer...');
+            console.log('Amount:', SUBSCRIPTION_COST, 'WEAD');
+            console.log('To:', SUBSCRIPTION_RECEIVER);
+            
+            // For production: Use actual ERC20 transfer method
+            // For demo: Simulate transaction
+            const isProduction = true; // Set to true when deploying
+            
+            let txHash;
+            
+            if (isProduction) {
+                // Production: Actual Web3 transfer
+                const data = '0xa9059cbb' + // transfer(address,uint256) method ID
+                             SUBSCRIPTION_RECEIVER.substring(2).padStart(64, '0') +
+                             amount.padStart(64, '0');
+                
+                txHash = await window.ethereum.request({
+                    method: 'eth_sendTransaction',
+                    params: [{
+                        from: userWalletAddress,
+                        to: WEAD_TOKEN_ADDRESS,
+                        data: data,
+                        value: '0x0'
+                    }]
+                });
+                
+                console.log('✅ Transaction sent:', txHash);
+                alert(`⏳ Transaction Submitted!\n\nTransaction Hash:\n${txHash}\n\nWaiting for blockchain confirmation...`);
+                
+                // Wait for transaction confirmation
+                await waitForTransaction(txHash);
+                
+            } else {
+                // Demo mode: Simulate transaction
+                console.log('⚠️ DEMO MODE: Simulating transaction...');
+                txHash = '0x' + Math.random().toString(16).substring(2, 66);
+                await new Promise(resolve => setTimeout(resolve, 2000));
+            }
+            
+            // Save subscription
+            const expiryDate = new Date();
+            expiryDate.setDate(expiryDate.getDate() + 30);
+            
+            const subscription = {
+                walletAddress: userWalletAddress,
+                service: 'tools',
+                cost: SUBSCRIPTION_COST,
+                expiryDate: expiryDate.toISOString(),
+                transactionHash: txHash,
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem('tools_subscription', JSON.stringify(subscription));
+            isSubscribed = true;
+            
+            console.log('✅ Subscription saved:', subscription);
+            
+            closeSubscriptionModal();
+            
+            // Refresh WEAD balance across all pages
+            if (window.refreshAllBalances) {
+                await window.refreshAllBalances();
+            }
+            
+            alert(
+                `✅ Subscription Successful!\n\n` +
+                `Service: TG/Discord Tools\n` +
+                `Cost: ${SUBSCRIPTION_COST} WEAD Tokens\n` +
+                `Valid Until: ${expiryDate.toLocaleDateString()}\n` +
+                `Transaction: ${txHash.substring(0, 10)}...\n\n` +
+                `🎉 You now have access to all 20+ premium tools!\n\n` +
+                `Your WEAD balance has been updated.\n\n` +
+                `View on BSCScan: https://testnet.bscscan.com/tx/${txHash}`
+            );
+            
+            location.reload();
+            
+        } catch (error) {
+            console.error('❌ Subscription error:', error);
+            
+            let errorMsg = 'Subscription Failed';
+            if (error.code === 4001) {
+                errorMsg = 'You rejected the transaction';
+            } else if (error.code === -32603) {
+                errorMsg = 'Insufficient WEAD balance or gas';
+            } else if (error.message) {
+                errorMsg = error.message;
+            }
+            
+            alert(`❌ Subscription Failed\n\n${errorMsg}\n\nPlease try again or contact support.`);
+        }
+    }
+    
+    // Helper: Wait for transaction confirmation
+    async function waitForTransaction(txHash) {
+        console.log('⏳ Waiting for confirmation...');
+        // In production, implement proper transaction waiting
+        return new Promise(resolve => setTimeout(resolve, 3000));
+    }
+    
+    // Check subscription on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        checkSubscription();
+    });
+</script>
+
+{% endblock %}

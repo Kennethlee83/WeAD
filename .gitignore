@@ -1,0 +1,238 @@
+# =====================================
+# Environment & Secrets
+# =====================================
+.env
+.env.local
+.env.production
+.env.*.local
+*.pem
+*.key
+*.p12
+*.pfx
+secrets.json
+config.local.js
+
+# =====================================
+# Python
+# =====================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# =====================================
+# Flask
+# =====================================
+instance/
+.webassets-cache
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
+
+# =====================================
+# Database
+# =====================================
+*.db
+*.sqlite
+*.sqlite3
+*.sql
+pgdata/
+postgres_data/
+db_backup/
+
+# =====================================
+# Node.js & NPM
+# =====================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# =====================================
+# Hardhat & Blockchain
+# =====================================
+blockchain/cache/
+blockchain/artifacts/
+blockchain/node_modules/
+typechain/
+typechain-types/
+coverage/
+coverage.json
+.openzeppelin/
+deployments/localhost/
+.env.hardhat
+
+# =====================================
+# Uploaded Files & Media
+# =====================================
+uploads/
+uploads/videos/*
+uploads/thumbnails/*
+!uploads/.gitkeep
+!uploads/videos/.gitkeep
+!uploads/thumbnails/.gitkeep
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.webm
+static/video*.mp4
+static/*.mp4
+
+# =====================================
+# Large Image Files
+# =====================================
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.ico
+*.svg
+# Allow logo and essential images
+!static/WeAD.png
+!static/manifest.json
+
+# =====================================
+# IDE & Editors
+# =====================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+*.bak
+*~
+.DS_Store
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
+.project
+.pydevproject
+.settings/
+
+# =====================================
+# Logs
+# =====================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+combined.log
+error.log
+access.log
+
+# =====================================
+# Testing & Coverage
+# =====================================
+.nyc_output/
+coverage/
+*.lcov
+.jest/
+test-results/
+
+# =====================================
+# Temporary Files
+# =====================================
+tmp/
+temp/
+*.tmp
+*.temp
+.cache/
+
+# =====================================
+# Backups
+# =====================================
+*.backup
+*_backup/
+backup/
+WeAD_Platform_Backup_*/
+
+# =====================================
+# OS Files
+# =====================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# =====================================
+# SSL Certificates
+# =====================================
+*.crt
+*.pem
+*.csr
+*.key
+*.p12
+*.pfx
+ssl/
+certs/
+
+# =====================================
+# Redis
+# =====================================
+dump.rdb
+appendonly.aof
+redis-data/
+
+# =====================================
+# Documentation Build
+# =====================================
+docs/_build/
+docs/.doctrees/
+site/
+
+# =====================================
+# Miscellaneous
+# =====================================
+.vercel
+.next/
+out/
+.nuxt/
+.cache/
+.parcel-cache/
+.npm
+.eslintcache
+.stylelintcache
+.yarn/
+

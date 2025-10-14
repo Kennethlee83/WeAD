@@ -1,0 +1,1487 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile - WeAD Platform{% endblock %}
+
+{% block nav_links %}
+<a href="/" class="nav-link">
+    <i class="fas fa-home"></i>
+    <span>Home</span>
+</a>
+<a href="/profile" class="nav-link active">
+    <i class="fas fa-user-circle"></i>
+    <span>My Profile</span>
+</a>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Profile Page - Black & White Theme */
+    :root {
+        --quantum-primary: #ffffff !important;
+        --primary: #ffffff !important;
+        --secondary: #000000 !important;
+        --glow-primary: #ffffff !important;
+        --glow-secondary: #cccccc !important;
+    }
+    
+    h1 {
+        background: linear-gradient(135deg, #ffffff, #cccccc, #999999) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        background-clip: text !important;
+        text-shadow: none !important;
+    }
+    
+    h2, h3 {
+        color: white !important;
+    }
+    
+    .nav-link:hover,
+    .nav-link.active {
+        color: #ffffff !important;
+        border: 2px solid rgba(255, 255, 255, 0.5) !important;
+        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3) !important;
+    }
+    
+    .nav-link.active {
+        border: 2px solid rgba(255, 255, 255, 0.8) !important;
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.5), 0 0 40px rgba(255, 255, 255, 0.3) !important;
+    }
+    
+    /* Profile Header */
+    .profile-header {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(200, 200, 200, 0.15));
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 3rem;
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        backdrop-filter: blur(10px);
+    }
+    
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #ffffff, #cccccc);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        color: #000000;
+        border: 4px solid rgba(255, 255, 255, 0.5);
+        box-shadow: 0 10px 30px rgba(255, 255, 255, 0.4);
+    }
+    
+    .profile-info {
+        flex: 1;
+    }
+    
+    .profile-name {
+        font-size: 2rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 0.5rem;
+    }
+    
+    .profile-wallet {
+        font-family: 'Courier New', monospace;
+        color: var(--text-secondary);
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .profile-stats {
+        display: flex;
+        gap: 2rem;
+        margin-top: 1rem;
+    }
+    
+    .profile-stat {
+        text-align: center;
+    }
+    
+    .profile-stat-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #ffffff, #cccccc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .profile-stat-label {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+    
+    /* Section Cards */
+    .section-card {
+        background: linear-gradient(135deg, rgba(32, 32, 32, 0.6), rgba(0, 0, 0, 0.8));
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+    }
+    
+    .section-card:hover {
+        border-color: rgba(255, 255, 255, 0.5);
+        box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+    }
+    
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+    }
+    
+    .section-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #ffffff, #cccccc);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        color: #000000;
+    }
+    
+    /* Subscription Cards */
+    .subscription-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .subscription-item {
+        background: rgba(255, 255, 255, 0.05);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 15px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+    }
+    
+    .subscription-item:hover {
+        border-color: rgba(255, 255, 255, 0.6);
+        transform: translateY(-3px);
+    }
+    
+    .subscription-item.active {
+        border-color: rgba(34, 197, 94, 0.6);
+        background: rgba(34, 197, 94, 0.1);
+    }
+    
+    .subscription-item.expired {
+        border-color: rgba(239, 68, 68, 0.6);
+        background: rgba(239, 68, 68, 0.1);
+    }
+    
+    .subscription-name {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 0.5rem;
+    }
+    
+    .subscription-status {
+        display: inline-block;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+    
+    .subscription-status.active {
+        background: rgba(34, 197, 94, 0.2);
+        color: #22c55e;
+        border: 1px solid rgba(34, 197, 94, 0.5);
+    }
+    
+    .subscription-status.expired {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+        border: 1px solid rgba(239, 68, 68, 0.5);
+    }
+    
+    .subscription-status.inactive {
+        background: rgba(156, 163, 175, 0.2);
+        color: #9ca3af;
+        border: 1px solid rgba(156, 163, 175, 0.5);
+    }
+    
+    .subscription-details {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+    
+    /* Transaction Table */
+    .transaction-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 0.5rem;
+    }
+    
+    .transaction-table thead th {
+        color: var(--text-secondary);
+        font-weight: 600;
+        text-align: left;
+        padding: 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .transaction-table tbody tr {
+        background: rgba(255, 255, 255, 0.05);
+        transition: all 0.3s ease;
+    }
+    
+    .transaction-table tbody tr:hover {
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateX(5px);
+    }
+    
+    .transaction-table tbody td {
+        padding: 1rem;
+        color: white;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .transaction-table tbody td:first-child {
+        border-left: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 10px 0 0 10px;
+    }
+    
+    .transaction-table tbody td:last-child {
+        border-right: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 0 10px 10px 0;
+    }
+    
+    .transaction-type {
+        display: inline-block;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+    
+    .transaction-type.subscription {
+        background: rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+    }
+    
+    .transaction-type.purchase {
+        background: rgba(59, 130, 246, 0.2);
+        color: #60a5fa;
+    }
+    
+    .transaction-type.swap {
+        background: rgba(234, 179, 8, 0.2);
+        color: #fbbf24;
+    }
+    
+    .transaction-type.stake {
+        background: rgba(34, 197, 94, 0.2);
+        color: #22c55e;
+    }
+    
+    .transaction-type.earnings {
+        background: rgba(16, 185, 129, 0.2);
+        color: #10b981;
+    }
+    
+    .transaction-hash {
+        font-family: 'Courier New', monospace;
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+    }
+    
+    /* Wallet Card */
+    .wallet-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(200, 200, 200, 0.15));
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .wallet-balance {
+        font-size: 3rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, #ffffff, #cccccc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.5rem;
+    }
+    
+    .wallet-balance-label {
+        color: var(--text-secondary);
+        font-size: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .wallet-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .wallet-btn {
+        background: linear-gradient(135deg, #ffffff, #cccccc);
+        color: #000000;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .wallet-btn:hover {
+        background: linear-gradient(135deg, #cccccc, #999999);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(255, 255, 255, 0.4);
+    }
+    
+    /* Staking Card */
+    .staking-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1rem;
+    }
+    
+    .staking-stat {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+    }
+    
+    .staking-stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 0.5rem;
+    }
+    
+    .staking-stat-label {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+    
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: var(--text-secondary);
+    }
+    
+    .empty-state i {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.3;
+    }
+    
+    /* Connect Wallet Button */
+    .connect-wallet-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(200, 200, 200, 0.15));
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        border-radius: 20px;
+        padding: 3rem;
+        text-align: center;
+    }
+    
+    .connect-wallet-btn {
+        background: linear-gradient(135deg, #ffffff, #cccccc);
+        color: #000000;
+        border: none;
+        padding: 1.2rem 3rem;
+        border-radius: 15px;
+        font-size: 1.2rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.8rem;
+        margin-top: 1.5rem;
+    }
+    
+    .connect-wallet-btn:hover {
+        background: linear-gradient(135deg, #cccccc, #999999);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(255, 255, 255, 0.5);
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .profile-header {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .profile-stats {
+            justify-content: center;
+        }
+        
+        .subscription-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .transaction-table {
+            font-size: 0.85rem;
+        }
+    }
+</style>
+
+<!-- Firebase is now loaded globally in base.html -->
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>My Profile</h1>
+    
+    <!-- Profile Header -->
+    <div class="profile-header" id="profileHeader" style="display: none;">
+        <div class="profile-avatar" id="profileAvatarDisplay">
+            <i class="fas fa-user"></i>
+        </div>
+        <div class="profile-info">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 1rem;">
+                <div>
+            <div class="profile-name" id="profileName">WeAD User</div>
+                    <div class="profile-bio" id="profileBio" style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.5rem; max-width: 500px;"></div>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button class="wallet-btn" onclick="openEditProfileModal()" style="background: rgba(255,255,255,0.2); color: white;">
+                        <i class="fas fa-edit"></i> Edit Profile
+                    </button>
+                    <button class="wallet-btn" onclick="logoutUser()" style="background: linear-gradient(135deg, #ef4444, #dc2626); color: white;">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+            <div class="profile-wallet" id="profileWallet">Not Connected</div>
+            <div class="profile-location" id="profileLocation" style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.3rem;"></div>
+            <div class="profile-stats">
+                <div class="profile-stat">
+                    <div class="profile-stat-value" id="totalSpent">$0</div>
+                    <div class="profile-stat-label">Total Spent</div>
+                </div>
+                <div class="profile-stat">
+                    <div class="profile-stat-value" id="activeSubscriptions">0</div>
+                    <div class="profile-stat-label">Active Subscriptions</div>
+                </div>
+                <div class="profile-stat">
+                    <div class="profile-stat-value" id="totalTransactions">0</div>
+                    <div class="profile-stat-label">Transactions</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Not Logged In Message -->
+    <div class="connect-wallet-card" id="connectWalletSection">
+        <i class="fas fa-user-lock" style="font-size: 5rem; color: #ffffff; margin-bottom: 1rem; opacity: 0.5;"></i>
+        <h2>Sign In Required</h2>
+        <p style="color: var(--text-secondary); font-size: 1.1rem; margin-top: 1rem; line-height: 1.8;">
+            Click below to sign in or use the <strong style="color: white;">header buttons above</strong>:
+        </p>
+        
+        <div style="display: flex; gap: 1.5rem; justify-content: center; margin-top: 2rem; flex-wrap: wrap;">
+            <!-- MetaMask Box (Clickable) -->
+            <div onclick="connectMetaMask()" style="background: rgba(255,255,255,0.05); padding: 1.5rem 2rem; border-radius: 15px; border: 2px solid rgba(255,255,255,0.2); cursor: pointer; transition: all 0.3s ease; min-width: 150px; text-align: center;" 
+                 onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.borderColor='rgba(98, 126, 234, 0.6)'; this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 30px rgba(98, 126, 234, 0.4)';" 
+                 onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.2)'; this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                <i class="fab fa-ethereum" style="font-size: 2.5rem; color: #627eea; margin-bottom: 0.5rem; transition: transform 0.3s;"></i>
+                <p style="color: white; font-weight: 600; margin-top: 0.5rem; font-size: 1.1rem;">MetaMask</p>
+                <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.3rem;">Connect Wallet</p>
+                <p style="color: #627eea; font-size: 0.75rem; margin-top: 0.5rem; font-weight: 600;">
+                    <i class="fas fa-mouse-pointer"></i> Click to Connect
+                </p>
+            </div>
+            
+            <!-- Google Box (Clickable) -->
+            <div onclick="connectGoogle()" style="background: rgba(255,255,255,0.05); padding: 1.5rem 2rem; border-radius: 15px; border: 2px solid rgba(255,255,255,0.2); cursor: pointer; transition: all 0.3s ease; min-width: 150px; text-align: center;" 
+                 onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.borderColor='rgba(66, 133, 244, 0.6)'; this.style.transform='translateY(-5px)'; this.style.boxShadow='0 10px 30px rgba(66, 133, 244, 0.4)';" 
+                 onmouseout="this.style.background='rgba(255,255,255,0.05)'; this.style.borderColor='rgba(255,255,255,0.2)'; this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                <i class="fab fa-google" style="font-size: 2.5rem; color: #4285F4; margin-bottom: 0.5rem; transition: transform 0.3s;"></i>
+                <p style="color: white; font-weight: 600; margin-top: 0.5rem; font-size: 1.1rem;">Google</p>
+                <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.3rem;">Sign in with Google</p>
+                <p style="color: #4285F4; font-size: 0.75rem; margin-top: 0.5rem; font-weight: 600;">
+                    <i class="fas fa-mouse-pointer"></i> Click to Sign In
+                </p>
+            </div>
+        </div>
+        
+        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 2rem; line-height: 1.6;">
+            <i class="fas fa-info-circle" style="color: #4285F4;"></i> You can also use the buttons in the <strong style="color: white;">top-right corner</strong>!
+        </p>
+    </div>
+    
+    <!-- Main Content (Hidden until wallet connected) -->
+    <div id="profileContent" style="display: none;">
+        <!-- Wallet Balance -->
+        <div class="wallet-card">
+            <div class="wallet-balance" id="weadBalance">0 WEAD</div>
+            <div class="wallet-balance-label">Your WEAD Token Balance</div>
+            <div class="wallet-actions">
+                <button class="wallet-btn" onclick="window.location.href='/rwa-marketplace'">
+                    <i class="fas fa-shopping-cart"></i> Shop Marketplace
+                </button>
+                <button class="wallet-btn" onclick="swapTokens()">
+                    <i class="fas fa-exchange-alt"></i> Swap Tokens
+                </button>
+                <button class="wallet-btn" onclick="stakeTokens()">
+                    <i class="fas fa-coins"></i> Stake WEAD
+                </button>
+            </div>
+        </div>
+        
+        <!-- Active Subscriptions -->
+        <div class="section-card">
+            <div class="section-title">
+                <div class="section-icon"><i class="fas fa-crown"></i></div>
+                Active Subscriptions
+            </div>
+            <div class="subscription-grid" id="subscriptionsList">
+                <!-- Subscriptions will be loaded here -->
+            </div>
+        </div>
+        
+        <!-- Staking Overview -->
+        <div class="section-card">
+            <div class="section-title">
+                <div class="section-icon"><i class="fas fa-coins"></i></div>
+                Staking Overview
+            </div>
+            <div class="staking-info">
+                <div class="staking-stat">
+                    <div class="staking-stat-value" id="stakedAmount">0</div>
+                    <div class="staking-stat-label">WEAD Staked</div>
+                </div>
+                <div class="staking-stat">
+                    <div class="staking-stat-value" id="stakingRewards">0</div>
+                    <div class="staking-stat-label">Rewards Earned</div>
+                </div>
+                <div class="staking-stat">
+                    <div class="staking-stat-value" id="stakingAPY">12%</div>
+                    <div class="staking-stat-label">Current APY</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Transactions -->
+        <div class="section-card">
+            <div class="section-title">
+                <div class="section-icon"><i class="fas fa-history"></i></div>
+                Recent Transactions
+            </div>
+            <div style="overflow-x: auto;">
+                <table class="transaction-table" id="transactionTable">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Transaction Hash</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionsList">
+                        <!-- Transactions will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Purchase History -->
+        <div class="section-card">
+            <div class="section-title">
+                <div class="section-icon"><i class="fas fa-shopping-bag"></i></div>
+                Purchase History
+            </div>
+            <div id="purchasesList">
+                <!-- Purchases will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div id="editProfileModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; overflow-y: auto;">
+    <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem;">
+        <div style="background: linear-gradient(135deg, rgba(32, 32, 32, 0.95), rgba(0, 0, 0, 0.95)); border: 2px solid rgba(255,255,255,0.3); border-radius: 20px; max-width: 600px; width: 100%; padding: 2.5rem; position: relative;">
+            <!-- Close Button -->
+            <button onclick="closeEditProfileModal()" style="position: absolute; top: 1.5rem; right: 1.5rem; background: rgba(255,255,255,0.1); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.5rem; transition: all 0.3s;">
+                ×
+            </button>
+            
+            <h2 style="color: white; margin-bottom: 2rem; font-size: 2rem;">Edit Profile</h2>
+            
+            <!-- Profile Picture Upload -->
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <div style="position: relative; display: inline-block;">
+                    <div id="profileImagePreview" style="width: 150px; height: 150px; border-radius: 50%; background: linear-gradient(135deg, #ffffff, #cccccc); display: flex; align-items: center; justify-content: center; font-size: 4rem; color: #000; border: 4px solid rgba(255,255,255,0.5); margin: 0 auto; overflow: hidden;">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <label for="profileImageInput" style="position: absolute; bottom: 0; right: 0; background: rgba(255,255,255,0.9); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 3px solid #000;">
+                        <i class="fas fa-camera" style="color: #000; font-size: 1.2rem;"></i>
+                    </label>
+                    <input type="file" id="profileImageInput" accept="image/*" style="display: none;" onchange="handleImageUpload(this)">
+                </div>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 1rem;">Click camera icon to upload photo</p>
+            </div>
+            
+            <!-- Profile Form -->
+            <form id="profileForm" onsubmit="saveProfile(event)">
+                <!-- Full Name -->
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="color: white; display: block; margin-bottom: 0.5rem; font-weight: 600;">
+                        Full Name <span style="color: #ef4444;">*</span>
+                    </label>
+                    <input type="text" id="profileFullName" required
+                           style="width: 100%; padding: 0.8rem; background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.3); border-radius: 10px; color: white; font-size: 1rem;"
+                           placeholder="Enter your full name">
+                </div>
+                
+                <!-- Bio -->
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="color: white; display: block; margin-bottom: 0.5rem; font-weight: 600;">
+                        Bio / About Me
+                    </label>
+                    <textarea id="profileBioInput" rows="3"
+                              style="width: 100%; padding: 0.8rem; background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.3); border-radius: 10px; color: white; font-size: 1rem; resize: vertical;"
+                              placeholder="Tell us about yourself..."></textarea>
+                </div>
+                
+                <!-- Location -->
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="color: white; display: block; margin-bottom: 0.5rem; font-weight: 600;">
+                        Location
+                    </label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <input type="text" id="profileCity"
+                               style="width: 100%; padding: 0.8rem; background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.3); border-radius: 10px; color: white; font-size: 1rem;"
+                               placeholder="City">
+                        <input type="text" id="profileCountry"
+                               style="width: 100%; padding: 0.8rem; background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.3); border-radius: 10px; color: white; font-size: 1rem;"
+                               placeholder="Country">
+                    </div>
+                </div>
+                
+                <!-- Category (For Fund Me) -->
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="color: white; display: block; margin-bottom: 0.5rem; font-weight: 600;">
+                        Category
+                    </label>
+                    <select id="profileCategory"
+                            style="width: 100%; padding: 0.8rem; background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.3); border-radius: 10px; color: white; font-size: 1rem;">
+                        <option value="">Select category...</option>
+                        <option value="microtiser">Microtiser</option>
+                        <option value="student">Student</option>
+                        <option value="business">Small Business</option>
+                        <option value="creator">Content Creator</option>
+                        <option value="nonprofit">Non-Profit</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <!-- Social Links (Optional) -->
+                <div style="margin-bottom: 2rem;">
+                    <label style="color: white; display: block; margin-bottom: 0.5rem; font-weight: 600;">
+                        Social Links (Optional)
+                    </label>
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+                        <i class="fab fa-twitter" style="color: #1DA1F2; font-size: 1.2rem; width: 30px; display: flex; align-items: center;"></i>
+                        <input type="text" id="profileTwitter"
+                               style="flex: 1; padding: 0.8rem; background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.3); border-radius: 10px; color: white; font-size: 1rem;"
+                               placeholder="Twitter username">
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <i class="fab fa-instagram" style="color: #E1306C; font-size: 1.2rem; width: 30px; display: flex; align-items: center;"></i>
+                        <input type="text" id="profileInstagram"
+                               style="flex: 1; padding: 0.8rem; background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.3); border-radius: 10px; color: white; font-size: 1rem;"
+                               placeholder="Instagram username">
+                    </div>
+                </div>
+                
+                <!-- Submit Buttons -->
+                <div style="display: flex; gap: 1rem;">
+                    <button type="button" onclick="closeEditProfileModal()"
+                            style="flex: 1; padding: 1rem; background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.3); border-radius: 10px; color: white; font-weight: 600; cursor: pointer; font-size: 1rem; transition: all 0.3s;">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                            style="flex: 1; padding: 1rem; background: linear-gradient(135deg, #ffffff, #cccccc); border: none; border-radius: 10px; color: #000; font-weight: 700; cursor: pointer; font-size: 1rem; transition: all 0.3s;">
+                        <i class="fas fa-save"></i> Save Profile
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    let userWalletAddress = null;
+    let profileData = {
+        subscriptions: [],
+        transactions: [],
+        purchases: [],
+        staking: {
+            amount: 0,
+            rewards: 0,
+            apy: 12
+        },
+        balance: 0
+    };
+    
+    // Note: Wallet connection is now handled in the header (base.html)
+    // This page just displays the profile data
+    
+    // Load WEAD Balance from Blockchain
+    async function loadWEADBalance() {
+        try {
+            const wallet = userWalletAddress || localStorage.getItem('user_wallet');
+            if (window.ethereum && wallet) {
+                const WEAD_TOKEN_ADDRESS = '0xCF99bF2cbD83A580437d39A5092C1665Faa9898B';
+                
+                // ERC20 balanceOf function signature
+                const balanceOfData = '0x70a08231000000000000000000000000' + wallet.slice(2).toLowerCase();
+                
+                const balance = await window.ethereum.request({
+                    method: 'eth_call',
+                    params: [{
+                        to: WEAD_TOKEN_ADDRESS,
+                        data: balanceOfData
+                    }, 'latest']
+                });
+                
+                // Convert hex balance to decimal and from wei to WEAD
+                const balanceInWEAD = parseInt(balance, 16) / 1e18;
+                
+                if (document.getElementById('weadBalance')) {
+                    document.getElementById('weadBalance').textContent = balanceInWEAD.toLocaleString('en-US', { maximumFractionDigits: 0 }) + ' WEAD';
+                }
+                profileData.balance = balanceInWEAD;
+                
+                console.log('✅ Profile WEAD Balance Refreshed:', balanceInWEAD.toLocaleString(), 'WEAD');
+                return balanceInWEAD;
+            }
+        } catch (error) {
+            console.error('Error loading WEAD balance:', error);
+            if (document.getElementById('weadBalance')) {
+                document.getElementById('weadBalance').textContent = '0 WEAD';
+            }
+        }
+    }
+    
+    // Make function globally available for balance refresh
+    window.loadWEADBalance = loadWEADBalance;
+    
+    // Load Profile Data
+    async function loadProfileData() {
+        // Update wallet address
+        document.getElementById('profileWallet').textContent = 
+            userWalletAddress.substring(0, 6) + '...' + userWalletAddress.substring(38);
+        
+        // Load subscriptions from localStorage
+        loadSubscriptions();
+        
+        // Load transactions
+        loadTransactions();
+        
+        // Load purchases
+        loadPurchases();
+        
+        // Load staking info
+        loadStakingInfo();
+        
+        // Load WEAD balance from blockchain
+        await loadWEADBalance();
+        
+        // Update stats
+        updateProfileStats();
+    }
+    
+    // Load Subscriptions
+    function loadSubscriptions() {
+        const subscriptions = [];
+        
+        // Check Coupons subscription
+        const couponsSubscription = localStorage.getItem('coupons_subscription');
+        if (couponsSubscription) {
+            const sub = JSON.parse(couponsSubscription);
+            subscriptions.push({
+                name: 'Premium Discount Coupons',
+                service: 'coupons',
+                cost: '1,000 WEAD/month',
+                expiryDate: new Date(sub.expiryDate),
+                status: new Date(sub.expiryDate) > new Date() ? 'active' : 'expired'
+            });
+        }
+        
+        // Check Tools subscription
+        const toolsSubscription = localStorage.getItem('tools_subscription');
+        if (toolsSubscription) {
+            const sub = JSON.parse(toolsSubscription);
+            subscriptions.push({
+                name: 'TG/Discord Tools',
+                service: 'tools',
+                cost: '1,000 WEAD/month',
+                expiryDate: new Date(sub.expiryDate),
+                status: new Date(sub.expiryDate) > new Date() ? 'active' : 'expired'
+            });
+        }
+        
+        // Check Stream Vault subscription
+        const streamVaultSubscription = localStorage.getItem('streamvault_subscription');
+        if (streamVaultSubscription) {
+            const sub = JSON.parse(streamVaultSubscription);
+            subscriptions.push({
+                name: 'STREAM VAULT Premium',
+                service: 'streamvault',
+                cost: '1,000 WEAD/month',
+                expiryDate: new Date(sub.expiryDate),
+                status: new Date(sub.expiryDate) > new Date() ? 'active' : 'expired'
+            });
+        }
+        
+        profileData.subscriptions = subscriptions;
+        renderSubscriptions();
+    }
+    
+    // Render Subscriptions
+    function renderSubscriptions() {
+        const container = document.getElementById('subscriptionsList');
+        
+        if (profileData.subscriptions.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-crown"></i>
+                    <p>No active subscriptions</p>
+                    <p style="font-size: 0.9rem; margin-top: 0.5rem;">
+                        Subscribe to premium services to unlock exclusive features
+                    </p>
+                </div>
+            `;
+            return;
+        }
+        
+        container.innerHTML = profileData.subscriptions.map(sub => `
+            <div class="subscription-item ${sub.status}">
+                <div class="subscription-name">${sub.name}</div>
+                <span class="subscription-status ${sub.status}">
+                    ${sub.status === 'active' ? '✓ Active' : '✗ Expired'}
+                </span>
+                <div class="subscription-details">
+                    <div><strong>Cost:</strong> ${sub.cost}</div>
+                    <div><strong>${sub.status === 'active' ? 'Expires' : 'Expired'}:</strong> ${sub.expiryDate.toLocaleDateString()}</div>
+                    ${sub.status === 'expired' ? '<div style="margin-top: 1rem;"><a href="/' + sub.service + '" style="color: #a78bfa;">Renew Subscription →</a></div>' : ''}
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    // Load Transactions
+    function loadTransactions() {
+        const transactions = [];
+        
+        // Add subscription transactions
+        profileData.subscriptions.forEach(sub => {
+            const subData = localStorage.getItem(sub.service + '_subscription');
+            if (subData) {
+                const data = JSON.parse(subData);
+                transactions.push({
+                    date: new Date(data.expiryDate).getTime() - (30 * 24 * 60 * 60 * 1000), // 30 days before expiry
+                    type: 'subscription',
+                    description: sub.name + ' Subscription',
+                    amount: '1,000 WEAD',
+                    hash: data.transactionHash
+                });
+            }
+        });
+        
+        // Add cart purchases
+        const cart = localStorage.getItem('cart');
+        if (cart) {
+            const cartItems = JSON.parse(cart);
+            cartItems.forEach(item => {
+                transactions.push({
+                    date: Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000,
+                    type: 'purchase',
+                    description: item.name,
+                    amount: '$' + item.price,
+                    hash: '0x' + Math.random().toString(16).substring(2, 66)
+                });
+            });
+        }
+        
+        // Add some sample transactions
+        const sampleTransactions = [
+            { type: 'swap', description: 'Swapped 500 WEAD to BNB', amount: '500 WEAD', days: 5 },
+            { type: 'stake', description: 'Staked WEAD Tokens', amount: '2,000 WEAD', days: 10 },
+            { type: 'earnings', description: 'Ad Viewing Rewards', amount: '+150 WEAD', days: 2 },
+            { type: 'earnings', description: 'Staking Rewards', amount: '+45 WEAD', days: 1 }
+        ];
+        
+        sampleTransactions.forEach(tx => {
+            transactions.push({
+                date: Date.now() - tx.days * 24 * 60 * 60 * 1000,
+                type: tx.type,
+                description: tx.description,
+                amount: tx.amount,
+                hash: '0x' + Math.random().toString(16).substring(2, 66)
+            });
+        });
+        
+        // Sort by date (newest first)
+        transactions.sort((a, b) => b.date - a.date);
+        
+        profileData.transactions = transactions;
+        renderTransactions();
+    }
+    
+    // Render Transactions
+    function renderTransactions() {
+        const tbody = document.getElementById('transactionsList');
+        
+        if (profileData.transactions.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5">
+                        <div class="empty-state">
+                            <i class="fas fa-history"></i>
+                            <p>No transactions yet</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+        
+        tbody.innerHTML = profileData.transactions.slice(0, 10).map(tx => `
+            <tr>
+                <td>${new Date(tx.date).toLocaleDateString()}</td>
+                <td><span class="transaction-type ${tx.type}">${tx.type}</span></td>
+                <td>${tx.description}</td>
+                <td><strong>${tx.amount}</strong></td>
+                <td class="transaction-hash">${tx.hash.substring(0, 10)}...${tx.hash.substring(tx.hash.length - 8)}</td>
+            </tr>
+        `).join('');
+    }
+    
+    // Load Purchases
+    function loadPurchases() {
+        const cart = localStorage.getItem('cart');
+        const purchases = cart ? JSON.parse(cart) : [];
+        profileData.purchases = purchases;
+        renderPurchases();
+    }
+    
+    // Render Purchases
+    function renderPurchases() {
+        const container = document.getElementById('purchasesList');
+        
+        if (profileData.purchases.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-shopping-bag"></i>
+                    <p>No purchases yet</p>
+                    <p style="font-size: 0.9rem; margin-top: 0.5rem;">
+                        Visit the <a href="/rwa-marketplace" style="color: #a78bfa;">RWA Marketplace</a> to shop
+                    </p>
+                </div>
+            `;
+            return;
+        }
+        
+        container.innerHTML = `
+            <div class="subscription-grid">
+                ${profileData.purchases.map(item => `
+                    <div class="subscription-item">
+                        <div class="subscription-name">${item.name}</div>
+                        <div class="subscription-details">
+                            <div><strong>Price:</strong> $${item.price}</div>
+                            <div><strong>Quantity:</strong> ${item.quantity}</div>
+                            <div><strong>Total:</strong> $${(item.price * item.quantity).toFixed(2)}</div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+    
+    // Load Staking Info
+    function loadStakingInfo() {
+        // Simulate staking data
+        const stakedAmount = Math.floor(Math.random() * 5000) + 1000;
+        const rewards = Math.floor(stakedAmount * 0.12 / 12); // Monthly rewards at 12% APY
+        
+        document.getElementById('stakedAmount').textContent = stakedAmount.toLocaleString();
+        document.getElementById('stakingRewards').textContent = rewards.toLocaleString();
+        
+        profileData.staking.amount = stakedAmount;
+        profileData.staking.rewards = rewards;
+    }
+    
+    // Update Profile Stats
+    function updateProfileStats() {
+        // Calculate total spent
+        const subscriptionCost = profileData.subscriptions.length * 1000;
+        const purchaseCost = profileData.purchases.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        const totalSpent = subscriptionCost + purchaseCost;
+        
+        document.getElementById('totalSpent').textContent = '$' + totalSpent.toLocaleString();
+        
+        // Active subscriptions
+        const activeCount = profileData.subscriptions.filter(sub => sub.status === 'active').length;
+        document.getElementById('activeSubscriptions').textContent = activeCount;
+        
+        // Total transactions
+        document.getElementById('totalTransactions').textContent = profileData.transactions.length;
+    }
+    
+    // Swap Tokens
+    function swapTokens() {
+        alert('🔄 Token Swap\n\nSwap WEAD tokens for BNB or other cryptocurrencies.\n\nFeature coming soon!');
+    }
+    
+    // Stake Tokens
+    function stakeTokens() {
+        alert('💰 Stake WEAD Tokens\n\nStake your WEAD tokens to earn 12% APY rewards.\n\nFeature coming soon!');
+    }
+    
+    // ========================================
+    // PROFILE MANAGEMENT FUNCTIONS
+    // ========================================
+    
+    let currentProfileImage = null;
+    let userProfile = {
+        fullName: '',
+        bio: '',
+        city: '',
+        country: '',
+        category: '',
+        twitter: '',
+        instagram: '',
+        imageUrl: null,
+        walletAddress: null
+    };
+    
+    // Open Edit Profile Modal
+    function openEditProfileModal() {
+        // Load existing profile data
+        loadUserProfile();
+        document.getElementById('editProfileModal').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+    
+    // Close Edit Profile Modal
+    function closeEditProfileModal() {
+        document.getElementById('editProfileModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+    
+    // Handle Image Upload
+    function handleImageUpload(input) {
+        const file = input.files[0];
+        if (!file) return;
+        
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            alert('Please select an image file (JPG, PNG, GIF)');
+            return;
+        }
+        
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('Image size must be less than 5MB');
+            return;
+        }
+        
+        // Preview image
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const imageData = e.target.result;
+            currentProfileImage = imageData;
+            
+            // Update preview
+            const preview = document.getElementById('profileImagePreview');
+            preview.innerHTML = `<img src="${imageData}" style="width: 100%; height: 100%; object-fit: cover;">`;
+            
+            console.log('✅ Image loaded successfully');
+        };
+        reader.readAsDataURL(file);
+    }
+    
+    // Save Profile
+    async function saveProfile(event) {
+        event.preventDefault();
+        
+        try {
+            // Collect form data
+            userProfile = {
+                fullName: document.getElementById('profileFullName').value.trim(),
+                bio: document.getElementById('profileBioInput').value.trim(),
+                city: document.getElementById('profileCity').value.trim(),
+                country: document.getElementById('profileCountry').value.trim(),
+                category: document.getElementById('profileCategory').value,
+                twitter: document.getElementById('profileTwitter').value.trim(),
+                instagram: document.getElementById('profileInstagram').value.trim(),
+                imageUrl: currentProfileImage,
+                walletAddress: userWalletAddress,
+                updatedAt: new Date().toISOString()
+            };
+            
+            // Validate required fields
+            if (!userProfile.fullName) {
+                alert('Please enter your full name');
+                return;
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('weadUserProfile', JSON.stringify(userProfile));
+            
+            // Save to backend
+            await saveProfileToBackend(userProfile);
+            
+            // Update display
+            updateProfileDisplay();
+            
+            // Close modal
+            closeEditProfileModal();
+            
+            alert('✅ Profile saved successfully!');
+            
+        } catch (error) {
+            console.error('Error saving profile:', error);
+            alert('⚠️ Failed to save profile. Please try again.');
+        }
+    }
+    
+    // Save Profile to Backend
+    async function saveProfileToBackend(profile) {
+        try {
+            const response = await fetch('/api/profile/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(profile)
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                console.log('✅ Profile saved to backend');
+            } else {
+                console.warn('⚠️ Backend save failed:', data.error);
+            }
+        } catch (error) {
+            console.error('Backend save error:', error);
+            // Continue even if backend fails - localStorage is primary
+        }
+    }
+    
+    // Load User Profile
+    function loadUserProfile() {
+        // Load from localStorage
+        const savedProfile = localStorage.getItem('weadUserProfile');
+        if (savedProfile) {
+            try {
+                userProfile = JSON.parse(savedProfile);
+                
+                // Populate form
+                document.getElementById('profileFullName').value = userProfile.fullName || '';
+                document.getElementById('profileBioInput').value = userProfile.bio || '';
+                document.getElementById('profileCity').value = userProfile.city || '';
+                document.getElementById('profileCountry').value = userProfile.country || '';
+                document.getElementById('profileCategory').value = userProfile.category || '';
+                document.getElementById('profileTwitter').value = userProfile.twitter || '';
+                document.getElementById('profileInstagram').value = userProfile.instagram || '';
+                
+                // Update image preview
+                if (userProfile.imageUrl) {
+                    currentProfileImage = userProfile.imageUrl;
+                    document.getElementById('profileImagePreview').innerHTML = 
+                        `<img src="${userProfile.imageUrl}" style="width: 100%; height: 100%; object-fit: cover;">`;
+                }
+                
+                console.log('✅ Profile loaded from localStorage');
+            } catch (error) {
+                console.error('Error loading profile:', error);
+            }
+        }
+    }
+    
+    // Update Profile Display
+    function updateProfileDisplay() {
+        const profile = userProfile;
+        
+        // Update name
+        if (profile.fullName) {
+            document.getElementById('profileName').textContent = profile.fullName;
+        }
+        
+        // Update bio
+        const bioElement = document.getElementById('profileBio');
+        if (profile.bio) {
+            bioElement.textContent = profile.bio;
+            bioElement.style.display = 'block';
+        } else {
+            bioElement.style.display = 'none';
+        }
+        
+        // Update location
+        const locationElement = document.getElementById('profileLocation');
+        if (profile.city || profile.country) {
+            const locationParts = [];
+            if (profile.city) locationParts.push(profile.city);
+            if (profile.country) locationParts.push(profile.country);
+            locationElement.innerHTML = `<i class="fas fa-map-marker-alt"></i> ${locationParts.join(', ')}`;
+            locationElement.style.display = 'block';
+        } else {
+            locationElement.style.display = 'none';
+        }
+        
+        // Update avatar
+        const avatarDisplay = document.getElementById('profileAvatarDisplay');
+        if (profile.imageUrl) {
+            avatarDisplay.innerHTML = `<img src="${profile.imageUrl}" style="width: 100%; height: 100%; object-fit: cover;">`;
+        }
+        
+        console.log('✅ Profile display updated');
+    }
+    
+    // Get User Profile (for Fund Me and other pages)
+    function getUserProfile() {
+        const savedProfile = localStorage.getItem('weadUserProfile');
+        if (savedProfile) {
+            try {
+                return JSON.parse(savedProfile);
+            } catch (error) {
+                console.error('Error parsing profile:', error);
+                return null;
+            }
+        }
+        return null;
+    }
+    
+    // Make getUserProfile available globally
+    window.getUserProfile = getUserProfile;
+    
+    // ========================================
+    // GOOGLE AUTHENTICATION & LOCATION SHARING
+    // ========================================
+    
+    // Note: Google authentication is now handled in the header (base.html)
+    // This page just needs location tracking functionality
+    
+    let googleUser = null;
+    let locationWatchId = null;
+    let userLocation = null;
+    
+    // Request location permission and start tracking
+    async function requestLocationPermission() {
+        if (!navigator.geolocation) {
+            console.warn('⚠️ Geolocation not supported');
+            return;
+        }
+        
+        try {
+            // Request permission first
+            const permission = await navigator.permissions.query({ name: 'geolocation' });
+            
+            if (permission.state === 'granted' || permission.state === 'prompt') {
+                // Start watching position
+                locationWatchId = navigator.geolocation.watchPosition(
+                    (position) => {
+                        userLocation = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude,
+                            accuracy: position.coords.accuracy,
+                            timestamp: Date.now(),
+                            googleUid: googleUser?.uid || null
+                        };
+                        
+                        // Save locally
+                        localStorage.setItem('userLocation', JSON.stringify(userLocation));
+                        
+                        // Send to backend for mobile sync
+                        sendLocationToBackend(userLocation);
+                        
+                        console.log('📍 Location updated:', userLocation);
+                    },
+                    (error) => {
+                        console.warn('⚠️ Location error:', error.message);
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 30000,
+                        maximumAge: 30000
+                    }
+                );
+                
+                console.log('✅ Location tracking started');
+            } else {
+                console.warn('⚠️ Location permission denied');
+            }
+        } catch (error) {
+            console.error('❌ Location permission error:', error);
+        }
+    }
+    
+    // Send location to backend for Dashboard ↔ Mobile sync
+    async function sendLocationToBackend(location) {
+        try {
+            await fetch('/api/google/location', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(location)
+            });
+            
+            console.log('📤 Location sent to backend for mobile sync');
+        } catch (error) {
+            console.error('⚠️ Location send error:', error);
+        }
+    }
+    
+    // Stop location tracking
+    function stopLocationTracking() {
+        if (locationWatchId) {
+            navigator.geolocation.clearWatch(locationWatchId);
+            locationWatchId = null;
+            console.log('⏹️ Location tracking stopped');
+        }
+    }
+    
+    // ========================================
+    // LOGOUT FUNCTION
+    // ========================================
+    
+    async function logoutUser() {
+        try {
+            console.log('🚪 Logging out...');
+            
+            // Stop location tracking
+            stopLocationTracking();
+            
+            // Sign out from Firebase (Google)
+            if (window.firebaseAuth && googleUser) {
+                try {
+                    // Import signOut
+                    const { signOut } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js');
+                    await signOut(window.firebaseAuth);
+                    console.log('✅ Signed out from Google');
+                } catch (error) {
+                    console.warn('⚠️ Firebase sign-out error:', error);
+                }
+            }
+            
+            // Clear all localStorage data
+            localStorage.removeItem('user_wallet');
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('user_network');
+            localStorage.removeItem('googleUser');
+            localStorage.removeItem('weadUserProfile');
+            localStorage.removeItem('userLocation');
+            localStorage.removeItem('googleAuthMethod');
+            
+            console.log('✅ All data cleared');
+            
+            // Reset header buttons
+            if (document.getElementById('metamaskText')) {
+                document.getElementById('metamaskText').textContent = 'Connect MetaMask (BSC)';
+            }
+            if (document.getElementById('mobileMetamaskText')) {
+                document.getElementById('mobileMetamaskText').textContent = 'Connect MetaMask (BSC)';
+            }
+            if (document.getElementById('googleText')) {
+                document.getElementById('googleText').textContent = 'Sign in with Google';
+            }
+            if (document.getElementById('mobileGoogleText')) {
+                document.getElementById('mobileGoogleText').textContent = 'Sign in with Google';
+            }
+            
+            // Hide wallet info
+            const walletInfo = document.getElementById('walletInfo');
+            if (walletInfo) walletInfo.style.display = 'none';
+            
+            const mobileWalletInfo = document.getElementById('mobileWalletInfo');
+            if (mobileWalletInfo) mobileWalletInfo.style.display = 'none';
+            
+            // Show success message
+            alert('✅ Logged out successfully!');
+            
+            // Reload page to show "Sign In Required" message
+            window.location.reload();
+            
+        } catch (error) {
+            console.error('❌ Logout error:', error);
+            alert('⚠️ Logout error, but clearing local data...');
+            
+            // Force clear and reload even if there's an error
+            localStorage.clear();
+            window.location.reload();
+        }
+    }
+    
+    // Check if user is already logged in on page load
+    window.addEventListener('load', async () => {
+        console.log('📄 Profile page loaded');
+        
+        // Check for MetaMask wallet
+        const wallet = localStorage.getItem('user_wallet');
+        
+        // Check for Google user
+        const googleUserData = localStorage.getItem('googleUser');
+        
+        if (wallet || googleUserData) {
+            console.log('✅ User authenticated, loading profile...');
+            
+            if (wallet) {
+                userWalletAddress = wallet;
+                    await loadProfileData();
+            }
+            
+            if (googleUserData) {
+                try {
+                    googleUser = JSON.parse(googleUserData);
+                    console.log('✅ Google user loaded:', googleUser.email);
+                    
+                    // Start location tracking
+                    await requestLocationPermission();
+            } catch (error) {
+                    console.error('Error loading Google user:', error);
+                }
+            }
+            
+            // Show profile content
+            document.getElementById('connectWalletSection').style.display = 'none';
+            document.getElementById('profileHeader').style.display = 'flex';
+            document.getElementById('profileContent').style.display = 'block';
+            
+            // Load and display user profile
+            loadUserProfile();
+            updateProfileDisplay();
+        } else {
+            console.log('⚠️ Not logged in - showing sign-in message');
+        }
+    });
+</script>
+{% endblock %}

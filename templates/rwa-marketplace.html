@@ -1,0 +1,1087 @@
+{% extends "base.html" %}
+
+{% block title %}RWA Marketplace - WeAD Platform{% endblock %}
+
+{% block nav_links %}
+<a href="/" class="nav-link">
+    <i class="fas fa-home"></i>
+    <span>Home</span>
+</a>
+<a href="/rwa-marketplace" class="nav-link active">
+    <i class="fas fa-store"></i>
+    <span>RWA Marketplace</span>
+</a>
+<a href="/coupons" class="nav-link">
+    <i class="fas fa-ticket-alt"></i>
+    <span>Coupons</span>
+</a>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* RWA Marketplace - Dark Grey/Black Theme Override */
+    :root {
+        --quantum-primary: #404040 !important;
+        --primary: #404040 !important;
+        --secondary: #202020 !important;
+        --glow-primary: #808080 !important;
+        --glow-secondary: #606060 !important;
+    }
+    
+    /* Override h1 - Pure white title for visibility */
+    h1 {
+        color: white !important;
+        background: none !important;
+        -webkit-background-clip: unset !important;
+        -webkit-text-fill-color: white !important;
+        background-clip: unset !important;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+        border: none !important;
+        padding: 0.75rem 1rem !important;
+        border-radius: 10px !important;
+        backdrop-filter: blur(10px) !important;
+    }
+    
+    /* Override h2 - White subtitles */
+    h2 {
+        color: white !important;
+    }
+    
+    /* Override h3 - White section headers */
+    h3 {
+        color: white !important;
+    }
+    
+    /* Override nav-link styles */
+    .nav-link:hover,
+    .nav-link.active {
+        color: #808080 !important;
+        border: 2px solid rgba(128, 128, 128, 0.5) !important;
+        box-shadow: 0 4px 15px rgba(128, 128, 128, 0.3) !important;
+    }
+    
+    .nav-link.active {
+        border: 2px solid rgba(128, 128, 128, 0.8) !important;
+        box-shadow: 0 0 20px rgba(128, 128, 128, 0.5), 0 0 40px rgba(128, 128, 128, 0.3) !important;
+    }
+    
+    /* Product Cards */
+    .product-card {
+        background: linear-gradient(135deg, rgba(32, 32, 32, 0.6), rgba(0, 0, 0, 0.8));
+        border: 2px solid rgba(128, 128, 128, 0.3);
+        border-radius: 20px;
+        padding: 0;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+        display: flex;
+        flex-direction: column;
+        height: 900px; /* Increased height to accommodate all content */
+    }
+    
+    .product-card:hover {
+        transform: translateY(-8px);
+        border-color: rgba(128, 128, 128, 0.6);
+        box-shadow: 0 15px 50px rgba(128, 128, 128, 0.4);
+    }
+    
+    .product-image {
+        width: 100%;
+        aspect-ratio: 1/1;
+        object-fit: cover;
+        background: rgba(0, 0, 0, 0.5);
+    }
+    
+    .product-info {
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        justify-content: space-between;
+    }
+    
+    .product-details {
+        flex: 1;
+    }
+    
+    .product-actions {
+        margin-top: auto;
+        padding-top: 1rem;
+    }
+    
+    .product-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 0.8rem;
+        line-height: 1.3;
+    }
+    
+    .product-description {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: auto;
+        flex-grow: 1;
+        min-height: 60px;
+    }
+    
+    .product-price {
+        display: flex;
+        gap: 0.8rem;
+        align-items: center;
+        margin-bottom: 1rem;
+        margin-top: 1.2rem;
+        flex-wrap: wrap;
+    }
+    
+    .price-tag {
+        background: linear-gradient(135deg, #404040, #202020);
+        padding: 0.6rem 1.2rem;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1.05rem;
+        color: white;
+        border: 1px solid rgba(128, 128, 128, 0.4);
+        white-space: nowrap;
+    }
+    
+    .price-tag.primary {
+        font-size: 1.3rem;
+        background: linear-gradient(135deg, #606060, #808080);
+        border: 2px solid rgba(128, 128, 128, 0.6);
+    }
+    
+    .price-tag.crypto {
+        background: linear-gradient(135deg, #505050, #303030);
+        font-size: 0.95rem;
+    }
+    
+    /* Desktop only - New price format without logos */
+    .product-pricing {
+        display: none; /* Hidden by default, shown on desktop */
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        margin-top: 1.2rem;
+    }
+    
+    .price-option {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(128, 128, 128, 0.3);
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .price-option:hover {
+        background: rgba(0, 0, 0, 0.5);
+        border-color: rgba(128, 128, 128, 0.5);
+    }
+    
+    .price-label {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #e5e7eb;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .price-value {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #10b981;
+    }
+    
+    /* Desktop only - Show new format, hide old format */
+    @media (min-width: 769px) {
+        .product-pricing {
+            display: flex !important;
+        }
+        
+        .product-price {
+            display: none !important;
+        }
+    }
+    
+    .buy-button {
+        width: 100%;
+        padding: 1.1rem;
+        background: linear-gradient(135deg, #505050, #808080);
+        color: white;
+        border: 2px solid rgba(128, 128, 128, 0.4);
+        border-radius: 15px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        margin-top: 1.2rem;
+    }
+    
+    .buy-button:hover {
+        background: linear-gradient(135deg, #707070, #a0a0a0);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(128, 128, 128, 0.5);
+        border-color: rgba(128, 128, 128, 0.7);
+    }
+    
+    .buy-button:active {
+        transform: translateY(-1px);
+    }
+    
+    /* Category Filter */
+    .category-filter {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 3rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .category-btn {
+        padding: 0.9rem 1.8rem;
+        background: rgba(64, 64, 64, 0.3);
+        border: 2px solid rgba(128, 128, 128, 0.3);
+        border-radius: 30px;
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1rem;
+    }
+    
+    .category-btn:hover {
+        background: rgba(80, 80, 80, 0.5);
+        border-color: rgba(128, 128, 128, 0.5);
+        transform: translateY(-2px);
+    }
+    
+    .category-btn.active {
+        background: linear-gradient(135deg, #505050, #707070);
+        border-color: rgba(128, 128, 128, 0.7);
+        box-shadow: 0 5px 20px rgba(128, 128, 128, 0.4);
+        transform: translateY(-2px);
+    }
+    
+    /* Payment Methods */
+    .payment-methods {
+        display: flex;
+        gap: 0.4rem;
+        margin-bottom: 1.2rem;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .payment-badge {
+        padding: 0.3rem 0.6rem;
+        background: rgba(128, 128, 128, 0.15);
+        border: 1px solid rgba(128, 128, 128, 0.4);
+        border-radius: 8px;
+        font-size: 0.75rem;
+        color: #a0a0a0;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        font-weight: 500;
+        white-space: nowrap;
+        flex: 1;
+        justify-content: center;
+    }
+    
+    .payment-badge i {
+        font-size: 0.8rem;
+    }
+    
+    /* Product Grid */
+    .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+    
+    /* Stats Banner */
+    .marketplace-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+    
+    .stat-box {
+        background: linear-gradient(135deg, rgba(64, 64, 64, 0.3), rgba(0, 0, 0, 0.5));
+        border: 2px solid rgba(128, 128, 128, 0.3);
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+    }
+    
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #808080, #a0a0a0);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .stat-label {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
+    
+    /* Stock Badge */
+    .stock-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        padding: 0.5rem 1rem;
+        background: rgba(0, 0, 0, 0.8);
+        border: 1px solid rgba(128, 128, 128, 0.5);
+        border-radius: 10px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: white;
+    }
+    
+    .stock-badge.in-stock {
+        border-color: rgba(34, 197, 94, 0.5);
+        color: #22c55e;
+    }
+    
+    .stock-badge.low-stock {
+        border-color: rgba(251, 191, 36, 0.5);
+        color: #fbbf24;
+    }
+    
+    .stock-badge.out-of-stock {
+        border-color: rgba(239, 68, 68, 0.5);
+        color: #ef4444;
+    }
+    
+    /* Mobile Optimization - COMPLETE OVERHAUL */
+    @media (max-width: 768px) {
+        /* Prevent horizontal scrolling and fix viewport */
+        html, body {
+            overflow-x: hidden !important;
+            width: 100% !important;
+            max-width: 100vw !important;
+            position: relative !important;
+        }
+        
+        .page-container {
+            width: 100% !important;
+            max-width: 100vw !important;
+            overflow-x: hidden !important;
+        }
+        
+        /* Ensure all sections fit within viewport */
+        .section, .glass, .stats-grid, .products-grid, .category-filter {
+            width: 100% !important;
+            max-width: 100vw !important;
+            overflow-x: hidden !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+        
+        /* Ensure mobile menu button is visible */
+        .nav-toggle {
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
+            width: 30px !important;
+            height: 30px !important;
+            cursor: pointer !important;
+        }
+        
+        .nav-toggle .bar {
+            width: 25px !important;
+            height: 3px !important;
+            background: white !important;
+            margin: 2px 0 !important;
+            transition: 0.3s !important;
+            border-radius: 2px !important;
+        }
+        
+        .page-container {
+            padding: 0 !important;
+        }
+        
+        .page-header {
+            padding: 1rem !important;
+            background: rgba(0, 0, 0, 0.3) !important;
+            border-bottom: 2px solid rgba(128, 128, 128, 0.3) !important;
+        }
+        
+        .page-header h1 {
+            font-size: 1.4rem !important;
+            color: white !important;
+            border: none !important;
+            padding: 0.75rem 1rem !important;
+            background: rgba(0, 0, 0, 0.6) !important;
+            backdrop-filter: blur(10px) !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;
+            margin-bottom: 1rem !important;
+        }
+        
+        .page-header p {
+            color: white !important;
+            font-size: 0.9rem !important;
+            margin-bottom: 1.5rem !important;
+        }
+        
+        /* Add separator line after page header */
+        .page-header::after {
+            content: '';
+            display: block !important;
+            width: 100% !important;
+            height: 2px !important;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent) !important;
+            margin: 1rem 0 !important;
+        }
+        
+        /* Fix marketplace stats visibility - make them brighter */
+        .marketplace-stats {
+            display: flex !important;
+            overflow-x: auto !important;
+            scroll-snap-type: x mandatory !important;
+            gap: 0.75rem !important;
+            padding: 0 1rem !important;
+            margin: 1rem -1rem !important;
+            scrollbar-width: none !important;
+        }
+        
+        .marketplace-stats::-webkit-scrollbar {
+            display: none !important;
+        }
+        
+        .stat-box.glass {
+            flex: 0 0 70% !important;
+            scroll-snap-align: center !important;
+            min-width: 160px !important;
+            background: rgba(0, 0, 0, 0.9) !important;
+            border: 2px solid rgba(255, 255, 255, 0.3) !important;
+            backdrop-filter: none !important; /* Remove blur to prevent text blurriness */
+            padding: 1.5rem 1rem !important;
+            box-shadow: 0 8px 32px rgba(255, 255, 255, 0.1) !important;
+            margin-bottom: 1rem !important;
+        }
+        
+        .stat-value {
+            color: white !important;
+            font-size: 2rem !important;
+            font-weight: 800 !important;
+            text-shadow: none !important; /* Remove text shadow for crisp text */
+            -webkit-font-smoothing: antialiased !important; /* Crisp text rendering */
+            -moz-osx-font-smoothing: grayscale !important; /* Crisp text on macOS */
+        }
+        
+        .stat-label {
+            color: white !important;
+            font-size: 0.9rem !important;
+            margin-top: 0.5rem !important;
+            text-shadow: none !important; /* Remove text shadow for crisp text */
+            -webkit-font-smoothing: antialiased !important; /* Crisp text rendering */
+            -moz-osx-font-smoothing: grayscale !important; /* Crisp text on macOS */
+        }
+        
+        /* Add separator after stats */
+        .marketplace-stats::after {
+            content: '';
+            display: block !important;
+            width: 100% !important;
+            height: 2px !important;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent) !important;
+            margin: 1rem 0 !important;
+        }
+        
+        .section.glass {
+            background: rgba(0, 0, 0, 0.2) !important;
+            border: 1px solid rgba(128, 128, 128, 0.3) !important;
+            padding: 1rem !important;
+            margin-bottom: 1rem !important;
+            border-radius: 12px !important;
+        }
+        
+        /* Products grid - make cards consistent height and wider */
+        .products-grid {
+            display: flex !important;
+            overflow-x: auto !important;
+            scroll-snap-type: x mandatory !important;
+            gap: 1rem !important;
+            padding: 0 1rem !important;
+            margin-left: -1rem !important;
+            margin-right: -1rem !important;
+            scrollbar-width: none !important;
+            -webkit-overflow-scrolling: touch !important;
+        }
+        
+        .products-grid::-webkit-scrollbar {
+            display: none !important;
+        }
+        
+        .product-card {
+            flex: 0 0 85% !important;
+            scroll-snap-align: center !important;
+            min-width: 280px !important;
+            height: 700px !important; /* 67% taller than original 420px */
+            display: flex !important;
+            flex-direction: column !important;
+        }
+        
+        .product-image {
+            height: 200px !important;
+            object-fit: cover !important;
+        }
+        
+        /* Ensure content fills available space and buttons align at bottom */
+        .product-info {
+            flex: 1 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+            padding: 1rem !important;
+        }
+        
+        .product-details {
+            flex: 1 !important;
+        }
+        
+        .product-actions {
+            margin-top: auto !important;
+            padding-top: 1rem !important;
+        }
+        
+        .product-actions .btn {
+            width: 100% !important;
+            height: 45px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        
+        /* Duplicate content removed */
+        
+        .product-title {
+            font-size: 1.1rem !important;
+            margin-bottom: 0.5rem !important;
+            color: white !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+        }
+        
+        .product-description {
+            font-size: 0.85rem !important;
+            margin-bottom: 1rem !important;
+            flex-grow: 1 !important;
+            color: white !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+        }
+        
+        .product-price {
+            font-size: 1.3rem !important;
+            margin-bottom: 1rem !important;
+            color: white !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+        }
+        
+        /* Show pricing on mobile */
+        .product-pricing {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 0.5rem !important;
+            margin-bottom: 1rem !important;
+        }
+        
+        .price-option {
+            padding: 0.5rem 0.75rem !important;
+            font-size: 0.85rem !important;
+        }
+        
+        .price-label {
+            font-size: 0.85rem !important;
+        }
+        
+        .price-value {
+            font-size: 0.95rem !important;
+        }
+        
+        .btn {
+            width: 100% !important;
+            padding: 0.75rem !important;
+            font-size: 0.9rem !important;
+        }
+        
+        /* Category filters horizontal scroll */
+        .category-filter {
+            display: flex !important;
+            overflow-x: auto !important;
+            scroll-snap-type: x mandatory !important;
+            gap: 0.5rem !important;
+            padding: 0.75rem 1rem !important;
+            margin: 1rem -1rem !important;
+            scrollbar-width: none !important;
+            -webkit-overflow-scrolling: touch !important;
+            min-height: 60px !important; /* Ensure container is tall enough */
+            align-items: center !important;
+        }
+        
+        .category-filter::-webkit-scrollbar {
+            display: none !important;
+        }
+        
+        .category-btn {
+            flex: 0 0 auto !important;
+            white-space: nowrap !important;
+            padding: 0.75rem 1rem !important;
+            font-size: 0.85rem !important;
+            scroll-snap-align: center !important;
+            color: white !important;
+            background: rgba(0, 0, 0, 0.6) !important;
+            border: 2px solid rgba(255, 255, 255, 0.3) !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+            height: 50px !important; /* Fixed height for all buttons */
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            min-width: 120px !important; /* Ensure minimum width */
+        }
+        
+        .category-btn.active {
+            background: rgba(255, 255, 255, 0.2) !important;
+            border-color: rgba(255, 255, 255, 0.6) !important;
+        }
+        
+        .category-btn i {
+            color: white !important;
+            margin-right: 0.5rem !important;
+        }
+        
+        /* Add separator after category filters */
+        .category-filter::after {
+            content: '';
+            display: block !important;
+            width: 100% !important;
+            height: 2px !important;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent) !important;
+            margin: 1rem 0 !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1>RWA Marketplace</h1>
+        <p>Buy premium displays and devices with WeAD tokens, credit card, or crypto</p>
+        
+        <!-- Demo Disclaimer -->
+        <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05)); border: 2px solid rgba(59, 130, 246, 0.3); border-radius: 12px; padding: 1rem 1.5rem; margin-top: 1.5rem; text-align: center;">
+            <i class="fas fa-info-circle" style="color: #3b82f6; margin-right: 0.5rem;"></i>
+            <span style="color: #93c5fd; font-size: 0.95rem; font-weight: 500;">
+                Demo Preview: Product listings are sample displays. Real inventory will be available upon official platform launch.
+            </span>
+        </div>
+    </div>
+
+    <!-- Marketplace Stats -->
+    <div class="marketplace-stats">
+        <div class="stat-box glass">
+            <div class="stat-value">247</div>
+            <div class="stat-label">Products Available</div>
+        </div>
+        <div class="stat-box glass">
+            <div class="stat-value">1,523</div>
+            <div class="stat-label">Total Sales</div>
+        </div>
+        <div class="stat-box glass">
+            <div class="stat-value">98%</div>
+            <div class="stat-label">Customer Satisfaction</div>
+        </div>
+        <div class="stat-box glass">
+            <div class="stat-value">24/7</div>
+            <div class="stat-label">Support Available</div>
+        </div>
+    </div>
+
+    <!-- Category Filter -->
+    <div class="category-filter">
+        <button class="category-btn active" onclick="filterCategory('all')">
+            <i class="fas fa-th"></i> All Products
+        </button>
+        <button class="category-btn" onclick="filterCategory('displays')">
+            <i class="fas fa-tv"></i> Display Screens
+        </button>
+        <button class="category-btn" onclick="filterCategory('backpacks')">
+            <i class="fas fa-backpack"></i> Backpacks
+        </button>
+        <button class="category-btn" onclick="filterCategory('clothes')">
+            <i class="fas fa-tshirt"></i> Clothes
+        </button>
+        <button class="category-btn" onclick="filterCategory('accessories')">
+            <i class="fas fa-plug"></i> Accessories
+        </button>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="products-grid" id="productsGrid">
+        
+        <!-- Product 1: Premium Display Screen -->
+        <div class="product-card" data-category="displays">
+            <div style="position: relative;">
+                <img src="/static/products/display-1.jpg" alt="Premium Display Screen" class="product-image" onerror="this.onerror=null; this.style.background='linear-gradient(135deg, #202020, #404040)'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.alt='Display Screen';">
+                <span class="stock-badge in-stock">In Stock</span>
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">32" Premium Display Screen</h3>
+                <p class="product-description">
+                    High-resolution 4K display perfect for advertising. Built-in media player and remote management.
+                </p>
+                <div class="product-pricing">
+                    <div class="price-option">
+                        <span class="price-label">Card</span>
+                        <span class="price-value">$599</span>
+                    </div>
+                    <div class="price-option">
+                        <span class="price-label">Crypto</span>
+                        <span class="price-value">0.15 ETH</span>
+                    </div>
+                    <div class="price-option">
+                        <span class="price-label">WEAD</span>
+                        <span class="price-value">15,000 WEAD</span>
+                    </div>
+                </div>
+                <button class="buy-button" onclick="buyProduct('display-1')">
+                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                </button>
+            </div>
+        </div>
+
+        <!-- Product 2: LED Advertising Backpack -->
+        <div class="product-card" data-category="backpacks">
+            <div style="position: relative;">
+                <img src="/static/products/backpack-1.jpg" alt="LED Advertising Backpack" class="product-image" onerror="this.onerror=null; this.style.background='linear-gradient(135deg, #202020, #404040)'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.alt='LED Backpack';">
+                <span class="stock-badge in-stock">In Stock</span>
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">LED Advertising Backpack</h3>
+                <p class="product-description">
+                    Wearable LED display backpack. Perfect for mobile advertising on the go. Rechargeable battery with 8-hour life.
+                </p>
+                <div class="product-pricing">
+                    <div class="price-option">
+                        <span class="price-label">Card</span>
+                        <span class="price-value">$249</span>
+                    </div>
+                    <div class="price-option">
+                        <span class="price-label">Crypto</span>
+                        <span class="price-value">0.07 ETH</span>
+                    </div>
+                    <div class="price-option">
+                        <span class="price-label">WEAD</span>
+                        <span class="price-value">6,200 WEAD</span>
+                    </div>
+                </div>
+                <button class="buy-button" onclick="buyProduct('backpack-1')">
+                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                </button>
+            </div>
+        </div>
+
+        <!-- Product 3: Smart Advertising T-Shirt -->
+        <div class="product-card" data-category="clothes">
+            <div style="position: relative;">
+                <img src="/static/products/tshirt-1.jpg" alt="Smart Advertising T-Shirt" class="product-image" onerror="this.onerror=null; this.style.background='linear-gradient(135deg, #202020, #404040)'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.alt='Smart T-Shirt';">
+                <span class="stock-badge in-stock">In Stock</span>
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">Smart Advertising T-Shirt</h3>
+                <p class="product-description">
+                    Flexible LED display integrated into premium fabric. Washable, comfortable, and eye-catching for events and promotions.
+                </p>
+                <div class="product-pricing">
+                    <div class="price-option">
+                        <span class="price-label">Card</span>
+                        <span class="price-value">$159</span>
+                    </div>
+                    <div class="price-option">
+                        <span class="price-label">Crypto</span>
+                        <span class="price-value">0.04 ETH</span>
+                    </div>
+                    <div class="price-option">
+                        <span class="price-label">WEAD</span>
+                        <span class="price-value">4,000 WEAD</span>
+                    </div>
+                </div>
+                <button class="buy-button" onclick="buyProduct('tshirt-1')">
+                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                </button>
+            </div>
+        </div>
+
+        <!-- Product 4: 55" Large Display -->
+        <div class="product-card" data-category="displays">
+            <div style="position: relative;">
+                <img src="/static/products/display-2.jpg" alt="Large Display Screen" class="product-image" onerror="this.onerror=null; this.style.background='linear-gradient(135deg, #202020, #404040)'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.alt='Large Display';">
+                <span class="stock-badge in-stock">In Stock</span>
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">55" Ultra HD Display</h3>
+                <p class="product-description">
+                    Commercial-grade display with HDR support. Perfect for high-traffic locations.
+                </p>
+                <div class="product-pricing">
+                    <div class="price-option">
+                        <span class="price-label">Card</span>
+                        <span class="price-value">$1,299</span>
+                    </div>
+                    <div class="price-option">
+                        <span class="price-label">Crypto</span>
+                        <span class="price-value">0.35 ETH</span>
+                    </div>
+                    <div class="price-option">
+                        <span class="price-label">WEAD</span>
+                        <span class="price-value">32,000 WEAD</span>
+                    </div>
+                </div>
+                <button class="buy-button" onclick="buyProduct('display-2')">
+                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                </button>
+            </div>
+        </div>
+
+        <!-- Product 5: Mounting Kit -->
+        <div class="product-card" data-category="accessories">
+            <div style="position: relative;">
+                <img src="/static/products/mount-1.jpg" alt="Display Mounting Kit" class="product-image" onerror="this.onerror=null; this.style.background='linear-gradient(135deg, #202020, #404040)'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.alt='Mounting Kit';">
+                <span class="stock-badge in-stock">In Stock</span>
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">Universal Mounting Kit</h3>
+                <p class="product-description">
+                    Heavy-duty mounting solution for displays up to 65". Includes all hardware.
+                </p>
+                <div class="product-pricing">
+                    <div class="price-option">
+                        <span class="price-label">Card</span>
+                        <span class="price-value">$79</span>
+                    </div>
+                    <div class="price-option">
+                        <span class="price-label">Crypto</span>
+                        <span class="price-value">0.02 ETH</span>
+                    </div>
+                    <div class="price-option">
+                        <span class="price-label">WEAD</span>
+                        <span class="price-value">2,000 WEAD</span>
+                    </div>
+                </div>
+                <button class="buy-button" onclick="buyProduct('mount-1')">
+                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                </button>
+            </div>
+        </div>
+
+        <!-- Product 6: Power Bank -->
+        <div class="product-card" data-category="accessories">
+            <div style="position: relative;">
+                <img src="/static/products/powerbank-1.jpg" alt="High Capacity Power Bank" class="product-image" onerror="this.onerror=null; this.style.background='linear-gradient(135deg, #202020, #404040)'; this.style.display='flex'; this.style.alignItems='center'; this.style.justifyContent='center'; this.alt='Power Bank';">
+                <span class="stock-badge in-stock">In Stock</span>
+            </div>
+            <div class="product-info">
+                <h3 class="product-title">50,000mAh Power Bank</h3>
+                <p class="product-description">
+                    Extended battery life for portable displays. Fast charging with multiple ports.
+                </p>
+                <div class="product-pricing">
+                    <div class="price-option">
+                        <span class="price-label">Card</span>
+                        <span class="price-value">$129</span>
+                    </div>
+                    <div class="price-option">
+                        <span class="price-label">Crypto</span>
+                        <span class="price-value">0.03 ETH</span>
+                    </div>
+                    <div class="price-option">
+                        <span class="price-label">WEAD</span>
+                        <span class="price-value">3,200 WEAD</span>
+                    </div>
+                </div>
+                <button class="buy-button" onclick="buyProduct('powerbank-1')">
+                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Shopping Cart Summary (Fixed Bottom) -->
+    <div id="cartSummary" style="position: fixed; bottom: 2rem; right: 2rem; background: linear-gradient(135deg, rgba(64, 64, 64, 0.95), rgba(0, 0, 0, 0.95)); backdrop-filter: blur(20px); border: 2px solid rgba(128, 128, 128, 0.5); border-radius: 20px; padding: 1.5rem; min-width: 300px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8); display: none;">
+        <h3 style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fas fa-shopping-cart"></i> Cart
+        </h3>
+        <div id="cartItems" style="margin-bottom: 1rem; max-height: 200px; overflow-y: auto;"></div>
+        <div style="border-top: 1px solid rgba(128, 128, 128, 0.3); padding-top: 1rem; margin-top: 1rem;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                <span style="color: var(--text-secondary);">Total:</span>
+                <span id="cartTotal" style="font-size: 1.3rem; font-weight: 700; color: white;">$0</span>
+            </div>
+            <button class="buy-button" onclick="checkout()">
+                <i class="fas fa-lock"></i> Checkout
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Shopping cart functionality
+    let cart = [];
+    
+    function filterCategory(category) {
+        const products = document.querySelectorAll('.product-card');
+        const buttons = document.querySelectorAll('.category-btn');
+        
+        // Update active button
+        buttons.forEach(btn => btn.classList.remove('active'));
+        event.target.closest('.category-btn').classList.add('active');
+        
+        // Filter products
+        products.forEach(product => {
+            if (category === 'all' || product.dataset.category === category) {
+                product.style.display = 'block';
+            } else {
+                product.style.display = 'none';
+            }
+        });
+    }
+    
+    function buyProduct(productId) {
+        // Product data (in real app, this would come from backend)
+        const products = {
+            'display-1': { name: '32" Premium Display Screen', price: 599 },
+            'backpack-1': { name: 'LED Advertising Backpack', price: 249 },
+            'tshirt-1': { name: 'Smart Advertising T-Shirt', price: 159 },
+            'display-2': { name: '55" Ultra HD Display', price: 1299 },
+            'mount-1': { name: 'Universal Mounting Kit', price: 79 },
+            'powerbank-1': { name: '50,000mAh Power Bank', price: 129 }
+        };
+        
+        const product = products[productId];
+        if (product) {
+            // Check if product already in cart
+            const existingItem = cart.find(item => item.name === product.name);
+            if (existingItem) {
+                existingItem.quantity = (existingItem.quantity || 1) + 1;
+            } else {
+                cart.push({
+                    ...product,
+                    quantity: 1,
+                    id: productId
+                });
+            }
+            updateCart();
+            
+            // Show success notification
+            showNotification('Added to cart: ' + product.name);
+        }
+    }
+    
+    function updateCart() {
+        const cartSummary = document.getElementById('cartSummary');
+        const cartItems = document.getElementById('cartItems');
+        const cartTotal = document.getElementById('cartTotal');
+        
+        if (cart.length === 0) {
+            cartSummary.style.display = 'none';
+            return;
+        }
+        
+        cartSummary.style.display = 'block';
+        
+        // Update items
+        cartItems.innerHTML = cart.map((item, index) => `
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid rgba(128, 128, 128, 0.2);">
+                <span style="font-size: 0.9rem; color: var(--text-secondary);">${item.name}</span>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="font-weight: 600; color: white;">$${item.price}</span>
+                    <button onclick="removeFromCart(${index})" style="background: none; border: none; color: #ef4444; cursor: pointer; padding: 0.2rem;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        `).join('');
+        
+        // Update total
+        const total = cart.reduce((sum, item) => sum + item.price, 0);
+        cartTotal.textContent = '$' + total.toFixed(2);
+    }
+    
+    function removeFromCart(index) {
+        cart.splice(index, 1);
+        updateCart();
+    }
+    
+    function checkout() {
+        if (cart.length === 0) return;
+        
+        // Save cart to localStorage
+        localStorage.setItem('weadCart', JSON.stringify(cart));
+        
+        // Redirect to checkout page
+        window.location.href = '/checkout';
+    }
+    
+    function showNotification(message) {
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: linear-gradient(135deg, #404040, #606060);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+        `;
+        notification.innerHTML = `<i class="fas fa-check-circle" style="color: #22c55e; margin-right: 0.5rem;"></i>${message}`;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+    
+    // Add animations
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(400px); opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
+</script>
+
+{% endblock %}

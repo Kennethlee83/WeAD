@@ -1,0 +1,709 @@
+{% extends "base.html" %}
+
+{% block title %}WeAD - Home{% endblock %}
+
+{% block content %}
+<style>
+    /* Custom hover effects for specific boxes - override default glass hover */
+    a:hover .advertisers-box,
+    .advertisers-box:hover {
+        border-color: rgba(220, 20, 60, 0.8) !important;
+        box-shadow: 0 10px 40px rgba(220, 20, 60, 0.4) !important;
+        transform: translateY(-5px) !important;
+        background: linear-gradient(135deg, rgba(139, 0, 0, 0.2), rgba(0, 0, 0, 0.4)) !important;
+    }
+    
+    a:hover .rwa-box,
+    .rwa-box:hover {
+        border-color: rgba(128, 128, 128, 0.8) !important;
+        box-shadow: 0 10px 40px rgba(128, 128, 128, 0.4) !important;
+        transform: translateY(-5px) !important;
+        background: linear-gradient(135deg, rgba(64, 64, 64, 0.2), rgba(0, 0, 0, 0.4)) !important;
+    }
+    
+    a:hover .tools-box,
+    .tools-box:hover {
+        border-color: rgba(218, 165, 32, 0.8) !important;
+        box-shadow: 0 10px 40px rgba(218, 165, 32, 0.4) !important;
+        transform: translateY(-5px) !important;
+        background: linear-gradient(135deg, rgba(139, 128, 0, 0.2), rgba(0, 0, 0, 0.4)) !important;
+    }
+    
+    a:hover .stream-box,
+    .stream-box:hover {
+        border-color: rgba(255, 255, 255, 0.6) !important;
+        box-shadow: 0 10px 40px rgba(255, 255, 255, 0.3) !important;
+        transform: translateY(-5px) !important;
+        background: linear-gradient(135deg, rgba(40, 40, 40, 0.2), rgba(0, 0, 0, 0.4)) !important;
+    }
+</style>
+<div class="page-container">
+    <!-- Page Title -->
+    <div class="page-header">
+        <h1 id="homepage-title" style="text-transform: none; color: white !important; background: none !important; -webkit-text-fill-color: unset !important; background-clip: unset !important;">
+            <span style="color: white !important;">We</span><span class="ad-text" style="color: #8B0000 !important;">AD</span> <span style="color: white !important; font-size: 0.4em; margin: 0 0.3rem; vertical-align: middle; position: relative; top: -0.15em;">▶</span> <span style="color: white !important;">We</span><span class="ad-text" style="color: #8B0000 !important;">AD</span><span style="color: white !important;">vertise</span>
+        </h1>
+        <p>Choose your path to start earning or advertising</p>
+    </div>
+    
+    <style>
+        /* Desktop only - Override global h1 gradient for homepage title */
+        @media (min-width: 769px) {
+            #homepage-title {
+                background: none !important;
+                background-image: none !important;
+                -webkit-background-clip: unset !important;
+                -webkit-text-fill-color: white !important;
+                background-clip: unset !important;
+            }
+            
+            #homepage-title .ad-text {
+                color: #8B0000 !important;
+                background: none !important;
+                background-image: none !important;
+                -webkit-text-fill-color: #8B0000 !important;
+                background-clip: unset !important;
+                -webkit-background-clip: unset !important;
+                text-shadow: none !important;
+                filter: none !important;
+            }
+        }
+        
+        /* Mobile - Use solid background approach for dark red */
+        @media (max-width: 768px) {
+            #homepage-title {
+                background: none !important;
+                background-image: none !important;
+                -webkit-background-clip: unset !important;
+                -webkit-text-fill-color: white !important;
+                background-clip: unset !important;
+                color: white !important;
+            }
+            
+            #homepage-title span {
+                color: white !important;
+                background: none !important;
+                background-image: none !important;
+                -webkit-background-clip: unset !important;
+                -webkit-text-fill-color: white !important;
+                background-clip: unset !important;
+            }
+            
+            /* For AD text on mobile - use solid background trick */
+            #homepage-title .ad-text {
+                background: #8B0000 !important;
+                background-image: none !important;
+                -webkit-background-clip: text !important;
+                -webkit-text-fill-color: transparent !important;
+                background-clip: text !important;
+                color: #8B0000 !important;
+            }
+            
+            /* Mobile Horizontal Swipe Carousel */
+            #servicesGrid {
+                display: flex !important;
+                flex-direction: row !important;
+                overflow-x: auto !important;
+                scroll-snap-type: x mandatory !important;
+                -webkit-overflow-scrolling: touch !important;
+                gap: 1.5rem !important;
+                margin: 2rem -1rem !important;
+                padding: 0 1rem !important;
+                scrollbar-width: none !important; /* Firefox */
+            }
+            
+            #servicesGrid::-webkit-scrollbar {
+                display: none !important; /* Chrome, Safari */
+            }
+            
+            #servicesGrid > a {
+                flex: 0 0 90% !important;
+                scroll-snap-align: center !important;
+                max-width: 100vw !important;
+                width: 90vw !important;
+            }
+            
+            /* Make all boxes same height on mobile */
+            #servicesGrid > a > div {
+                height: 100% !important;
+                display: flex !important;
+                flex-direction: column !important;
+                min-height: 550px !important;
+            }
+            
+            /* Ensure image section is consistent */
+            #servicesGrid > a > div > div:first-child {
+                flex-shrink: 0 !important;
+            }
+            
+            /* Make text content area flexible */
+            #servicesGrid > a > div > div:last-child {
+                flex: 1 !important;
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            
+            /* Push button to bottom */
+            #servicesGrid > a > div > div:last-child > div:last-child {
+                margin-top: auto !important;
+            }
+            
+            /* Improve mobile icon visibility */
+            .rwa-box .fa-store {
+                background: linear-gradient(135deg, #A0A0A0, #E0E0E0) !important;
+                -webkit-background-clip: text !important;
+                -webkit-text-fill-color: transparent !important;
+                background-clip: text !important;
+            }
+            
+            .tools-box .fa-tools {
+                background: linear-gradient(135deg, #FFD700, #FFA500) !important;
+                -webkit-background-clip: text !important;
+                -webkit-text-fill-color: transparent !important;
+                background-clip: text !important;
+            }
+            
+            .stream-box .fa-video {
+                color: #FFFFFF !important;
+                -webkit-text-stroke: 2px rgba(0, 0, 0, 0.8) !important;
+                text-stroke: 2px rgba(0, 0, 0, 0.8) !important;
+                text-shadow: 0 0 10px rgba(255, 255, 255, 0.5) !important;
+            }
+            
+            /* Improve mobile button visibility */
+            .rwa-box span {
+                background: linear-gradient(135deg, #606060, #A0A0A0) !important;
+            }
+            
+            .tools-box span {
+                background: linear-gradient(135deg, #FFD700, #FFA500) !important;
+                color: #000000 !important;
+            }
+            
+            .stream-box span {
+                background: #FFFFFF !important;
+                color: #000000 !important;
+            }
+            
+            /* Add scroll indicator dots */
+            #servicesGrid::after {
+                content: '';
+                position: absolute;
+                bottom: -30px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 100px;
+                height: 4px;
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 2px;
+            }
+        }
+    </style>
+
+    <!-- Three Main Options -->
+    <div id="servicesGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem; margin: 4rem 0;">
+        
+        <!-- Microtisers Option -->
+        <a href="/microtisers" style="text-decoration: none;">
+            <div class="glass" style="padding: 0; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid rgba(16, 185, 129, 0.5); background: linear-gradient(135deg, rgba(6, 78, 59, 0.1), rgba(0, 0, 0, 0.3)); overflow: hidden;">
+                <div style="width: 100%; aspect-ratio: 1/1; overflow: hidden; background: rgba(0, 0, 0, 0.3);">
+                    <img src="/static/2.jpg" alt="Microtisers" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.onerror=null; this.src='/static/2.png';">
+                </div>
+                <div style="padding: 2rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1.5rem; background: linear-gradient(135deg, #064e3b, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h2 style="color: white; margin-bottom: 1rem; font-size: 2rem;">Microtisers</h2>
+                    <p style="color: var(--text-secondary); font-size: 1.1rem; line-height: 1.6;">
+                        Display ads on your portable devices and earn WEAD tokens for every view
+                    </p>
+                    <div style="margin-top: 2rem;">
+                        <span style="display: inline-block; padding: 0.8rem 2rem; background: linear-gradient(135deg, #064e3b, #10b981); color: white; border-radius: 25px; font-weight: 600;">
+                            Start Earning <i class="fas fa-arrow-right" style="margin-left: 0.5rem;"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </a>
+        
+        <!-- Advertisers Option -->
+        <a href="/advertisers" style="text-decoration: none;">
+            <div class="glass advertisers-box" style="padding: 0; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid rgba(220, 20, 60, 0.5); overflow: hidden;">
+                <div style="width: 100%; aspect-ratio: 1/1; overflow: hidden; background: rgba(0, 0, 0, 0.3);">
+                    <img src="/static/3.jpg" alt="Advertisers" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.onerror=null; this.src='/static/3.png';">
+                </div>
+                <div style="padding: 2rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1.5rem; background: linear-gradient(135deg, #DC143C, #B22222); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                        <i class="fas fa-tv"></i>
+                    </div>
+                    <h2 style="color: white; margin-bottom: 1rem; font-size: 2rem;">Advertisers</h2>
+                    <p style="color: var(--text-secondary); font-size: 1.1rem; line-height: 1.6;">
+                        Create and manage advertising campaigns on micro-displays worldwide
+                    </p>
+                    <div style="margin-top: 2rem;">
+                        <span style="display: inline-block; padding: 0.8rem 2rem; background: linear-gradient(135deg, #DC143C, #B22222); color: white; border-radius: 25px; font-weight: 600;">
+                            Create Campaign <i class="fas fa-arrow-right" style="margin-left: 0.5rem;"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </a>
+        
+        <!-- Fund Me Option -->
+        <a href="/fundme" style="text-decoration: none;">
+            <div class="glass" style="padding: 0; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid rgba(124, 58, 237, 0.5); background: linear-gradient(135deg, rgba(30, 58, 138, 0.15), rgba(124, 58, 237, 0.1)); overflow: hidden;">
+                <div style="width: 100%; aspect-ratio: 1/1; overflow: hidden; background: rgba(0, 0, 0, 0.3);">
+                    <img src="/static/4.jpg" alt="Fund Me" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.onerror=null; this.src='/static/4.png';">
+                </div>
+                <div style="padding: 2rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1.5rem; background: linear-gradient(135deg, #1e3a8a, #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
+                    <h2 style="color: white; margin-bottom: 1rem; font-size: 2rem;">Fund Me Page</h2>
+                    <p style="color: var(--text-secondary); font-size: 1.1rem; line-height: 1.6;">
+                        Get funded by displaying ads while promoting your own cause or project
+                    </p>
+                    <div style="margin-top: 2rem;">
+                        <span style="display: inline-block; padding: 0.8rem 2rem; background: linear-gradient(135deg, #1e3a8a, #7c3aed); color: white; border-radius: 25px; font-weight: 600;">
+                            Get Funded <i class="fas fa-arrow-right" style="margin-left: 0.5rem;"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </a>
+        
+        <!-- AI Composer Option -->
+        <a href="https://weadcomposer.info" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
+            <div class="glass" style="padding: 0; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid rgba(255, 140, 0, 0.5); background: linear-gradient(135deg, rgba(255, 69, 0, 0.1), rgba(0, 0, 0, 0.3)); overflow: hidden;">
+                <div style="width: 100%; aspect-ratio: 1/1; overflow: hidden; background: rgba(0, 0, 0, 0.3);">
+                    <img src="/static/5.jpg" alt="AI Composer" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.onerror=null; this.src='/static/5.png';">
+                </div>
+                <div style="padding: 2rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1.5rem; background: linear-gradient(135deg, #ff8c00, #ff4500); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <h2 style="color: white; margin-bottom: 1rem; font-size: 2rem;">AI Composer</h2>
+                    <p style="color: var(--text-secondary); font-size: 1.1rem; line-height: 1.6;">
+                        Create production-level soundtracks and music with AI-powered composition tools
+                    </p>
+                    <div style="margin-top: 2rem;">
+                        <span style="display: inline-block; padding: 0.8rem 2rem; background: linear-gradient(135deg, #ff8c00, #ff4500); color: white; border-radius: 25px; font-weight: 600;">
+                            Create Music <i class="fas fa-arrow-right" style="margin-left: 0.5rem;"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </a>
+        
+        <!-- Retrogame Platform Option -->
+        <a href="https://www.weadretrogameplatform.com/" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
+            <div class="glass" style="padding: 0; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid rgba(30, 144, 255, 0.5); background: linear-gradient(135deg, rgba(0, 51, 102, 0.1), rgba(0, 0, 0, 0.3)); overflow: hidden;">
+                <div style="width: 100%; aspect-ratio: 1/1; overflow: hidden; background: rgba(0, 0, 0, 0.3);">
+                    <img src="/static/6.jpg" alt="Retrogame Platform" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.onerror=null; this.src='/static/6.png';">
+                </div>
+                <div style="padding: 2rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1.5rem; background: linear-gradient(135deg, #003366, #1e90ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <h2 style="color: white; margin-bottom: 1rem; font-size: 2rem;">Retrogame Platform</h2>
+                    <p style="color: var(--text-secondary); font-size: 1.1rem; line-height: 1.6;">
+                        Play 10,000+ classic games anywhere, anytime and join our tournaments to earn rewards
+                    </p>
+                    <div style="margin-top: 2rem;">
+                        <span style="display: inline-block; padding: 0.8rem 2rem; background: linear-gradient(135deg, #003366, #1e90ff); color: white; border-radius: 25px; font-weight: 600;">
+                            Play Game <i class="fas fa-arrow-right" style="margin-left: 0.5rem;"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </a>
+        
+        <!-- RedFlag Option -->
+        <a href="https://www.weadredflag.info/" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
+            <div class="glass" style="padding: 0; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid rgba(144, 238, 144, 0.5); background: linear-gradient(135deg, rgba(60, 179, 113, 0.1), rgba(0, 0, 0, 0.3)); overflow: hidden;">
+                <div style="width: 100%; aspect-ratio: 1/1; overflow: hidden; background: rgba(0, 0, 0, 0.3);">
+                    <img src="/static/7.jpg" alt="RedFlag" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.onerror=null; this.src='/static/7.png';">
+                </div>
+                <div style="padding: 2rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1.5rem; background: linear-gradient(135deg, #3cb371, #90ee90); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h2 style="color: white; margin-bottom: 1rem; font-size: 2rem;">RedFlag</h2>
+                    <p style="color: var(--text-secondary); font-size: 1.1rem; line-height: 1.6;">
+                        Your 24/7 pocket mental therapist and guardian powered by AI psychological safety monitoring
+                    </p>
+                    <div style="margin-top: 2rem;">
+                        <span style="display: inline-block; padding: 0.8rem 2rem; background: linear-gradient(135deg, #3cb371, #90ee90); color: white; border-radius: 25px; font-weight: 600;">
+                            Get Support <i class="fas fa-arrow-right" style="margin-left: 0.5rem;"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <!-- RWA Marketplace Option -->
+        <a href="/rwa-marketplace" style="text-decoration: none;">
+            <div class="glass rwa-box" style="padding: 0; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid rgba(128, 128, 128, 0.5); background: linear-gradient(135deg, rgba(64, 64, 64, 0.1), rgba(0, 0, 0, 0.3)); overflow: hidden;">
+                <div style="width: 100%; aspect-ratio: 1/1; overflow: hidden; background: rgba(0, 0, 0, 0.3);">
+                    <img src="/static/8.jpg" alt="RWA Marketplace" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.onerror=null; this.src='/static/8.png';">
+                </div>
+                <div style="padding: 2rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1.5rem; background: linear-gradient(135deg, #404040, #808080); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <h2 style="color: white; margin-bottom: 1rem; font-size: 2rem;">RWA Marketplace</h2>
+                    <p style="color: var(--text-secondary); font-size: 1.1rem; line-height: 1.6;">
+                        Buy real-world assets with WeAD tokens, credit card, or crypto. Premium displays and devices.
+                    </p>
+                    <div style="margin-top: 2rem;">
+                        <span style="display: inline-block; padding: 0.8rem 2rem; background: linear-gradient(135deg, #404040, #808080); color: white; border-radius: 25px; font-weight: 600;">
+                            Shop Now <i class="fas fa-arrow-right" style="margin-left: 0.5rem;"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <!-- TG/Discord Tools Option -->
+        <a href="/tg-discord-tools" style="text-decoration: none;">
+            <div class="glass tools-box" style="padding: 0; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid rgba(218, 165, 32, 0.5); background: linear-gradient(135deg, rgba(139, 128, 0, 0.1), rgba(0, 0, 0, 0.3)); overflow: hidden;">
+                <div style="width: 100%; aspect-ratio: 1/1; overflow: hidden; background: rgba(0, 0, 0, 0.3);">
+                    <img src="/static/9.jpg" alt="TG/Discord Tools" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.onerror=null; this.src='/static/9.png';">
+                </div>
+                <div style="padding: 2rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1.5rem; background: linear-gradient(135deg, #B8860B, #DAA520); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h2 style="color: white; margin-bottom: 1rem; font-size: 2rem;">TG/Discord Tools</h2>
+                    <p style="color: var(--text-secondary); font-size: 1.1rem; line-height: 1.6;">
+                        20+ powerful tools for content creation, gaming, and AI. Boost your community engagement.
+                    </p>
+                    <div style="margin-top: 2rem;">
+                        <span style="display: inline-block; padding: 0.8rem 2rem; background: linear-gradient(135deg, #B8860B, #DAA520); color: white; border-radius: 25px; font-weight: 600;">
+                            Explore Tools <i class="fas fa-arrow-right" style="margin-left: 0.5rem;"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        <!-- Stream Vault Option -->
+        <a href="/stream-vault" style="text-decoration: none;">
+            <div class="glass stream-box" style="padding: 0; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid rgba(255, 255, 255, 0.3); background: linear-gradient(135deg, rgba(20, 20, 20, 0.1), rgba(0, 0, 0, 0.3)); overflow: hidden;">
+                <div style="width: 100%; aspect-ratio: 1/1; overflow: hidden; background: rgba(0, 0, 0, 0.3);">
+                    <img src="/static/10.jpg" alt="Stream Vault" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.onerror=null; this.src='/static/10.png';">
+                </div>
+                <div style="padding: 2rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1.5rem; color: #000000; -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3); text-stroke: 1px rgba(255, 255, 255, 0.3);">
+                        <i class="fas fa-video"></i>
+                    </div>
+                    <h2 style="color: white; margin-bottom: 1rem; font-size: 2rem;">STREAM VAULT</h2>
+                    <p style="color: var(--text-secondary); font-size: 1.1rem; line-height: 1.6;">
+                        Exclusive Web3 CEO interviews. Premium streaming platform with blockchain leaders.
+                    </p>
+                    <div style="margin-top: 2rem;">
+                        <span style="display: inline-block; padding: 0.8rem 2rem; background: #000000; color: white; border-radius: 25px; font-weight: 600;">
+                            Watch Now <i class="fas fa-arrow-right" style="margin-left: 0.5rem;"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </a>
+        
+                </div>
+
+    <!-- Video Section -->
+    <section class="section glass" style="margin-top: 5rem; padding: 3rem; border: 2px solid; border-image: linear-gradient(135deg, #DC143C, #B22222) 1;">
+        <h2 class="section-title" style="color: white; text-align: center; margin-bottom: 2rem;">Discover WeAD Platform</h2>
+        <div style="width: 100%; max-width: 1200px; margin: 0 auto; position: relative;">
+            <div style="border-radius: 20px; overflow: hidden; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);">
+                <video 
+                    id="weadVideo"
+                    autoplay 
+                    muted
+                    controls 
+                    style="width: 100%; height: auto; display: block; background: #000;"
+                    preload="metadata">
+                    <source src="/static/video1.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <!-- Video Navigation Controls -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; padding: 0 1rem; gap: 1rem;">
+                <button onclick="playPreviousVideo()" class="video-nav-btn" style="background: rgba(220, 20, 60, 0.2); backdrop-filter: blur(10px); color: white; border: 1px solid rgba(220, 20, 60, 0.5); padding: 0.8rem; border-radius: 50%; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; font-size: 1.2rem; min-width: 45px; min-height: 45px;">
+                    <i class="fas fa-step-backward"></i>
+                </button>
+                <span id="videoCounter" style="color: var(--text-secondary); font-size: 0.9rem; flex: 1; text-align: center; white-space: nowrap;">Video 1 of 1</span>
+                <button onclick="playNextVideo()" class="video-nav-btn" style="background: rgba(220, 20, 60, 0.2); backdrop-filter: blur(10px); color: white; border: 1px solid rgba(220, 20, 60, 0.5); padding: 0.8rem; border-radius: 50%; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; font-size: 1.2rem; min-width: 45px; min-height: 45px;">
+                    <i class="fas fa-step-forward"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+    
+    <style>
+        .video-nav-btn:hover {
+            background: rgba(220, 20, 60, 0.4) !important;
+            border-color: rgba(220, 20, 60, 0.8) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 20, 60, 0.3);
+        }
+        
+        .video-nav-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* Mobile responsive styling */
+        @media (max-width: 768px) {
+            #videoCounter {
+                font-size: 0.75rem !important;
+                padding: 0 0.5rem;
+            }
+            
+            .video-nav-btn {
+                min-width: 40px !important;
+                min-height: 40px !important;
+                padding: 0.6rem !important;
+                font-size: 1rem !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            #videoCounter {
+                font-size: 0.7rem !important;
+            }
+            
+            .video-nav-btn {
+                min-width: 38px !important;
+                min-height: 38px !important;
+                padding: 0.5rem !important;
+                font-size: 0.9rem !important;
+            }
+        }
+    </style>
+
+    <script>
+        // Video playlist rotation
+        const videoPlayer = document.getElementById('weadVideo');
+        const videoCounter = document.getElementById('videoCounter');
+        
+        // Add your video files here (video1.mp4, video2.mp4, video3.mp4, etc.)
+        const videoPlaylist = [
+            '/static/video1.mp4',
+            '/static/video2.mp4',
+            '/static/video3.mp4',
+            '/static/video4.mp4',
+            '/static/video5.mp4',
+            '/static/video6.mp4',
+            '/static/video7.mp4',
+            '/static/video8.mp4',
+            '/static/video9.mp4',
+            '/static/video10.mp4',
+            '/static/video11.mp4',
+            '/static/video12.mp4',
+            '/static/video13.mp4'
+        ];
+        
+        let currentVideoIndex = 0;
+        
+        // Filter out videos that don't exist
+        function checkVideoExists(url) {
+            return fetch(url, { method: 'HEAD' })
+                .then(response => response.ok)
+                .catch(() => false);
+        }
+        
+        // Initialize available videos
+        let availableVideos = [];
+        
+        async function initializePlaylist() {
+            for (const video of videoPlaylist) {
+                const exists = await checkVideoExists(video);
+                if (exists) {
+                    availableVideos.push(video);
+                }
+            }
+            
+            if (availableVideos.length > 0) {
+                updateVideoCounter();
+            }
+        }
+        
+        // Update video counter display
+        function updateVideoCounter() {
+            if (availableVideos.length > 0) {
+                videoCounter.textContent = `Video ${currentVideoIndex + 1} of ${availableVideos.length}`;
+            }
+        }
+        
+        // Play next video in rotation
+        function playNextVideo() {
+            if (availableVideos.length === 0) return;
+            
+            currentVideoIndex = (currentVideoIndex + 1) % availableVideos.length;
+            videoPlayer.src = availableVideos[currentVideoIndex];
+            videoPlayer.load();
+            videoPlayer.play();
+            updateVideoCounter();
+        }
+        
+        // Play previous video
+        function playPreviousVideo() {
+            if (availableVideos.length === 0) return;
+            
+            currentVideoIndex = (currentVideoIndex - 1 + availableVideos.length) % availableVideos.length;
+            videoPlayer.src = availableVideos[currentVideoIndex];
+            videoPlayer.load();
+            videoPlayer.play();
+            updateVideoCounter();
+        }
+        
+        // When current video ends, play next one
+        videoPlayer.addEventListener('ended', playNextVideo);
+        
+        // Handle video errors (file not found)
+        videoPlayer.addEventListener('error', function() {
+            console.log('Video not found, trying next...');
+            playNextVideo();
+        });
+        
+        // Initialize the playlist
+        initializePlaylist();
+    </script>
+
+    <!-- Platform Stats -->
+    <div class="stats-grid" style="margin-top: 5rem;">
+        <div class="stat-card glass">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+            <div class="stat-value">10,000+</div>
+            <div class="stat-label">Active Users</div>
+                    </div>
+
+        <div class="stat-card glass">
+                        <div class="stat-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+            <div class="stat-value">50M+</div>
+            <div class="stat-label">Ad Impressions</div>
+                    </div>
+
+                <div class="stat-card glass">
+                    <div class="stat-icon">
+                <i class="fas fa-coins"></i>
+                    </div>
+            <div class="stat-value">$2.5M</div>
+            <div class="stat-label">Tokens Distributed</div>
+                </div>
+                
+                <div class="stat-card glass">
+                    <div class="stat-icon">
+                <i class="fas fa-globe"></i>
+                    </div>
+            <div class="stat-value">120+</div>
+            <div class="stat-label">Countries</div>
+                </div>
+                </div>
+                
+    <!-- How It Works Section -->
+    <section class="section glass" style="margin-top: 5rem;">
+        <h2 class="section-title">How WeAD Works</h2>
+        <p class="section-subtitle">Three simple steps to start earning or advertising</p>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 3rem; margin-top: 3rem;">
+            <div style="text-align: center;">
+                <div style="width: 80px; height: 80px; margin: 0 auto 1.5rem; background: linear-gradient(135deg, #DC143C, #B22222); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 800; color: white;">
+                    1
+            </div>
+                <h3 style="color: var(--quantum-primary); margin-bottom: 1rem;">Choose Your Path</h3>
+                <p style="color: var(--text-secondary);">Select whether you want to earn as a Microtiser, advertise your product, or get funded for your project</p>
+                </div>
+            
+            <div style="text-align: center;">
+                <div style="width: 80px; height: 80px; margin: 0 auto 1.5rem; background: linear-gradient(135deg, #DC143C, #B22222); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 800; color: white;">
+                    2
+                </div>
+                <h3 style="color: var(--quantum-primary); margin-bottom: 1rem;">Connect Your Wallet</h3>
+                <p style="color: var(--text-secondary);">Connect your MetaMask wallet on BSC network to start transacting with WEAD tokens</p>
+            </div>
+            
+            <div style="text-align: center;">
+                <div style="width: 80px; height: 80px; margin: 0 auto 1.5rem; background: linear-gradient(135deg, #DC143C, #B22222); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 800; color: white;">
+                    3
+            </div>
+                <h3 style="color: var(--quantum-primary); margin-bottom: 1rem;">Start Earning or Advertising</h3>
+                <p style="color: var(--text-secondary);">Display ads on your devices to earn, create campaigns to advertise, or get funded for your cause</p>
+                </div>
+            </div>
+        </section>
+    
+                    </div>
+
+<style>
+    .glass:hover {
+        transform: translateY(-5px);
+        border-color: var(--quantum-primary) !important;
+        box-shadow: 0 10px 40px rgba(255, 69, 0, 0.3);
+    }
+    
+    /* Special hover effect for Microtisers card */
+    a[href="/microtisers"] .glass:hover {
+        border-color: #10b981 !important;
+        box-shadow: 0 10px 40px rgba(16, 185, 129, 0.4);
+    }
+    
+    /* Special hover effect for AI Composer card */
+    a[href="https://weadcomposer.info"] .glass:hover {
+        border-color: #ff8c00 !important;
+        box-shadow: 0 10px 40px rgba(255, 140, 0, 0.4);
+    }
+    
+    /* Special hover effect for Retrogame Platform card */
+    a[href="https://www.weadretrogameplatform.com/"] .glass:hover {
+        border-color: #1e90ff !important;
+        box-shadow: 0 10px 40px rgba(30, 144, 255, 0.4);
+    }
+    
+    /* Special hover effect for RedFlag card */
+    a[href="https://www.weadredflag.info/"] .glass:hover {
+        border-color: #90ee90 !important;
+        box-shadow: 0 10px 40px rgba(144, 238, 144, 0.4);
+    }
+    
+    /* Special hover effect for Fund Me card */
+    a[href="/fundme"] .glass:hover {
+        border-color: #7c3aed !important;
+        box-shadow: 0 10px 40px rgba(124, 58, 237, 0.4);
+    }
+    
+    /* Homepage stat cards - lighter red styling */
+    .stat-card {
+        transition: all 0.3s ease;
+        border: 2px solid;
+        border-image: linear-gradient(135deg, #DC143C, #B22222) 1 !important;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(220, 20, 60, 0.4);
+    }
+    
+    /* Lighter red icons for stat cards */
+    .stat-card .stat-icon {
+        background: linear-gradient(135deg, #DC143C, #B22222) !important;
+    }
+    
+    /* How It Works section - lighter red border */
+    .section.glass {
+        border: 2px solid;
+        border-image: linear-gradient(135deg, #DC143C, #B22222) 1 !important;
+    }
+    
+    /* How It Works section title - white color */
+    .section.glass .section-title {
+        color: white !important;
+    }
+</style>
+{% endblock %}
+

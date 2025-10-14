@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}WeAD - Quantum Micro-Advertising Platform{% endblock %}</title>
+    
+    <!-- Link External CSS File -->
+    <link rel="stylesheet" href="/static/styles.css">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- WeAD Platform Configuration (Network Switcher) -->
+    <script src="/static/config.js"></script>
+    
+    <style>
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+
+    <!-- Interactive Maps System -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Firebase SDK for Universal Google Sign-In -->
+    <script type="module">
+        try {
+            console.log('🔍 Loading Firebase in base.html...');
+            
+            // Import Firebase modules
+            const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+            const { getAuth, GoogleAuthProvider, signInWithPopup } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js');
+            
+            // Firebase configuration
+            const firebaseConfig = {
+                apiKey: "AIzaSyAObiLSbcGCF7OA-ZvmbQ3k9mAf9N7A87A",
+                authDomain: "wead-weadvertise.firebaseapp.com",
+                projectId: "wead-weadvertise",
+                storageBucket: "wead-weadvertise.firebasestorage.app",
+                messagingSenderId: "1048810367502",
+                appId: "1:1048810367502:web:7968bda5d9ad2949c6ea5f",
+                measurementId: "G-QE7NJ5FRVQ"
+            };
+            
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            const provider = new GoogleAuthProvider();
+            
+            // Make Firebase available globally
+            window.firebaseAuth = auth;
+            window.firebaseProvider = provider;
+            window.firebaseSignInWithPopup = signInWithPopup;
+            window.firebaseLoaded = true;
+            
+            console.log('✅ Firebase loaded globally in base.html');
+            
+        } catch (error) {
+            console.error('❌ Firebase loading error:', error);
+            window.firebaseLoaded = false;
+        }
+    </script>
+
+    <!-- Location Targeting System -->
+    <script src="/static/location_targeting.js"></script>
+
+    <!-- Analytics Dashboard -->
+    <script src="/static/analytics_dashboard.js"></script>
+    
+    <!-- Meta Tags for SEO -->
+    <meta name="description" content="WeAD - Revolutionary quantum micro-advertising platform connecting Web3 applications with portable display devices for sustainable income generation.">
+    <meta name="keywords" content="WeAD, quantum advertising, Web3, blockchain, micro-advertising, portable displays, digital marketing">
+    <meta name="author" content="Kenneth Lee - WeAD CEO">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="WeAD - Quantum Micro-Advertising Platform">
+    <meta property="og:description" content="Revolutionary quantum micro-advertising platform for Web3 applications">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://wead.io">
+    <meta property="og:image" content="https://wead.io/assets/quantum-logo.png">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="WeAD - Quantum Micro-Advertising Platform">
+    <meta name="twitter:description" content="Revolutionary quantum micro-advertising platform for Web3 applications">
+    <meta name="twitter:image" content="https://wead.io/assets/quantum-logo.png">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/static/manifest.json">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#6366f1">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    
+    <!-- Global Mobile Optimization -->
+    <style>
+        /* Mobile Horizontal Scroll for All Grid Layouts */
+        @media (max-width: 768px) {
+            /* Convert all grid layouts to horizontal scroll on mobile */
+            [style*="display: grid"],
+            [style*="display:grid"] {
+                display: flex !important;
+                flex-direction: row !important;
+                overflow-x: auto !important;
+                scroll-snap-type: x mandatory !important;
+                -webkit-overflow-scrolling: touch !important;
+                gap: 1.5rem !important;
+                scrollbar-width: none !important;
+            }
+            
+            [style*="display: grid"]::-webkit-scrollbar,
+            [style*="display:grid"]::-webkit-scrollbar {
+                display: none !important;
+            }
+            
+            /* Make grid children flexible and snap-scrollable */
+            [style*="display: grid"] > *,
+            [style*="display:grid"] > * {
+                flex: 0 0 85% !important;
+                scroll-snap-align: center !important;
+                max-width: 400px !important;
+                min-width: 280px !important;
+            }
+            
+            /* Ensure proper spacing for mobile carousel */
+            [style*="display: grid"]:first-child,
+            [style*="display:grid"]:first-child {
+                padding-left: 1rem !important;
+            }
+            
+            [style*="display: grid"]:last-child,
+            [style*="display:grid"]:last-child {
+                padding-right: 1rem !important;
+            }
+            
+            /* Fix for step-by-step layouts (keep vertical) */
+            [style*="grid-template-columns: 80px"] {
+                display: grid !important;
+                overflow-x: visible !important;
+            }
+            
+            [style*="grid-template-columns: 80px"] > * {
+                flex: unset !important;
+                scroll-snap-align: unset !important;
+                max-width: unset !important;
+                min-width: unset !important;
+            }
+        }
+    </style>
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" style="z-index: 9999 !important; position: fixed !important;">
+        <div class="nav-container">
+            <div class="nav-menu" id="nav-menu">
+                {% block nav_links %}
+                <!-- Default navigation - will be overridden by child templates -->
+                <a href="/" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="/profile" class="nav-link">
+                    <i class="fas fa-user-circle"></i>
+                    <span>My Profile</span>
+                </a>
+                {% endblock %}
+                
+                <!-- Mobile Auth Section -->
+                <div class="mobile-auth">
+                    <div class="wallet-info" id="mobileWalletInfo" style="display: none;">
+                        <i class="fas fa-wallet"></i>
+                        <span id="mobileWalletBalance">0 WEAD</span>
+                    </div>
+                    
+                    <button class="login-btn metamask-btn" onclick="connectMetaMask()">
+                        <i class="fab fa-ethereum"></i>
+                        <span id="mobileMetamaskText">Connect MetaMask (BSC)</span>
+                    </button>
+                    
+                    <button class="login-btn google-btn" onclick="connectGoogle()">
+                        <i class="fab fa-google"></i>
+                        <span id="mobileGoogleText">Sign in with Google</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="nav-auth" id="nav-auth">
+                <div class="wallet-info" id="walletInfo" style="display: none;">
+                    <i class="fas fa-wallet"></i>
+                    <span id="walletBalance">0 WEAD</span>
+                    <button onclick="manualRefreshBalance()" id="refreshBalanceBtn" style="background: none; border: none; color: #10b981; cursor: pointer; margin-left: 0.5rem; font-size: 0.9rem; transition: transform 0.3s;" title="Refresh balance from blockchain">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+                
+                <button class="login-btn metamask-btn" onclick="connectMetaMask()">
+                    <i class="fab fa-ethereum"></i>
+                    <span id="metamaskText">Connect MetaMask (BSC)</span>
+                </button>
+                
+                <button class="login-btn google-btn" onclick="connectGoogle()">
+                    <i class="fab fa-google"></i>
+                    <span id="googleText">Sign in with Google</span>
+                </button>
+            </div>
+            
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="#" target="_blank">Careers <i class="fas fa-external-link-alt" style="font-size: 0.8em;"></i></a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Community</a></li>
+                        <li><a href="#">Students</a></li>
+                        <li><a href="#">Brand</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Data Use</a></li>
+                        <li><a href="#">Security</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Connect</h3>
+                    <ul>
+                        <li><a href="https://x.com/WeADvertizers" target="_blank">X <i class="fas fa-external-link-alt" style="font-size: 0.8em;"></i></a></li>
+                        <li><a href="https://www.linkedin.com/company/weadvertize" target="_blank">LinkedIn <i class="fas fa-external-link-alt" style="font-size: 0.8em;"></i></a></li>
+                        <li><a href="https://www.facebook.com/Weadvertize/" target="_blank">Facebook <i class="fas fa-external-link-alt" style="font-size: 0.8em;"></i></a></li>
+                        <li><a href="https://t.me/WeAdvertizers" target="_blank">Telegram</a></li>
+                        <li><a href="https://discord.gg/8z73JGnk" target="_blank">Discord</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p style="display: flex; align-items: center; justify-content: center; gap: 1rem;">
+                    <img src="/static/WeAD.png" alt="WeAD Logo" style="height: 60px; width: auto; filter: drop-shadow(0 0 10px rgba(220, 20, 60, 0.6)) drop-shadow(0 0 20px rgba(255, 69, 0, 0.4));">
+                    &copy; 2025 WeAD Platform. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Navigation Toggle
+        const navToggle = document.getElementById('nav-toggle');
+        const navMenu = document.getElementById('nav-menu');
+
+        navToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        // Close menu when clicking on a link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // Active page highlighting
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.nav-link').forEach(link => {
+            if (link.getAttribute('href') === currentPath) {
+                link.classList.add('active');
+            }
+        });
+
+        // Global Balance Refresh Function (Call this after ANY payment!)
+        async function refreshAllBalances() {
+            const wallet = localStorage.getItem('user_wallet');
+            if (wallet && window.ethereum) {
+                console.log('🔄 Refreshing all WEAD balances...');
+                await updateWalletBalance(wallet);
+                
+                // Also refresh profile page balance if function exists
+                if (typeof window.loadWEADBalance === 'function') {
+                    await window.loadWEADBalance();
+                }
+                
+                console.log('✅ All balances refreshed!');
+            }
+        }
+        
+        // Manual refresh with visual feedback
+        async function manualRefreshBalance() {
+            console.log('🔄 Manual refresh button clicked!');
+            
+            const btn = document.getElementById('refreshBalanceBtn');
+            if (!btn) {
+                console.error('❌ Refresh button not found');
+                return;
+            }
+            
+            const icon = btn.querySelector('i');
+            
+            // Animate button (spinning)
+            if (icon) {
+                icon.style.animation = 'spin 1s linear infinite';
+            }
+            btn.disabled = true;
+            
+            try {
+                const wallet = localStorage.getItem('user_wallet');
+                if (!wallet) {
+                    alert('No wallet connected. Please connect MetaMask first.');
+                    return;
+                }
+                
+                if (!window.ethereum) {
+                    alert('MetaMask not found. Please install MetaMask.');
+                    return;
+                }
+                
+                console.log('📡 Fetching balance from blockchain...');
+                await refreshAllBalances();
+                
+                // Show success feedback (turn green)
+                btn.style.color = '#22c55e';
+                setTimeout(() => {
+                    btn.style.color = '#10b981';
+                }, 1500);
+                
+                console.log('✅ Balance refreshed successfully!');
+                
+                // Show visual confirmation
+                const balanceElement = document.getElementById('walletBalance');
+                if (balanceElement) {
+                    balanceElement.style.transition = 'all 0.3s';
+                    balanceElement.style.transform = 'scale(1.1)';
+                    balanceElement.style.color = '#22c55e';
+                    setTimeout(() => {
+                        balanceElement.style.transform = 'scale(1)';
+                        balanceElement.style.color = '';
+                    }, 500);
+                }
+                
+            } catch (error) {
+                console.error('❌ Refresh failed:', error);
+                alert('Failed to refresh balance: ' + error.message);
+                btn.style.color = '#ef4444';
+                setTimeout(() => {
+                    btn.style.color = '#10b981';
+                }, 1500);
+            } finally {
+                if (icon) {
+                    icon.style.animation = '';
+                }
+                btn.disabled = false;
+            }
+        }
+        
+        // Make refresh function globally available
+        window.refreshAllBalances = refreshAllBalances;
+        window.manualRefreshBalance = manualRefreshBalance;
+        
+        // Auto-refresh balance every 10 seconds if wallet connected
+        setInterval(() => {
+            const wallet = localStorage.getItem('user_wallet');
+            if (wallet && window.ethereum) {
+                refreshAllBalances();
+            }
+        }, 10000); // Every 10 seconds
+        
+        // Global Authentication Functions
+        // BSC Network Configuration (Auto-loaded from config.js)
+        const BSC_CONFIG = window.WEAD_CONFIG ? window.WEAD_CONFIG.BSC_CONFIG : {
+            chainId: '0x61', // 97 in hex - BSC TESTNET (fallback)
+            chainName: 'BSC Testnet',
+            nativeCurrency: {
+                name: 'BNB',
+                symbol: 'BNB',
+                decimals: 18,
+            },
+            rpcUrls: [
+                'https://data-seed-prebsc-1-s1.binance.org:8545/',
+                'https://data-seed-prebsc-2-s1.binance.org:8545/',
+            ],
+            blockExplorerUrls: ['https://testnet.bscscan.com'],
+        };
+
+        // MetaMask Connection
+        async function connectMetaMask() {
+            if (typeof window.ethereum !== 'undefined') {
+                try {
+                    await switchToBSCNetwork();
+                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    const account = accounts[0];
+                    const shortAccount = account.substring(0, 6) + '...' + account.substring(38);
+
+                    const networkName = window.WEAD_CONFIG ? window.WEAD_CONFIG.BSC_CONFIG.chainName : 'BSC Mainnet';
+                    const message = `WeAD Authentication\n\nWallet: ${account}\nNetwork: ${networkName}\nTimestamp: ${Date.now()}`;
+                    const signature = await window.ethereum.request({
+                        method: 'personal_sign',
+                        params: [message, account],
+                    });
+
+                    const authResponse = await fetch('/api/auth/metamask', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ address: account, signature: signature, message: message, network: 'BSC' })
+                    });
+
+                    if (authResponse.ok) {
+                        const authData = await authResponse.json();
+                        localStorage.setItem('access_token', authData.access_token);
+                        localStorage.setItem('user_wallet', account);
+                        localStorage.setItem('user_network', 'BSC');
+                    
+                        document.getElementById('metamaskText').textContent = shortAccount;
+                        if (document.getElementById('mobileMetamaskText')) {
+                            document.getElementById('mobileMetamaskText').textContent = shortAccount;
+                        }
+                        
+                        const walletInfo = document.getElementById('walletInfo');
+                        if (walletInfo) walletInfo.style.display = 'flex';
+                        
+                        const mobileWalletInfo = document.getElementById('mobileWalletInfo');
+                        if (mobileWalletInfo) mobileWalletInfo.style.display = 'flex';
+                        
+                        await updateWalletBalance(account);
+                        showToast('MetaMask connected successfully!', 'success');
+                    }
+                } catch (error) {
+                    console.error('MetaMask error:', error);
+                    showToast('Failed to connect MetaMask', 'error');
+                }
+            } else {
+                showToast('Please install MetaMask', 'error');
+                window.open('https://metamask.io/download/', '_blank');
+            }
+        }
+
+        async function switchToBSCNetwork() {
+            try {
+                await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: BSC_CONFIG.chainId }],
+                });
+            } catch (switchError) {
+                if (switchError.code === 4902) {
+                    await window.ethereum.request({
+                        method: 'wallet_addEthereumChain',
+                        params: [BSC_CONFIG],
+                    });
+                }
+            }
+        }
+
+        async function updateWalletBalance(address) {
+            try {
+                // Read WEAD balance directly from blockchain
+                if (window.ethereum && address) {
+                    try {
+                        const WEAD_TOKEN_ADDRESS = window.WEAD_CONFIG?.WEAD_TOKEN_ADDRESS || '0xCF99bF2cbD83A580437d39A5092C1665Faa9898B';
+                        
+                        // ERC20 balanceOf function signature
+                        const balanceOfData = '0x70a08231000000000000000000000000' + address.slice(2).toLowerCase();
+                        
+                        const balance = await window.ethereum.request({
+                            method: 'eth_call',
+                            params: [{
+                                to: WEAD_TOKEN_ADDRESS,
+                                data: balanceOfData
+                            }, 'latest']
+                        });
+                        
+                        // Convert hex balance to decimal and from wei to WEAD
+                        const balanceInWEAD = parseInt(balance, 16) / 1e18;
+                        const balanceText = `${balanceInWEAD.toLocaleString('en-US', { maximumFractionDigits: 0 })} WEAD`;
+                        
+                        // Update all balance displays across the entire page
+                        if (document.getElementById('walletBalance')) {
+                            document.getElementById('walletBalance').textContent = balanceText;
+                        }
+                        if (document.getElementById('mobileWalletBalance')) {
+                            document.getElementById('mobileWalletBalance').textContent = balanceText;
+                        }
+                        if (document.getElementById('weadBalance')) {
+                            document.getElementById('weadBalance').textContent = balanceText;
+                        }
+                        
+                        // Trigger custom event so other pages can listen
+                        window.dispatchEvent(new CustomEvent('weadBalanceUpdated', { 
+                            detail: { balance: balanceInWEAD, address: address }
+                        }));
+                        
+                        console.log('✅ WEAD Balance Updated:', balanceInWEAD.toLocaleString(), 'WEAD');
+                        return balanceInWEAD;
+                    } catch (blockchainError) {
+                        console.warn('Blockchain balance check failed:', blockchainError);
+                    }
+                }
+                
+                // Fallback to API
+                const token = localStorage.getItem('access_token');
+                if (!token) return;
+
+                const response = await fetch('/api/wallet/balance', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const balanceText = `${data.balance.toFixed(2)} WEAD`;
+                    
+                    if (document.getElementById('walletBalance')) {
+                        document.getElementById('walletBalance').textContent = balanceText;
+                    }
+                    if (document.getElementById('mobileWalletBalance')) {
+                        document.getElementById('mobileWalletBalance').textContent = balanceText;
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating balance:', error);
+            }
+        }
+
+        async function connectGoogle() {
+            try {
+                console.log('🔐 Header: Google Sign-In clicked');
+                
+                // Check if Firebase is loaded
+                if (!window.firebaseLoaded || !window.firebaseAuth || !window.firebaseProvider) {
+                    console.warn('⚠️ Firebase not loaded yet, redirecting to profile...');
+                    showToast('Loading Google Sign-In...', 'info');
+                    
+                    // Redirect to profile page where Firebase is guaranteed to be loaded
+                    setTimeout(() => {
+                        window.location.href = '/profile';
+                    }, 1000);
+                    return;
+                }
+                
+                console.log('✅ Firebase loaded, attempting sign-in...');
+                
+                // Use Firebase Google Sign-In
+                const result = await window.firebaseSignInWithPopup(window.firebaseAuth, window.firebaseProvider);
+                const user = result.user;
+                
+                console.log('✅ Google sign-in successful:', user.email);
+                
+                // Save to localStorage
+                const profile = {
+                    fullName: user.displayName || '',
+                    googleEmail: user.email,
+                    googlePhoto: user.photoURL,
+                    googleUid: user.uid,
+                    googleLinked: true,
+                    linkedAt: new Date().toISOString()
+                };
+                
+                localStorage.setItem('weadUserProfile', JSON.stringify(profile));
+                localStorage.setItem('googleUser', JSON.stringify({
+                    uid: user.uid,
+                    email: user.email,
+                    displayName: user.displayName,
+                    photoURL: user.photoURL
+                }));
+                
+                // Update button text to show logged in
+                if (document.getElementById('googleText')) {
+                    document.getElementById('googleText').innerHTML = '<i class="fas fa-check-circle"></i> Logged in';
+                    document.getElementById('googleText').style.color = 'white';
+                }
+                if (document.getElementById('mobileGoogleText')) {
+                    document.getElementById('mobileGoogleText').innerHTML = '<i class="fas fa-check-circle"></i> Logged in';
+                    document.getElementById('mobileGoogleText').style.color = 'white';
+                }
+                
+                // Save to backend
+                try {
+                    await fetch('/api/google/auth', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            uid: user.uid,
+                            email: user.email,
+                            displayName: user.displayName,
+                            photoURL: user.photoURL
+                        })
+                    });
+                    console.log('✅ User saved to backend');
+                } catch (backendError) {
+                    console.warn('⚠️ Backend save failed (local storage still works)');
+                }
+                
+                showToast(`Welcome ${user.displayName}! 🎉`, 'success');
+                
+                // Redirect to profile after 1 second
+                setTimeout(() => {
+                    window.location.href = '/profile';
+                }, 1500);
+                
+            } catch (error) {
+                console.error('❌ Google sign-in error:', error);
+                
+                // User-friendly error handling
+                if (error.code === 'auth/popup-blocked') {
+                    showToast('Popup blocked! Please allow popups.', 'error');
+                    // Redirect to profile page where redirect method is available
+                    setTimeout(() => {
+                        window.location.href = '/profile';
+                    }, 2000);
+                } else if (error.code === 'auth/popup-closed-by-user') {
+                    showToast('Sign-in cancelled', 'warning');
+                } else if (error.code === 'auth/cancelled-popup-request') {
+                    // Multiple popups triggered - ignore
+                    console.log('Multiple popup requests - ignoring');
+                } else {
+                    showToast('Sign-in failed. Redirecting to profile...', 'error');
+                    setTimeout(() => {
+                        window.location.href = '/profile';
+                    }, 2000);
+                }
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            if (toast) {
+                toast.textContent = message;
+                toast.className = `toast ${type} show`;
+                setTimeout(() => toast.classList.remove('show'), 4000);
+            } else {
+                console.log(`[Toast ${type}]: ${message}`);
+            }
+        }
+
+        // Check for existing auth on page load
+        window.addEventListener('load', async function() {
+            const token = localStorage.getItem('access_token');
+            const wallet = localStorage.getItem('user_wallet');
+
+            // Check MetaMask connection
+            if (wallet) {
+                const shortAccount = wallet.substring(0, 6) + '...' + wallet.substring(38);
+                if (document.getElementById('metamaskText')) {
+                    document.getElementById('metamaskText').textContent = shortAccount;
+                }
+                if (document.getElementById('mobileMetamaskText')) {
+                    document.getElementById('mobileMetamaskText').textContent = shortAccount;
+                }
+                
+                const walletInfo = document.getElementById('walletInfo');
+                if (walletInfo) walletInfo.style.display = 'flex';
+                
+                const mobileWalletInfo = document.getElementById('mobileWalletInfo');
+                if (mobileWalletInfo) mobileWalletInfo.style.display = 'flex';
+                
+                await updateWalletBalance(wallet);
+            }
+            
+            // Check Google authentication
+            const googleUser = localStorage.getItem('googleUser');
+            console.log('🔍 Checking Google auth on page load:', googleUser ? 'Found' : 'Not found');
+            
+            if (googleUser) {
+                try {
+                    const user = JSON.parse(googleUser);
+                    console.log('👤 Google user data:', user);
+                    
+                    const googleTextElement = document.getElementById('googleText');
+                    const mobileGoogleTextElement = document.getElementById('mobileGoogleText');
+                    
+                    console.log('🔍 googleText element:', googleTextElement);
+                    console.log('🔍 mobileGoogleText element:', mobileGoogleTextElement);
+                    
+                    if (googleTextElement) {
+                        googleTextElement.innerHTML = '<i class="fas fa-check-circle"></i> Logged in';
+                        googleTextElement.style.color = 'white';
+                        console.log('✅ Updated googleText to "Logged in"');
+                    } else {
+                        console.error('❌ googleText element not found!');
+                    }
+                    
+                    if (mobileGoogleTextElement) {
+                        mobileGoogleTextElement.innerHTML = '<i class="fas fa-check-circle"></i> Logged in';
+                        mobileGoogleTextElement.style.color = 'white';
+                        console.log('✅ Updated mobileGoogleText to "Logged in"');
+                    } else {
+                        console.error('❌ mobileGoogleText element not found!');
+                    }
+                    
+                    console.log('✅ Google user auto-loaded:', user.email);
+                } catch (error) {
+                    console.error('❌ Error loading Google user:', error);
+                }
+            } else {
+                console.log('ℹ️ No Google user in localStorage');
+            }
+        });
+
+        // Network change listener
+        if (typeof window.ethereum !== 'undefined') {
+            window.ethereum.on('chainChanged', () => window.location.reload());
+            window.ethereum.on('accountsChanged', (accounts) => {
+                if (accounts.length === 0) {
+                    localStorage.removeItem('user_wallet');
+                    localStorage.removeItem('access_token');
+                    window.location.reload();
+                } else {
+                    localStorage.setItem('user_wallet', accounts[0]);
+                    window.location.reload();
+                }
+            });
+        }
+    </script>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast" style="position: fixed; bottom: 20px; right: 20px; padding: 1rem 2rem; border-radius: 10px; background: var(--quantum-primary); color: white; font-weight: 600; z-index: 10000; transform: translateY(100px); opacity: 0; transition: all 0.3s ease;"></div>
+
+    <style>
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .toast.success {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+        }
+        .toast.error {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+        .toast.warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+        .toast.info {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+        }
+        
+        /* Home button - dark red styling */
+        .nav-link[href="/"] {
+            border: 2px solid #dc143c !important;
+        }
+        
+        .nav-link[href="/"] i {
+            color: #dc143c !important;
+        }
+        
+        .nav-link[href="/"] span {
+            color: white !important;
+        }
+        
+        .nav-link[href="/"]:hover {
+            border: 2px solid #8B0000 !important;
+            box-shadow: 0 4px 15px rgba(220, 20, 60, 0.4) !important;
+        }
+        
+        .nav-link[href="/"]:hover i {
+            color: #8B0000 !important;
+        }
+        
+        .nav-link[href="/"]:hover span {
+            color: white !important;
+        }
+    </style>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

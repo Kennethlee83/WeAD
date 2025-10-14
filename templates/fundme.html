@@ -1,0 +1,1638 @@
+{% extends "base.html" %}
+
+{% block title %}Fund Me - WeAD Platform{% endblock %}
+
+{% block nav_links %}
+<a href="/" class="nav-link">
+    <i class="fas fa-home"></i>
+    <span>Home</span>
+</a>
+<a href="/profile" class="nav-link">
+    <i class="fas fa-user-circle"></i>
+    <span>My Profile</span>
+</a>
+{% endblock %}
+
+{% block extra_head %}
+<!-- Google Fonts - Anton for buttons, Merriweather for story text -->
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Merriweather:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+    /* Fund Me Page Custom Color Scheme */
+    :root {
+        --fundme-dark-blue: #1e3a8a;
+        --fundme-blue: #1e40af;
+        --fundme-purple: #7c3aed;
+        --fundme-light-purple: #8b5cf6;
+        --fundme-black: #0a0a0a;
+        --fundme-dark-grey: #1f2937;
+        --fundme-grey: #374151;
+        --fundme-light-grey: #4b5563;
+    }
+    
+    .fundme-gradient {
+        background: linear-gradient(135deg, var(--fundme-dark-blue), var(--fundme-purple));
+    }
+    
+    .fundme-glass {
+        background: transparent;
+        backdrop-filter: none;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+    }
+    
+    .fundme-btn-primary {
+        background: transparent;
+        color: white;
+        border: none;
+        padding: 1.5rem 3rem;
+        border-radius: 0;
+        font-family: 'Anton', sans-serif;
+        font-weight: 400;
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: none;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+    
+    .fundme-btn-primary:hover {
+        transform: translateY(-3px);
+        color: var(--fundme-light-purple);
+    }
+    
+    .fundme-btn-primary:active {
+        transform: translateY(-1px);
+    }
+    
+    .sponsor-card {
+        background: linear-gradient(135deg, rgba(30, 58, 138, 0.2), rgba(124, 58, 237, 0.1));
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(124, 58, 237, 0.3);
+        border-radius: 15px;
+        padding: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .story-text {
+        font-family: 'Merriweather', Georgia, serif;
+        font-weight: 300;
+        line-height: 1.8;
+        color: #e2e8f0;
+        font-size: 1rem;
+    }
+    
+    .sponsor-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--fundme-light-purple);
+        box-shadow: 0 10px 30px rgba(124, 58, 237, 0.3);
+    }
+    
+    .sponsor-card-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+    }
+    
+    .verified-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+    
+    .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        overflow: hidden;
+        margin: 1rem 0;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--fundme-purple), var(--fundme-light-purple));
+        transition: width 0.3s ease;
+    }
+    
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(5px);
+        z-index: 10000;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+    }
+    
+    .modal.active {
+        display: flex;
+    }
+    
+    .modal-content {
+        background: linear-gradient(135deg, var(--fundme-dark-grey), var(--fundme-black));
+        border: 2px solid var(--fundme-purple);
+        border-radius: 20px;
+        padding: 2rem;
+        max-width: 600px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+    }
+    
+    .modal-close {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        color: white;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+    }
+    
+    .modal-close:hover {
+        background: var(--fundme-purple);
+        transform: rotate(90deg);
+    }
+    
+    .filter-bar {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin: 2rem 0;
+        padding: 1.5rem;
+        background: rgba(30, 58, 138, 0.2);
+        border-radius: 15px;
+        border: 1px solid rgba(124, 58, 237, 0.3);
+    }
+    
+    .filter-btn {
+        padding: 0.6rem 1.2rem;
+        background: rgba(124, 58, 237, 0.2);
+        border: 1px solid var(--fundme-purple);
+        color: white;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .filter-btn:hover, .filter-btn.active {
+        background: var(--fundme-purple);
+        transform: translateY(-2px);
+    }
+    
+    .sponsor-tier {
+        display: inline-block;
+        padding: 0.4rem 1rem;
+        border-radius: 15px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-top: 0.5rem;
+    }
+    
+    .tier-bronze {
+        background: linear-gradient(135deg, #cd7f32, #b87333);
+    }
+    
+    .tier-silver {
+        background: linear-gradient(135deg, #c0c0c0, #a8a8a8);
+    }
+    
+    .tier-gold {
+        background: linear-gradient(135deg, #ffd700, #ffed4e);
+        color: #000;
+    }
+    
+    .tier-platinum {
+        background: linear-gradient(135deg, #e5e4e2, #b0c4de);
+        color: #000;
+    }
+    
+    /* Keep purple footer titles only on Fund Me page */
+    .footer-section h3 {
+        color: #8b5cf6 !important;
+    }
+    
+    /* Mobile Optimization */
+    @media (max-width: 768px) {
+        /* Prevent horizontal scrolling and fix viewport */
+        html, body {
+            overflow-x: hidden !important;
+            width: 100% !important;
+            max-width: 100vw !important;
+            position: relative !important;
+        }
+        
+        .page-container {
+            padding: 0 !important;
+            width: 100% !important;
+            max-width: 100vw !important;
+            overflow-x: hidden !important;
+        }
+        
+        .page-header {
+            padding: 1rem !important;
+            width: 100% !important;
+            max-width: 100vw !important;
+            overflow-x: hidden !important;
+        }
+        
+        /* Ensure all sections fit within viewport */
+        .section, .glass, .stats-grid, .projects-grid, .filter-bar {
+            width: 100% !important;
+            max-width: 100vw !important;
+            overflow-x: hidden !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+        
+        /* Make mobile title white */
+        .page-header h1 {
+            color: white !important;
+            background: none !important;
+            -webkit-background-clip: unset !important;
+            -webkit-text-fill-color: white !important;
+            background-clip: unset !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;
+        }
+        
+        .page-header h1 {
+            font-size: 1.5rem !important;
+        }
+        
+        .section.glass {
+            background: transparent !important;
+            border: none !important;
+            padding: 0.5rem 1rem !important;
+        }
+        
+        .glass {
+            padding: 1rem !important;
+        }
+        
+        [style*="display: grid"] {
+            display: flex !important;
+            overflow-x: auto !important;
+            scroll-snap-type: x mandatory !important;
+            gap: 1rem !important;
+            padding: 0 1rem !important;
+            margin-left: -1rem !important;
+            margin-right: -1rem !important;
+            scrollbar-width: none !important;
+        }
+        
+        [style*="display: grid"]::-webkit-scrollbar {
+            display: none !important;
+        }
+        
+        [style*="display: grid"] > * {
+            flex: 0 0 85% !important;
+            scroll-snap-align: center !important;
+            min-width: 280px !important;
+        }
+        
+        .btn {
+            width: 100% !important;
+            padding: 0.875rem 1rem !important;
+        }
+        
+        input, textarea {
+            font-size: 16px !important;
+        }
+        
+        /* Fix filter buttons for mobile */
+        .filter-bar {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 1rem !important;
+            padding: 1rem !important;
+            background: rgba(0, 0, 0, 0.3) !important;
+            border-radius: 12px !important;
+            margin-bottom: 2rem !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+        
+        /* Filter buttons horizontal scroll */
+        .filter-buttons-container {
+            display: flex !important;
+            overflow-x: auto !important;
+            scroll-snap-type: x mandatory !important;
+            gap: 0.5rem !important;
+            padding: 0.5rem 0 !important;
+            scrollbar-width: none !important;
+            -webkit-overflow-scrolling: touch !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+        }
+        
+        .filter-buttons-container::-webkit-scrollbar {
+            display: none !important;
+        }
+        
+        .filter-btn {
+            flex: 0 0 auto !important;
+            white-space: nowrap !important;
+            padding: 0.6rem 0.8rem !important;
+            font-size: 0.8rem !important;
+            scroll-snap-align: center !important;
+            color: white !important;
+            background: rgba(0, 0, 0, 0.6) !important;
+            border: 2px solid rgba(139, 43, 255, 0.3) !important;
+            border-radius: 8px !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+            height: 45px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            min-width: 100px !important;
+            max-width: 140px !important;
+        }
+        
+        .filter-btn.active {
+            background: rgba(139, 43, 255, 0.2) !important;
+            border-color: rgba(139, 43, 255, 0.6) !important;
+        }
+        
+        /* Sort and search row */
+        .filter-controls {
+            display: flex !important;
+            gap: 0.5rem !important;
+            align-items: center !important;
+        }
+        
+        .filter-controls select,
+        .filter-controls input {
+            flex: 1 !important;
+            padding: 0.75rem !important;
+            font-size: 0.9rem !important;
+            background: rgba(0, 0, 0, 0.6) !important;
+            border: 2px solid rgba(139, 43, 255, 0.3) !important;
+            border-radius: 8px !important;
+            color: white !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+        }
+        
+        .filter-controls input::placeholder {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <h1 style="background: linear-gradient(135deg, var(--fundme-light-purple), #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+            <i class="fas fa-hand-holding-usd"></i> Sponsorship Marketplace
+        </h1>
+        <p>Connect sponsors with aspiring micro-advertisers • 80% Microtisers / 20% Sponsors Revenue Share</p>
+        
+        <!-- Demo Disclaimer -->
+        <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05)); border: 2px solid rgba(59, 130, 246, 0.3); border-radius: 12px; padding: 1rem 1.5rem; margin-top: 1.5rem; text-align: center;">
+            <i class="fas fa-info-circle" style="color: #3b82f6; margin-right: 0.5rem;"></i>
+            <span style="color: #93c5fd; font-size: 0.95rem; font-weight: 500;">
+                Demo Preview: These are sample campaigns and features that will go live with real users upon official platform launch.
+            </span>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div style="display: flex; gap: 2rem; justify-content: center; margin: 3rem 0 4rem 0; flex-wrap: wrap;">
+        <button class="fundme-btn-primary" onclick="openSponsorMeModal()">
+            <i class="fas fa-plus-circle" style="font-size: 1.3rem; margin-right: 0.8rem;"></i> Request Sponsorship
+        </button>
+        <button class="fundme-btn-primary" onclick="showMyRequests()">
+            <i class="fas fa-user" style="font-size: 1.3rem; margin-right: 0.8rem;"></i> My Requests
+        </button>
+        <button class="fundme-btn-primary" onclick="showMySponsorships()">
+            <i class="fas fa-heart" style="font-size: 1.3rem; margin-right: 0.8rem;"></i> My Sponsorships
+        </button>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="stats-grid">
+        <div class="stat-card fundme-glass">
+            <div class="stat-icon" style="background: linear-gradient(135deg, var(--fundme-purple), var(--fundme-light-purple));">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="totalSeekers" style="color: white;">245</h3>
+                <p style="color: #cbd5e1;">Active Seekers</p>
+            </div>
+        </div>
+        
+        <div class="stat-card fundme-glass">
+            <div class="stat-icon" style="background: linear-gradient(135deg, var(--fundme-purple), var(--fundme-light-purple));">
+                <i class="fas fa-handshake"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="totalSponsors" style="color: white;">1,280</h3>
+                <p style="color: #cbd5e1;">Active Sponsors</p>
+            </div>
+        </div>
+        
+        <div class="stat-card fundme-glass">
+            <div class="stat-icon" style="background: linear-gradient(135deg, var(--fundme-purple), var(--fundme-light-purple));">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="totalFunded" style="color: white;">$2.8M</h3>
+                <p style="color: #cbd5e1;">Total Funded</p>
+            </div>
+        </div>
+        
+        <div class="stat-card fundme-glass">
+            <div class="stat-icon" style="background: linear-gradient(135deg, var(--fundme-purple), var(--fundme-light-purple));">
+                <i class="fas fa-tv"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="devicesSponsored" style="color: white;">8,450</h3>
+                <p style="color: #cbd5e1;">Devices Sponsored</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+        <div style="display: flex; align-items: center; gap: 0.5rem; color: white; font-weight: 600;">
+            <i class="fas fa-filter"></i> Filter:
+        </div>
+        
+        <!-- Filter buttons container -->
+        <div class="filter-buttons-container">
+            <button class="filter-btn active" data-category="all">All</button>
+            <button class="filter-btn" data-category="education">Education</button>
+            <button class="filter-btn" data-category="business">Business</button>
+            <button class="filter-btn" data-category="health">Health</button>
+            <button class="filter-btn" data-category="community">Community</button>
+            <button class="filter-btn" data-category="technology">Technology</button>
+            <button class="filter-btn" data-category="creative">Creative</button>
+        </div>
+        
+        <!-- Sort and search controls -->
+        <div class="filter-controls">
+            <select id="sortSelect">
+                <option value="newest">Newest First</option>
+                <option value="amount">Highest Amount</option>
+                <option value="progress">Most Progress</option>
+                <option value="popular">Most Supporters</option>
+            </select>
+            
+            <input type="text" placeholder="Search..." id="searchInput">
+        </div>
+    </div>
+
+    <!-- Sponsorship Requests Grid -->
+    <div id="sponsorshipGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2rem; margin: 2rem 0;">
+        <!-- Sample Cards - Will be populated dynamically -->
+    </div>
+
+</div>
+
+<!-- Request Sponsorship Modal -->
+<div id="sponsorMeModal" class="modal">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeSponsorMeModal()">&times;</button>
+        <h2 style="color: var(--fundme-light-purple); margin-bottom: 2rem; text-align: center;">
+            <i class="fas fa-star"></i> Request Sponsorship
+        </h2>
+        
+        <form id="sponsorshipForm" onsubmit="submitSponsorshipRequest(event)">
+            <div class="form-group">
+                <label class="form-label" style="color: white;">Your Name</label>
+                <input type="text" class="form-input" id="seekerName" required placeholder="Enter your full name">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" style="color: white;">Profile Image</label>
+                <input type="file" class="form-input" id="seekerImage" accept="image/*" required>
+                <div id="imagePreview" style="margin-top: 1rem; display: none;">
+                    <img id="previewImg" style="width: 100%; max-height: 200px; object-fit: cover; border-radius: 10px;">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" style="color: white;">Category</label>
+                <select class="form-select" id="category" required>
+                    <option value="">Select category</option>
+                    <option value="education">Education</option>
+                    <option value="business">Business & Startup</option>
+                    <option value="health">Health & Wellness</option>
+                    <option value="community">Community Service</option>
+                    <option value="technology">Technology</option>
+                    <option value="creative">Creative Projects</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" style="color: white;">Location</label>
+                <input type="text" class="form-input" id="location" required placeholder="City, Country">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" style="color: white;">Title</label>
+                <input type="text" class="form-input" id="requestTitle" required placeholder="e.g., Help Me Start My Mobile Ad Business">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" style="color: white;">Your Story (Why do you need sponsorship?)</label>
+                <textarea class="form-textarea" id="story" required rows="8" placeholder="Share your compelling story... Explain your background, your goals, and why you need sponsorship for display devices. Be honest and specific about how this will change your life."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" style="color: white;">Number of Devices Needed</label>
+                <input type="number" class="form-input" id="devicesNeeded" required min="1" max="100" placeholder="5">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" style="color: white;">Cost Per Device (USD)</label>
+                <input type="number" class="form-input" id="costPerDevice" required min="50" placeholder="500">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" style="color: white;">Total Amount Needed</label>
+                <input type="number" class="form-input" id="totalAmount" readonly style="background: rgba(124, 58, 237, 0.1);">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" style="color: white;">Campaign Duration (Days)</label>
+                <input type="number" class="form-input" id="duration" required min="7" max="90" value="30">
+            </div>
+            
+            <div style="background: rgba(124, 58, 237, 0.2); padding: 1.5rem; border-radius: 10px; margin: 1.5rem 0; border: 1px solid var(--fundme-purple);">
+                <h4 style="color: var(--fundme-light-purple); margin-bottom: 1rem;">
+                    <i class="fas fa-info-circle"></i> Revenue Share Terms
+                </h4>
+                <p style="color: #cbd5e1; line-height: 1.8;">
+                    • <strong>80%</strong> of ad revenue goes to you (the micro-advertiser)<br>
+                    • <strong>20%</strong> of ad revenue goes to your sponsors<br>
+                    • Sponsors provide the display devices upfront<br>
+                    • Payments automated via smart contract<br>
+                    • Transparent tracking of all earnings
+                </p>
+            </div>
+            
+            <button type="submit" class="fundme-btn-primary" style="width: 100%; padding: 1.2rem;">
+                <i class="fas fa-paper-plane"></i> Submit Request
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- View Details Modal -->
+<div id="detailsModal" class="modal">
+    <div class="modal-content" style="max-width: 800px;">
+        <button class="modal-close" onclick="closeDetailsModal()">&times;</button>
+        <div id="detailsContent">
+            <!-- Will be populated dynamically -->
+        </div>
+    </div>
+</div>
+
+<!-- My Requests Modal -->
+<div id="myRequestsModal" class="modal">
+    <div class="modal-content" style="max-width: 900px;">
+        <button class="modal-close" onclick="closeMyRequestsModal()">&times;</button>
+        <h2 style="color: var(--fundme-light-purple); margin-bottom: 2rem; text-align: center;">
+            <i class="fas fa-list"></i> My Sponsorship Requests
+        </h2>
+        <div id="myRequestsContent">
+            <!-- Will be populated dynamically -->
+        </div>
+    </div>
+</div>
+
+<!-- My Sponsorships Modal -->
+<div id="mySponsorshipsModal" class="modal">
+    <div class="modal-content" style="max-width: 900px;">
+        <button class="modal-close" onclick="closeMySponsorshipsModal()">&times;</button>
+        <h2 style="color: var(--fundme-light-purple); margin-bottom: 2rem; text-align: center;">
+            <i class="fas fa-heart"></i> My Sponsorships
+        </h2>
+        <div id="mySponsorshipsContent">
+            <!-- Will be populated dynamically -->
+        </div>
+    </div>
+</div>
+
+<!-- Sponsor Payment Modal -->
+<div id="sponsorPaymentModal" class="modal">
+    <div class="modal-content" style="max-width: 600px;">
+        <button class="modal-close" onclick="closeSponsorPaymentModal()">&times;</button>
+        <h2 style="color: var(--fundme-light-purple); margin-bottom: 2rem; text-align: center;">
+            <i class="fas fa-hand-holding-usd"></i> Sponsor This Campaign
+        </h2>
+        
+        <div id="sponsorPaymentContent">
+            <!-- Will be populated dynamically -->
+        </div>
+    </div>
+</div>
+
+<script>
+    // Sample data - Replace with API calls
+    const sponsorshipRequests = [
+        {
+            id: 1,
+            name: "Sarah Johnson",
+            image: "https://i.pravatar.cc/400?img=1",
+            category: "education",
+            location: "Lagos, Nigeria",
+            title: "Help Me Educate My Community with Digital Ads",
+            story: "I'm a teacher who wants to use mobile display devices to show educational content and ads in my rural community. This will help me earn income while providing free education to underprivileged children...",
+            devicesNeeded: 5,
+            costPerDevice: 500,
+            totalAmount: 2500,
+            raised: 1800,
+            supporters: 12,
+            daysLeft: 18,
+            verified: true,
+            created: "2025-01-15"
+        },
+        {
+            id: 2,
+            name: "Carlos Rodriguez",
+            image: "https://i.pravatar.cc/400?img=12",
+            category: "business",
+            location: "Mexico City, Mexico",
+            title: "Starting Mobile Ad Business for My Family",
+            story: "I'm a single father trying to support my family. I want to start a mobile advertising business using car-mounted displays. This will provide steady income and help me create jobs in my neighborhood...",
+            devicesNeeded: 3,
+            costPerDevice: 800,
+            totalAmount: 2400,
+            raised: 600,
+            supporters: 5,
+            daysLeft: 25,
+            verified: true,
+            created: "2025-01-20"
+        },
+        {
+            id: 3,
+            name: "Priya Patel",
+            image: "https://i.pravatar.cc/400?img=5",
+            category: "technology",
+            location: "Mumbai, India",
+            title: "Tech Startup Marketing Through Mobile Displays",
+            story: "As a tech entrepreneur, I want to use mobile display advertising to promote local startups while earning income. This will create an ecosystem of mutual support in our startup community...",
+            devicesNeeded: 10,
+            costPerDevice: 600,
+            totalAmount: 6000,
+            raised: 4200,
+            supporters: 28,
+            daysLeft: 12,
+            verified: true,
+            created: "2025-01-10"
+        },
+        {
+            id: 4,
+            name: "Ahmed Hassan",
+            image: "https://i.pravatar.cc/400?img=14",
+            category: "community",
+            location: "Cairo, Egypt",
+            title: "Community Development Through Ad Revenue",
+            story: "I want to install display screens in high-traffic areas of my neighborhood to show ads and community announcements. The revenue will fund local development projects and create opportunities...",
+            devicesNeeded: 8,
+            costPerDevice: 450,
+            totalAmount: 3600,
+            raised: 2100,
+            supporters: 18,
+            daysLeft: 20,
+            verified: false,
+            created: "2025-01-18"
+        },
+        {
+            id: 5,
+            name: "Emily Chen",
+            image: "https://i.pravatar.cc/400?img=9",
+            category: "creative",
+            location: "Singapore",
+            title: "Digital Art Display Network",
+            story: "I'm an artist who wants to create a network of digital displays showing art and ads. This merges my passion for art with sustainable income, while beautifying public spaces...",
+            devicesNeeded: 6,
+            costPerDevice: 700,
+            totalAmount: 4200,
+            raised: 3400,
+            supporters: 22,
+            daysLeft: 8,
+            verified: true,
+            created: "2025-01-08"
+        },
+        {
+            id: 6,
+            name: "James Wilson",
+            image: "https://i.pravatar.cc/400?img=13",
+            category: "health",
+            location: "Nairobi, Kenya",
+            title: "Health Awareness Campaign Funding",
+            story: "I'm a healthcare worker wanting to use display screens to show health education and ads. The income will fund free health screenings in underserved communities...",
+            devicesNeeded: 4,
+            costPerDevice: 550,
+            totalAmount: 2200,
+            raised: 800,
+            supporters: 8,
+            daysLeft: 22,
+            verified: true,
+            created: "2025-01-22"
+        }
+    ];
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        renderSponsorshipGrid(sponsorshipRequests);
+        setupFilters();
+        setupFormCalculations();
+        setupImagePreview();
+    });
+
+    function renderSponsorshipGrid(requests) {
+        const grid = document.getElementById('sponsorshipGrid');
+        grid.innerHTML = requests.map(req => createSponsorCard(req)).join('');
+    }
+
+    function createSponsorCard(req) {
+        const progress = (req.raised / req.totalAmount * 100).toFixed(0);
+        const tier = getSponsorTier(req.supporters);
+        
+        return `
+            <div class="sponsor-card" onclick="viewDetails(${req.id})" data-category="${req.category}">
+                ${req.verified ? '<div class="verified-badge"><i class="fas fa-check-circle"></i> Verified</div>' : ''}
+                <img src="${req.image}" class="sponsor-card-image" alt="${req.name}">
+                <h3 style="color: white; margin-bottom: 0.5rem; font-size: 1.2rem;">${req.title}</h3>
+                <div style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 1rem;">
+                    <i class="fas fa-user"></i> ${req.name} • <i class="fas fa-map-marker-alt"></i> ${req.location}
+                </div>
+                <p class="story-text" style="margin-bottom: 1rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                    ${req.story}
+                </p>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${progress}%"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; color: white; font-size: 0.9rem; margin-bottom: 1rem;">
+                    <span><strong>$${req.raised.toLocaleString()}</strong> raised</span>
+                    <span><strong>$${req.totalAmount.toLocaleString()}</strong> goal</span>
+                </div>
+                <div style="display: flex; gap: 1rem; color: #94a3b8; font-size: 0.85rem; margin-bottom: 1rem;">
+                    <span><i class="fas fa-users"></i> ${req.supporters} supporters</span>
+                    <span><i class="fas fa-clock"></i> ${req.daysLeft} days left</span>
+                    <span><i class="fas fa-tv"></i> ${req.devicesNeeded} devices</span>
+                </div>
+                <span class="sponsor-tier ${tier.class}">${tier.name}</span>
+            </div>
+        `;
+    }
+
+    function getSponsorTier(supporters) {
+        if (supporters >= 25) return { name: 'Platinum Campaign', class: 'tier-platinum' };
+        if (supporters >= 15) return { name: 'Gold Campaign', class: 'tier-gold' };
+        if (supporters >= 8) return { name: 'Silver Campaign', class: 'tier-silver' };
+        return { name: 'Bronze Campaign', class: 'tier-bronze' };
+    }
+
+    function viewDetails(id) {
+        const req = sponsorshipRequests.find(r => r.id === id);
+        if (!req) return;
+        
+        const progress = (req.raised / req.totalAmount * 100).toFixed(0);
+        const remaining = req.totalAmount - req.raised;
+        
+        document.getElementById('detailsContent').innerHTML = `
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <img src="${req.image}" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid var(--fundme-purple); margin-bottom: 1rem;">
+                <h2 style="color: white; margin-bottom: 0.5rem;">${req.name}</h2>
+                <div style="color: #94a3b8;">
+                    <i class="fas fa-map-marker-alt"></i> ${req.location} • <i class="fas fa-tag"></i> ${req.category}
+                </div>
+                ${req.verified ? '<div style="color: #10b981; margin-top: 0.5rem;"><i class="fas fa-check-circle"></i> Verified Profile</div>' : ''}
+            </div>
+            
+            <h3 style="color: var(--fundme-light-purple); margin-bottom: 1rem; font-size: 1.5rem;">${req.title}</h3>
+            
+            <div style="background: rgba(124, 58, 237, 0.1); padding: 1.5rem; border-radius: 10px; margin: 1.5rem 0;">
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; color: white; text-align: center;">
+                    <div>
+                        <div style="font-size: 1.8rem; font-weight: 700; color: var(--fundme-light-purple);">$${req.raised.toLocaleString()}</div>
+                        <div style="color: #94a3b8; font-size: 0.9rem;">Raised</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 1.8rem; font-weight: 700; color: var(--fundme-light-purple);">$${req.totalAmount.toLocaleString()}</div>
+                        <div style="color: #94a3b8; font-size: 0.9rem;">Goal</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 1.8rem; font-weight: 700; color: var(--fundme-light-purple);">${req.supporters}</div>
+                        <div style="color: #94a3b8; font-size: 0.9rem;">Supporters</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 1.8rem; font-weight: 700; color: var(--fundme-light-purple);">${req.daysLeft}</div>
+                        <div style="color: #94a3b8; font-size: 0.9rem;">Days Left</div>
+                    </div>
+                </div>
+                <div class="progress-bar" style="margin-top: 1.5rem;">
+                    <div class="progress-fill" style="width: ${progress}%"></div>
+                </div>
+                <div style="text-align: center; color: white; margin-top: 0.5rem;">
+                    ${progress}% Funded • $${remaining.toLocaleString()} to go
+                </div>
+            </div>
+            
+            <h4 style="color: var(--fundme-light-purple); margin: 1.5rem 0 1rem;">Their Story</h4>
+            <p class="story-text" style="white-space: pre-wrap;">${req.story}</p>
+            
+            <h4 style="color: var(--fundme-light-purple); margin: 1.5rem 0 1rem;">Project Details</h4>
+            <div style="background: rgba(30, 58, 138, 0.2); padding: 1.5rem; border-radius: 10px; color: #cbd5e1; line-height: 1.8;">
+                <div style="display: grid; gap: 0.8rem;">
+                    <div><i class="fas fa-tv" style="color: var(--fundme-light-purple); width: 20px;"></i> <strong>${req.devicesNeeded}</strong> display devices needed</div>
+                    <div><i class="fas fa-dollar-sign" style="color: var(--fundme-light-purple); width: 20px;"></i> <strong>$${req.costPerDevice}</strong> per device</div>
+                    <div><i class="fas fa-chart-pie" style="color: var(--fundme-light-purple); width: 20px;"></i> <strong>80/20</strong> revenue split (80% to ${req.name}, 20% to sponsors)</div>
+                    <div><i class="fas fa-shield-alt" style="color: var(--fundme-light-purple); width: 20px;"></i> Smart contract secured payments</div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+                <button class="fundme-btn-primary" style="flex: 1;" onclick="openSponsorModal(${req.id})">
+                    <i class="fas fa-hand-holding-usd"></i> Sponsor Now
+                </button>
+                <button class="fundme-btn-primary" style="background: rgba(124, 58, 237, 0.3);" onclick="shareProfile(${req.id})">
+                    <i class="fas fa-share-alt"></i> Share
+                </button>
+            </div>
+            
+            <h4 style="color: var(--fundme-light-purple); margin: 2rem 0 1rem;">Recent Supporters</h4>
+            <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                ${generateSupportersList(req.supporters)}
+            </div>
+        `;
+        
+        document.getElementById('detailsModal').classList.add('active');
+    }
+
+    function generateSupportersList(count) {
+        const supporters = [];
+        const names = ['John D.', 'Sarah M.', 'Mike T.', 'Emma W.', 'Alex R.', 'Lisa K.'];
+        const amounts = [100, 250, 500, 1000];
+        
+        for (let i = 0; i < Math.min(count, 5); i++) {
+            const name = names[Math.floor(Math.random() * names.length)];
+            const amount = amounts[Math.floor(Math.random() * amounts.length)];
+            supporters.push(`
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: rgba(124, 58, 237, 0.1); border-radius: 10px;">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--fundme-purple); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">
+                            ${name.charAt(0)}
+                        </div>
+                        <div>
+                            <div style="color: white; font-weight: 600;">${name}</div>
+                            <div style="color: #94a3b8; font-size: 0.85rem;">${Math.floor(Math.random() * 10) + 1} days ago</div>
+                        </div>
+                    </div>
+                    <div style="color: var(--fundme-light-purple); font-weight: 600;">$${amount}</div>
+                </div>
+            `);
+        }
+        
+        return supporters.join('');
+    }
+
+    function openSponsorModal(id) {
+        console.log('💰 Opening sponsor payment modal for campaign:', id);
+        
+        // Check if user is logged in
+        const userProfile = getUserProfileFromStorage();
+        const wallet = localStorage.getItem('user_wallet');
+        const googleUser = localStorage.getItem('googleUser');
+        
+        if (!userProfile && !wallet && !googleUser) {
+            showToast('Please log in to sponsor campaigns', 'error');
+            setTimeout(() => window.location.href = '/profile', 1500);
+            return;
+        }
+        
+        const req = sponsorshipRequests.find(r => r.id === id);
+        if (!req) {
+            showToast('Campaign not found', 'error');
+            return;
+        }
+        
+        const remaining = req.totalAmount - req.raised;
+        
+        document.getElementById('sponsorPaymentContent').innerHTML = `
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <img src="${req.image}" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--fundme-purple); margin-bottom: 1rem;">
+                <h3 style="color: white; margin-bottom: 0.5rem;">${req.title}</h3>
+                <div style="color: #94a3b8;">by ${req.name}</div>
+            </div>
+            
+            <div style="background: rgba(124, 58, 237, 0.1); padding: 1.5rem; border-radius: 15px; margin-bottom: 2rem; border: 1px solid rgba(124, 58, 237, 0.3);">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; text-align: center; margin-bottom: 1rem;">
+                    <div>
+                        <div style="color: var(--fundme-light-purple); font-size: 1.5rem; font-weight: 700;">$${req.raised.toLocaleString()}</div>
+                        <div style="color: #94a3b8; font-size: 0.85rem;">Raised</div>
+                    </div>
+                    <div>
+                        <div style="color: var(--fundme-light-purple); font-size: 1.5rem; font-weight: 700;">$${remaining.toLocaleString()}</div>
+                        <div style="color: #94a3b8; font-size: 0.85rem;">Remaining</div>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${(req.raised / req.totalAmount * 100).toFixed(0)}%"></div>
+                </div>
+            </div>
+            
+            <div style="background: rgba(30, 58, 138, 0.2); padding: 1.5rem; border-radius: 15px; margin-bottom: 2rem; border: 1px solid rgba(124, 58, 237, 0.3);">
+                <h4 style="color: var(--fundme-light-purple); margin-bottom: 1rem;">
+                    <i class="fas fa-gift"></i> Revenue Share Benefits
+                </h4>
+                <div style="color: #cbd5e1; line-height: 1.8;">
+                    • <strong>Earn 20%</strong> of all ad revenue generated<br>
+                    • <strong>80%</strong> goes to ${req.name} (the micro-advertiser)<br>
+                    • Lifetime passive income from your sponsored devices<br>
+                    • Transparent blockchain-secured payments<br>
+                    • Monthly automatic payouts
+                </div>
+            </div>
+            
+            <form onsubmit="completeSponsorPayment(event, ${req.id})">
+                <div class="form-group">
+                    <label class="form-label" style="color: white;">Sponsorship Amount (USD)</label>
+                    <input type="number" id="sponsorAmount" class="form-input" required min="50" max="${remaining}" placeholder="Enter amount (min $50)" style="font-size: 1.2rem; padding: 1rem;">
+                    <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap;">
+                        <button type="button" class="filter-btn" onclick="setSponsorAmount(100)">$100</button>
+                        <button type="button" class="filter-btn" onclick="setSponsorAmount(250)">$250</button>
+                        <button type="button" class="filter-btn" onclick="setSponsorAmount(500)">$500</button>
+                        <button type="button" class="filter-btn" onclick="setSponsorAmount(1000)">$1,000</button>
+                        <button type="button" class="filter-btn" onclick="setSponsorAmount(${remaining})">Full Amount</button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" style="color: white;">Number of Devices to Sponsor</label>
+                    <input type="number" id="devicesSponsored" class="form-input" readonly style="background: rgba(124, 58, 237, 0.1);">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" style="color: white;">Estimated Monthly Revenue (20% share)</label>
+                    <input type="text" id="estimatedRevenue" class="form-input" readonly style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 700;">
+                </div>
+                
+                <!-- WEAD Token Coming Soon Message -->
+                <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.1)); border: 2px solid #3b82f6; border-radius: 10px; padding: 1rem; margin-bottom: 1.5rem;">
+                    <div style="color: #3b82f6; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem;">
+                        <i class="fas fa-clock"></i> Coming Soon: WEAD Tokens - 10% Discount on All Services
+                    </div>
+                    <div style="color: #cbd5e1; font-size: 0.9rem;">
+                        WEAD Token payments will be available soon! Save 10% on all services when you pay with WEAD tokens. For now, please use BNB for payments.
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" style="color: white;">Payment Method</label>
+                    <select id="paymentMethod" class="form-select" required>
+                        <option value="">Select payment method</option>
+                        <option value="crypto">Cryptocurrency (BNB/USDT/ETH)</option>
+                        <option value="card">Credit/Debit Card (Coming Soon)</option>
+                        <option value="paypal">PayPal (Coming Soon)</option>
+                    </select>
+                </div>
+                
+                <!-- Payment Summary (No Discount for Sponsorships) -->
+                <div style="background: rgba(124, 58, 237, 0.1); padding: 1.5rem; border-radius: 10px; border: 1px solid rgba(124, 58, 237, 0.3); margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; color: white; font-size: 1.3rem; font-weight: 700;">
+                        <span>Total to Pay:</span>
+                        <span id="sponsorTotalAmount">$0.00</span>
+                    </div>
+                    <div style="text-align: center; margin-top: 0.5rem; color: var(--text-secondary); font-size: 0.85rem;">
+                        All payment methods accepted at the same price
+                    </div>
+                </div>
+                
+                <button type="submit" class="fundme-btn-primary" style="width: 100%; padding: 1.2rem; margin-top: 1rem;">
+                    <i class="fas fa-heart"></i> Complete Sponsorship
+                </button>
+            </form>
+        `;
+        
+        // Setup amount calculator
+        document.getElementById('sponsorAmount').addEventListener('input', calculateSponsorshipDetails);
+        calculateSponsorshipDetails();
+        
+        // Update total amount display
+        document.getElementById('sponsorTotalAmount').textContent = '$0.00';
+        
+        document.getElementById('sponsorPaymentModal').classList.add('active');
+        closeDetailsModal(); // Close the details modal
+    }
+    
+    function setSponsorAmount(amount) {
+        document.getElementById('sponsorAmount').value = amount;
+        calculateSponsorshipDetails();
+    }
+    
+    function calculateSponsorshipDetails() {
+        const amount = parseFloat(document.getElementById('sponsorAmount').value) || 0;
+        const devicesSponsored = Math.floor(amount / 500); // Assuming $500 per device average
+        const estimatedMonthlyRevenue = devicesSponsored * 50 * 0.2; // $50/device/month * 20%
+        
+        document.getElementById('devicesSponsored').value = devicesSponsored;
+        document.getElementById('estimatedRevenue').value = `$${estimatedMonthlyRevenue.toFixed(2)}/month`;
+        
+        // Update total amount (no discount for sponsorships)
+        document.getElementById('sponsorTotalAmount').textContent = `$${amount.toFixed(2)}`;
+    }
+    
+    async function completeSponsorPayment(event, campaignId) {
+        event.preventDefault();
+        
+        const amount = parseFloat(document.getElementById('sponsorAmount').value);
+        const devicesSponsored = parseInt(document.getElementById('devicesSponsored').value);
+        const paymentMethod = document.getElementById('paymentMethod').value;
+        
+        if (!paymentMethod) {
+            showToast('Please select a payment method', 'error');
+            return;
+        }
+        
+        const userProfile = getUserProfileFromStorage();
+        const wallet = localStorage.getItem('user_wallet');
+        const req = sponsorshipRequests.find(r => r.id === campaignId);
+        
+        // If paying with WEAD, process blockchain payment
+        if (paymentMethod === 'wead' && window.ethereum) {
+            try {
+                const WEAD_TOKEN_ADDRESS = '0xCF99bF2cbD83A580437d39A5092C1665Faa9898B';
+                const PLATFORM_WALLET = '0x01d3829a1b0CA3E1390724a0C5C419435720431e';
+                
+                // Convert USD to WEAD (1 WEAD = $0.01)
+                const weadAmount = Math.floor(amount * 100); // $1 = 100 WEAD
+                const amountInWei = BigInt(weadAmount) * BigInt(10 ** 18);
+                
+                // Get connected account
+                const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+                if (accounts.length === 0) {
+                    showToast('Please connect MetaMask wallet', 'error');
+                    return;
+                }
+                
+                showToast(`Processing ${weadAmount.toLocaleString()} WEAD payment...`, 'info');
+                
+                // ERC20 transfer function signature
+                const transferData = '0xa9059cbb' + 
+                    PLATFORM_WALLET.slice(2).padStart(64, '0') + 
+                    amountInWei.toString(16).padStart(64, '0');
+                
+                const txHash = await window.ethereum.request({
+                    method: 'eth_sendTransaction',
+                    params: [{
+                        from: accounts[0],
+                        to: WEAD_TOKEN_ADDRESS,
+                        data: transferData,
+                        gas: '0x15F90',
+                    }],
+                });
+                
+                console.log('✅ WEAD Payment transaction sent:', txHash);
+                
+                // Refresh WEAD balance
+                if (window.refreshAllBalances) {
+                    await window.refreshAllBalances();
+                }
+            } catch (error) {
+                console.error('Payment error:', error);
+                showToast('Payment failed: ' + error.message, 'error');
+                return;
+            }
+        }
+        
+        // Create sponsorship record
+        const sponsorship = {
+            id: Date.now(),
+            campaignId: campaignId,
+            campaignTitle: req.title,
+            seekerName: req.name,
+            amount: amount,
+            devicesSponsored: devicesSponsored,
+            paymentMethod: paymentMethod,
+            sponsoredDate: new Date().toISOString(),
+            status: 'active',
+            revenueEarned: 0,
+            nextPaymentDate: getNextMonthDate(),
+            sponsorWallet: wallet || userProfile?.walletAddress || 'N/A'
+        };
+        
+        // Save to localStorage
+        const mySponsorships = JSON.parse(localStorage.getItem('mySponsorships') || '[]');
+        mySponsorships.push(sponsorship);
+        localStorage.setItem('mySponsorships', JSON.stringify(mySponsorships));
+        
+        // Update campaign data (in production, this would be done on backend)
+        req.raised += amount;
+        req.supporters += 1;
+        
+        closeSponsorPaymentModal();
+        
+        showToast(`🎉 Thank you for sponsoring ${req.name}! You'll start earning 20% revenue share soon!`, 'success');
+        
+        // Show confirmation
+        setTimeout(() => {
+            alert(`✅ Sponsorship Successful!\n\nAmount: $${amount}\nDevices: ${devicesSponsored}\nYour Share: 20% of ad revenue\n\nYou can track your earnings in "My Sponsorships"`);
+        }, 1000);
+    }
+    
+    function closeSponsorPaymentModal() {
+        document.getElementById('sponsorPaymentModal').classList.remove('active');
+    }
+    
+    function getNextMonthDate() {
+        const date = new Date();
+        date.setMonth(date.getMonth() + 1);
+        return date.toLocaleDateString();
+    }
+
+    function shareProfile(id) {
+        const url = `${window.location.origin}/fundme/profile/${id}`;
+        if (navigator.share) {
+            navigator.share({
+                title: 'Support this sponsorship request',
+                url: url
+            });
+        } else {
+            navigator.clipboard.writeText(url);
+            showToast('Link copied to clipboard!', 'success');
+        }
+    }
+
+    function setupFilters() {
+        // Category filters
+        document.querySelectorAll('.filter-btn[data-category]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn[data-category]').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                filterRequests();
+            });
+        });
+        
+        // Sort
+        document.getElementById('sortSelect').addEventListener('change', filterRequests);
+        
+        // Search
+        document.getElementById('searchInput').addEventListener('input', filterRequests);
+    }
+
+    function filterRequests() {
+        const category = document.querySelector('.filter-btn.active').dataset.category;
+        const sort = document.getElementById('sortSelect').value;
+        const search = document.getElementById('searchInput').value.toLowerCase();
+        
+        let filtered = sponsorshipRequests.filter(req => {
+            const matchCategory = category === 'all' || req.category === category;
+            const matchSearch = !search || req.title.toLowerCase().includes(search) || 
+                               req.name.toLowerCase().includes(search) ||
+                               req.story.toLowerCase().includes(search);
+            return matchCategory && matchSearch;
+        });
+        
+        // Sort
+        filtered.sort((a, b) => {
+            switch(sort) {
+                case 'amount': return b.totalAmount - a.totalAmount;
+                case 'progress': return (b.raised/b.totalAmount) - (a.raised/a.totalAmount);
+                case 'popular': return b.supporters - a.supporters;
+                default: return new Date(b.created) - new Date(a.created);
+            }
+        });
+        
+        renderSponsorshipGrid(filtered);
+    }
+
+    function setupFormCalculations() {
+        const devicesInput = document.getElementById('devicesNeeded');
+        const costInput = document.getElementById('costPerDevice');
+        const totalInput = document.getElementById('totalAmount');
+        
+        function calculateTotal() {
+            const devices = parseInt(devicesInput.value) || 0;
+            const cost = parseInt(costInput.value) || 0;
+            totalInput.value = devices * cost;
+        }
+        
+        devicesInput.addEventListener('input', calculateTotal);
+        costInput.addEventListener('input', calculateTotal);
+    }
+
+    function setupImagePreview() {
+        document.getElementById('seekerImage').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('previewImg').src = e.target.result;
+                    document.getElementById('imagePreview').style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    function openSponsorMeModal() {
+        // Check if user has a profile
+        const userProfile = getUserProfileFromStorage();
+        
+        if (!userProfile || !userProfile.fullName) {
+            // No profile found - prompt user to create one
+            const createProfile = confirm('⚠️ Profile Required\n\nYou need to create a profile before requesting sponsorship.\n\nWould you like to create your profile now?');
+            if (createProfile) {
+                window.location.href = '/profile';
+                return;
+            }
+            return;
+        }
+        
+        // ONLY pre-fill BASIC information from profile
+        // User must manually fill in: Title, Story, Devices, Cost, Duration
+        
+        // Pre-fill name
+        document.getElementById('seekerName').value = userProfile.fullName || '';
+        
+        // Set category from profile
+        if (userProfile.category) {
+            const categorySelect = document.getElementById('category');
+            // Map profile categories to fund me categories
+            const categoryMap = {
+                'microtiser': 'business',
+                'student': 'education',
+                'business': 'business',
+                'creator': 'creative',
+                'nonprofit': 'community'
+            };
+            categorySelect.value = categoryMap[userProfile.category] || '';
+        }
+        
+        // Set location
+        const location = [];
+        if (userProfile.city) location.push(userProfile.city);
+        if (userProfile.country) location.push(userProfile.country);
+        document.getElementById('location').value = location.join(', ');
+        
+        // Set profile image (if exists)
+        if (userProfile.imageUrl) {
+            document.getElementById('previewImg').src = userProfile.imageUrl;
+            document.getElementById('imagePreview').style.display = 'block';
+        }
+        
+        // DO NOT pre-fill: title, story, devices, cost, duration
+        // User must provide these specific details
+        
+        document.getElementById('sponsorMeModal').classList.add('active');
+        console.log('✅ Fund Me form opened with basic profile info');
+    }
+
+    function closeSponsorMeModal() {
+        document.getElementById('sponsorMeModal').classList.remove('active');
+    }
+
+    function closeDetailsModal() {
+        document.getElementById('detailsModal').classList.remove('active');
+    }
+
+    function submitSponsorshipRequest(e) {
+        e.preventDefault();
+        
+        // Get user profile for wallet address
+        const userProfile = getUserProfileFromStorage();
+        
+        const formData = {
+            walletAddress: userProfile?.walletAddress || 'unknown',
+            name: document.getElementById('seekerName').value,
+            category: document.getElementById('category').value,
+            location: document.getElementById('location').value,
+            title: document.getElementById('requestTitle').value,
+            story: document.getElementById('story').value,
+            devicesNeeded: document.getElementById('devicesNeeded').value,
+            costPerDevice: document.getElementById('costPerDevice').value,
+            totalAmount: document.getElementById('totalAmount').value,
+            duration: document.getElementById('duration').value,
+            image: document.getElementById('previewImg').src,
+            profileData: userProfile // Include full profile for verification
+        };
+        
+        // Send to backend API
+        saveSponsorshipRequest(formData);
+        
+        closeSponsorMeModal();
+        document.getElementById('sponsorshipForm').reset();
+        document.getElementById('imagePreview').style.display = 'none';
+    }
+    
+    // Get user profile from localStorage
+    function getUserProfileFromStorage() {
+        try {
+            const profileData = localStorage.getItem('weadUserProfile');
+            if (profileData) {
+                return JSON.parse(profileData);
+            }
+        } catch (error) {
+            console.error('Error loading profile:', error);
+        }
+        return null;
+    }
+    
+    // Save sponsorship request to backend
+    async function saveSponsorshipRequest(formData) {
+        try {
+            console.log('📤 Submitting sponsorship request...', formData);
+            
+            // Optional: Send to backend API if implemented
+            // const response = await fetch('/api/sponsorship/create', {
+            //     method: 'POST',
+            //     headers: {'Content-Type': 'application/json'},
+            //     body: JSON.stringify(formData)
+            // });
+            
+            showToast('✅ Sponsorship request submitted! It will be reviewed within 24 hours.', 'success');
+            
+            // Store locally for now
+            const existingRequests = JSON.parse(localStorage.getItem('mySponsorshipRequests') || '[]');
+            existingRequests.push({
+                ...formData,
+                id: Date.now(),
+                created: new Date().toISOString(),
+                status: 'pending',
+                raised: 0,
+                supporters: 0
+            });
+            localStorage.setItem('mySponsorshipRequests', JSON.stringify(existingRequests));
+            
+        } catch (error) {
+            console.error('Error saving sponsorship request:', error);
+            showToast('⚠️ Failed to submit request. Please try again.', 'error');
+        }
+    }
+
+    function showMyRequests() {
+        console.log('📋 Loading My Requests...');
+        
+        // Check if user is logged in
+        const userProfile = getUserProfileFromStorage();
+        if (!userProfile || !userProfile.fullName) {
+            showToast('Please log in to view your requests', 'error');
+            setTimeout(() => window.location.href = '/profile', 1500);
+            return;
+        }
+        
+        // Get user's requests from localStorage
+        const myRequests = JSON.parse(localStorage.getItem('mySponsorshipRequests') || '[]');
+        
+        if (myRequests.length === 0) {
+            document.getElementById('myRequestsContent').innerHTML = `
+                <div style="text-align: center; padding: 3rem; color: #94a3b8;">
+                    <i class="fas fa-inbox" style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+                    <h3 style="color: white; margin-bottom: 0.5rem;">No Requests Yet</h3>
+                    <p>You haven't submitted any sponsorship requests yet.</p>
+                    <button class="fundme-btn-primary" onclick="closeMyRequestsModal(); openSponsorMeModal();" style="margin-top: 1.5rem; padding: 1rem 2rem; font-size: 1rem;">
+                        <i class="fas fa-plus-circle"></i> Create Request
+                    </button>
+                </div>
+            `;
+        } else {
+            const requestsHTML = myRequests.map((req, index) => {
+                const progress = req.raised ? ((req.raised / req.totalAmount) * 100).toFixed(0) : 0;
+                const statusColor = req.status === 'active' ? '#10b981' : req.status === 'pending' ? '#f59e0b' : '#ef4444';
+                const statusIcon = req.status === 'active' ? 'check-circle' : req.status === 'pending' ? 'clock' : 'times-circle';
+                
+                return `
+                    <div style="background: rgba(124, 58, 237, 0.1); border: 1px solid rgba(124, 58, 237, 0.3); border-radius: 15px; padding: 1.5rem; margin-bottom: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+                            <div style="flex: 1;">
+                                <h3 style="color: white; margin-bottom: 0.5rem;">${req.title}</h3>
+                                <div style="color: #94a3b8; font-size: 0.9rem;">
+                                    <i class="fas fa-calendar"></i> Created ${new Date(req.created).toLocaleDateString()}
+                                </div>
+                            </div>
+                            <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: ${statusColor}20; border: 1px solid ${statusColor}; border-radius: 20px; color: ${statusColor}; font-weight: 600;">
+                                <i class="fas fa-${statusIcon}"></i> ${req.status.toUpperCase()}
+                            </div>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                            <div style="text-align: center; padding: 1rem; background: rgba(30, 58, 138, 0.2); border-radius: 10px;">
+                                <div style="color: var(--fundme-light-purple); font-size: 1.5rem; font-weight: 700;">$${(req.raised || 0).toLocaleString()}</div>
+                                <div style="color: #94a3b8; font-size: 0.85rem;">Raised</div>
+                            </div>
+                            <div style="text-align: center; padding: 1rem; background: rgba(30, 58, 138, 0.2); border-radius: 10px;">
+                                <div style="color: var(--fundme-light-purple); font-size: 1.5rem; font-weight: 700;">$${req.totalAmount.toLocaleString()}</div>
+                                <div style="color: #94a3b8; font-size: 0.85rem;">Goal</div>
+                            </div>
+                            <div style="text-align: center; padding: 1rem; background: rgba(30, 58, 138, 0.2); border-radius: 10px;">
+                                <div style="color: var(--fundme-light-purple); font-size: 1.5rem; font-weight: 700;">${req.supporters || 0}</div>
+                                <div style="color: #94a3b8; font-size: 0.85rem;">Supporters</div>
+                            </div>
+                            <div style="text-align: center; padding: 1rem; background: rgba(30, 58, 138, 0.2); border-radius: 10px;">
+                                <div style="color: var(--fundme-light-purple); font-size: 1.5rem; font-weight: 700;">${req.devicesNeeded}</div>
+                                <div style="color: #94a3b8; font-size: 0.85rem;">Devices</div>
+                            </div>
+                        </div>
+                        
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progress}%"></div>
+                        </div>
+                        <div style="text-align: center; color: #94a3b8; margin-top: 0.5rem; font-size: 0.9rem;">
+                            ${progress}% Funded
+                        </div>
+                        
+                        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                            <button class="fundme-btn-primary" style="flex: 1; padding: 0.8rem; font-size: 0.9rem;" onclick="viewMyRequestDetails(${index})">
+                                <i class="fas fa-eye"></i> View Details
+                            </button>
+                            <button class="fundme-btn-primary" style="background: rgba(239, 68, 68, 0.2); flex: 1; padding: 0.8rem; font-size: 0.9rem;" onclick="deleteMyRequest(${index})">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            document.getElementById('myRequestsContent').innerHTML = requestsHTML;
+        }
+        
+        document.getElementById('myRequestsModal').classList.add('active');
+    }
+
+    function showMySponsorships() {
+        console.log('💝 Loading My Sponsorships...');
+        
+        // Check if user is logged in
+        const userProfile = getUserProfileFromStorage();
+        if (!userProfile || !userProfile.fullName) {
+            showToast('Please log in to view your sponsorships', 'error');
+            setTimeout(() => window.location.href = '/profile', 1500);
+            return;
+        }
+        
+        // Get user's sponsorships from localStorage
+        const mySponsorships = JSON.parse(localStorage.getItem('mySponsorships') || '[]');
+        
+        if (mySponsorships.length === 0) {
+            document.getElementById('mySponsorshipsContent').innerHTML = `
+                <div style="text-align: center; padding: 3rem; color: #94a3b8;">
+                    <i class="fas fa-heart" style="font-size: 4rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+                    <h3 style="color: white; margin-bottom: 0.5rem;">No Sponsorships Yet</h3>
+                    <p>You haven't sponsored anyone yet. Support micro-advertisers and earn 20% revenue share!</p>
+                    <button class="fundme-btn-primary" onclick="closeMySponsorshipsModal();" style="margin-top: 1.5rem; padding: 1rem 2rem; font-size: 1rem;">
+                        <i class="fas fa-search"></i> Browse Requests
+                    </button>
+                </div>
+            `;
+        } else {
+            // Calculate totals
+            const totalInvested = mySponsorships.reduce((sum, s) => sum + s.amount, 0);
+            const totalRevenueEarned = mySponsorships.reduce((sum, s) => sum + (s.revenueEarned || 0), 0);
+            const activeSponsorships = mySponsorships.filter(s => s.status === 'active').length;
+            
+            const statsHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                    <div style="text-align: center; padding: 1.5rem; background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(30, 58, 138, 0.2)); border-radius: 15px; border: 1px solid rgba(124, 58, 237, 0.4);">
+                        <div style="color: var(--fundme-light-purple); font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">$${totalInvested.toLocaleString()}</div>
+                        <div style="color: #cbd5e1; font-size: 0.9rem;">Total Invested</div>
+                    </div>
+                    <div style="text-align: center; padding: 1.5rem; background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2)); border-radius: 15px; border: 1px solid rgba(16, 185, 129, 0.4);">
+                        <div style="color: #10b981; font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">$${totalRevenueEarned.toLocaleString()}</div>
+                        <div style="color: #cbd5e1; font-size: 0.9rem;">Revenue Earned (20%)</div>
+                    </div>
+                    <div style="text-align: center; padding: 1.5rem; background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.2)); border-radius: 15px; border: 1px solid rgba(59, 130, 246, 0.4);">
+                        <div style="color: #3b82f6; font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">${activeSponsorships}</div>
+                        <div style="color: #cbd5e1; font-size: 0.9rem;">Active Sponsorships</div>
+                    </div>
+                </div>
+            `;
+            
+            const sponsorshipsHTML = mySponsorships.map((sponsor, index) => {
+                const roi = sponsor.amount > 0 ? ((sponsor.revenueEarned || 0) / sponsor.amount * 100).toFixed(1) : 0;
+                const statusColor = sponsor.status === 'active' ? '#10b981' : '#94a3b8';
+                
+                return `
+                    <div style="background: rgba(30, 58, 138, 0.2); border: 1px solid rgba(124, 58, 237, 0.3); border-radius: 15px; padding: 1.5rem; margin-bottom: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+                            <div style="flex: 1;">
+                                <h3 style="color: white; margin-bottom: 0.5rem;">${sponsor.campaignTitle}</h3>
+                                <div style="color: #94a3b8; font-size: 0.9rem;">
+                                    <i class="fas fa-user"></i> ${sponsor.seekerName} • <i class="fas fa-calendar"></i> Sponsored ${new Date(sponsor.sponsoredDate).toLocaleDateString()}
+                                </div>
+                            </div>
+                            <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: ${statusColor}20; border: 1px solid ${statusColor}; border-radius: 20px; color: ${statusColor}; font-weight: 600;">
+                                <i class="fas fa-circle"></i> ${sponsor.status.toUpperCase()}
+                            </div>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                            <div style="text-align: center; padding: 1rem; background: rgba(124, 58, 237, 0.1); border-radius: 10px;">
+                                <div style="color: white; font-size: 1.3rem; font-weight: 700;">$${sponsor.amount.toLocaleString()}</div>
+                                <div style="color: #94a3b8; font-size: 0.85rem;">Your Investment</div>
+                            </div>
+                            <div style="text-align: center; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 10px;">
+                                <div style="color: #10b981; font-size: 1.3rem; font-weight: 700;">$${(sponsor.revenueEarned || 0).toLocaleString()}</div>
+                                <div style="color: #94a3b8; font-size: 0.85rem;">Revenue Earned</div>
+                            </div>
+                            <div style="text-align: center; padding: 1rem; background: rgba(59, 130, 246, 0.1); border-radius: 10px;">
+                                <div style="color: #3b82f6; font-size: 1.3rem; font-weight: 700;">${roi}%</div>
+                                <div style="color: #94a3b8; font-size: 0.85rem;">ROI</div>
+                            </div>
+                            <div style="text-align: center; padding: 1rem; background: rgba(124, 58, 237, 0.1); border-radius: 10px;">
+                                <div style="color: white; font-size: 1.3rem; font-weight: 700;">20%</div>
+                                <div style="color: #94a3b8; font-size: 0.85rem;">Your Share</div>
+                            </div>
+                        </div>
+                        
+                        <div style="background: rgba(124, 58, 237, 0.05); padding: 1rem; border-radius: 10px; color: #cbd5e1; font-size: 0.9rem;">
+                            <div style="margin-bottom: 0.5rem;"><strong>Devices Sponsored:</strong> ${sponsor.devicesSponsored}</div>
+                            <div style="margin-bottom: 0.5rem;"><strong>Revenue Share:</strong> 80% to ${sponsor.seekerName}, 20% to you</div>
+                            <div><strong>Next Payment:</strong> ${sponsor.nextPaymentDate || 'End of month'}</div>
+                        </div>
+                        
+                        <button class="fundme-btn-primary" style="width: 100%; margin-top: 1rem; padding: 0.8rem; font-size: 0.9rem;" onclick="viewSponsorshipDetails(${index})">
+                            <i class="fas fa-chart-line"></i> View Earnings Report
+                        </button>
+                    </div>
+                `;
+            }).join('');
+            
+            document.getElementById('mySponsorshipsContent').innerHTML = statsHTML + sponsorshipsHTML;
+        }
+        
+        document.getElementById('mySponsorshipsModal').classList.add('active');
+    }
+    
+    function closeMyRequestsModal() {
+        document.getElementById('myRequestsModal').classList.remove('active');
+    }
+    
+    function closeMySponsorshipsModal() {
+        document.getElementById('mySponsorshipsModal').classList.remove('active');
+    }
+    
+    function viewMyRequestDetails(index) {
+        const myRequests = JSON.parse(localStorage.getItem('mySponsorshipRequests') || '[]');
+        const req = myRequests[index];
+        if (req) {
+            // Show detailed view
+            alert(`Request Details:\n\nTitle: ${req.title}\nStatus: ${req.status}\nRaised: $${req.raised || 0} / $${req.totalAmount}\n\nFull details coming soon!`);
+        }
+    }
+    
+    function deleteMyRequest(index) {
+        if (confirm('Are you sure you want to delete this sponsorship request?')) {
+            const myRequests = JSON.parse(localStorage.getItem('mySponsorshipRequests') || '[]');
+            myRequests.splice(index, 1);
+            localStorage.setItem('mySponsorshipRequests', JSON.stringify(myRequests));
+            showMyRequests(); // Refresh display
+            showToast('Request deleted successfully', 'success');
+        }
+    }
+    
+    function viewSponsorshipDetails(index) {
+        const mySponsorships = JSON.parse(localStorage.getItem('mySponsorships') || '[]');
+        const sponsor = mySponsorships[index];
+        if (sponsor) {
+            alert(`Sponsorship Details:\n\nCampaign: ${sponsor.campaignTitle}\nInvestment: $${sponsor.amount}\nRevenue Earned: $${sponsor.revenueEarned || 0}\n\nDetailed analytics coming soon!`);
+        }
+    }
+
+    // Close modals on outside click
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+            }
+        });
+    });
+</script>
+
+{% endblock %}

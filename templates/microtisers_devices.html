@@ -1,0 +1,964 @@
+{% extends "base.html" %}
+
+{% block title %}My Devices - WeAD Platform{% endblock %}
+
+{% block nav_links %}
+<a href="/" class="nav-link">
+    <i class="fas fa-home"></i>
+    <span>Home</span>
+</a>
+<a href="/microtisers" class="nav-link">
+    <i class="fas fa-tachometer-alt"></i>
+    <span>Dashboard</span>
+</a>
+<a href="/microtisers/earnings" class="nav-link">
+    <i class="fas fa-wallet"></i>
+    <span>Earnings & Wallet</span>
+</a>
+<a href="/microtisers/devices" class="nav-link">
+    <i class="fas fa-tv"></i>
+    <span>WeAD Displays</span>
+</a>
+{% endblock %}
+
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+    /* Microtisers Devices Page - Dark Green Theme */
+    :root {
+        --micro-dark-green: #064e3b;
+        --micro-green: #10b981;
+        --micro-light-green: #34d399;
+        --micro-emerald: #059669;
+    }
+    
+    /* Override page title gradient for green theme */
+    .page-header h1 {
+        background: linear-gradient(135deg, #34d399, #fff) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        background-clip: text !important;
+    }
+    
+    /* Green themed card headers */
+    .card-header h2,
+    .content-card .card-header h2,
+    .section-title {
+        background: linear-gradient(135deg, #34d399, #fff) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        background-clip: text !important;
+    }
+    
+    /* Green themed content cards */
+    .content-card {
+        border: 2px solid rgba(16, 185, 129, 0.3) !important;
+        background: var(--glass-bg) !important;
+    }
+    
+    .content-card:hover {
+        border-color: #10b981 !important;
+        box-shadow: 0 10px 40px rgba(16, 185, 129, 0.4) !important;
+    }
+    
+    /* Green themed card headers border */
+    .card-header {
+        border-bottom: 2px solid rgba(16, 185, 129, 0.3) !important;
+    }
+    
+    /* Green themed stat cards */
+    .stat-card {
+        border: 2px solid rgba(16, 185, 129, 0.3) !important;
+        background: var(--glass-bg) !important;
+    }
+    
+    .stat-card:hover {
+        border-color: #10b981 !important;
+        box-shadow: 0 10px 40px rgba(16, 185, 129, 0.4) !important;
+        transform: translateY(-5px);
+    }
+    
+    .stat-card .stat-icon {
+        background: linear-gradient(135deg, var(--micro-dark-green), var(--micro-green)) !important;
+    }
+    
+    .stat-card .stat-content h3 {
+        color: var(--micro-light-green) !important;
+    }
+    
+    /* Green themed buttons */
+    .btn-primary {
+        background: linear-gradient(135deg, var(--micro-dark-green), var(--micro-green)) !important;
+        border: none;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(135deg, var(--micro-green), var(--micro-light-green)) !important;
+        transform: translateY(-2px);
+    }
+    
+    /* Green themed borders and accents */
+    .glass {
+        border: 2px solid rgba(16, 185, 129, 0.3) !important;
+    }
+    
+    .glass:hover {
+        border-color: #10b981 !important;
+        box-shadow: 0 10px 40px rgba(16, 185, 129, 0.4) !important;
+    }
+    
+    /* Green footer titles */
+    .footer-section h3 {
+        color: #10b981 !important;
+    }
+    
+    /* Green themed navigation links */
+    .nav-link:hover {
+        background: rgba(16, 185, 129, 0.1) !important;
+        border-color: var(--micro-green) !important;
+    }
+    
+    .nav-link.active {
+        background: rgba(16, 185, 129, 0.2) !important;
+        border-color: #10b981 !important;
+    }
+    
+    .nav-link:hover i,
+    .nav-link:hover span {
+        color: var(--micro-light-green) !important;
+    }
+    
+    .nav-link.active i,
+    .nav-link.active span {
+        color: #34d399 !important;
+    }
+    
+    /* Device card styling */
+    .device-card {
+        background: var(--glass-bg);
+        border: 2px solid rgba(16, 185, 129, 0.3);
+        border-radius: 12px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+    
+    .device-card:hover {
+        border-color: #10b981;
+        box-shadow: 0 10px 40px rgba(16, 185, 129, 0.4);
+        transform: translateY(-5px);
+    }
+    
+    .device-card.active {
+        border-color: #34d399;
+        box-shadow: 0 5px 20px rgba(16, 185, 129, 0.3);
+    }
+    
+    .device-card.inactive {
+        opacity: 0.6;
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .device-status {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    
+    .device-status.active {
+        background: rgba(16, 185, 129, 0.2);
+        color: #34d399;
+        border: 1px solid #10b981;
+    }
+    
+    .device-status.inactive {
+        background: rgba(107, 114, 128, 0.2);
+        color: #9ca3af;
+        border: 1px solid #6b7280;
+    }
+    
+    .device-icon {
+        font-size: 3rem;
+        background: linear-gradient(135deg, var(--micro-dark-green), var(--micro-green));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1rem;
+    }
+    
+    .device-info {
+        margin-top: 1rem;
+    }
+    
+    .device-info h3 {
+        color: var(--micro-light-green);
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .device-info p {
+        color: var(--text-secondary);
+        margin: 0.25rem 0;
+        font-size: 0.9rem;
+    }
+    
+    .device-stats {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(16, 185, 129, 0.2);
+    }
+    
+    .device-stat {
+        text-align: center;
+    }
+    
+    .device-stat .value {
+        color: var(--micro-light-green);
+        font-size: 1.5rem;
+        font-weight: 700;
+        display: block;
+    }
+    
+    .device-stat .label {
+        color: var(--text-secondary);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .device-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+    
+    .device-actions button {
+        flex: 1;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: none;
+    }
+    
+    .btn-control {
+        background: linear-gradient(135deg, var(--micro-dark-green), var(--micro-green));
+        color: white;
+    }
+    
+    .btn-control:hover {
+        background: linear-gradient(135deg, var(--micro-green), var(--micro-light-green));
+        transform: translateY(-2px);
+    }
+    
+    .btn-delete {
+        background: rgba(239, 68, 68, 0.2);
+        color: #fca5a5;
+        border: 1px solid rgba(239, 68, 68, 0.5);
+    }
+    
+    .btn-delete:hover {
+        background: rgba(239, 68, 68, 0.3);
+        border-color: #ef4444;
+    }
+    
+    .devices-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: var(--text-secondary);
+    }
+    
+    .empty-state i {
+        font-size: 4rem;
+        opacity: 0.5;
+        margin-bottom: 1rem;
+        color: var(--micro-green);
+    }
+    
+    /* Info banner styling */
+    .info-banner {
+        background: rgba(16, 185, 129, 0.1);
+        border: 2px solid rgba(16, 185, 129, 0.3);
+        border-radius: 12px;
+        padding: 1rem 1.5rem;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .info-banner i {
+        color: var(--micro-light-green);
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+    
+    .info-banner p {
+        margin: 0;
+        color: #cbd5e1;
+        line-height: 1.8;
+        font-family: 'Merriweather', Georgia, serif;
+        font-weight: 300;
+        font-size: 1rem;
+        letter-spacing: 0.3px;
+    }
+    
+    /* Modal styling */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(10px);
+    }
+    
+    .modal-content {
+        background: var(--glass-bg);
+        border: 2px solid rgba(16, 185, 129, 0.3);
+        border-radius: 16px;
+        margin: 5% auto;
+        padding: 0;
+        width: 90%;
+        max-width: 500px;
+        box-shadow: 0 20px 60px rgba(16, 185, 129, 0.3);
+    }
+    
+    .modal-header {
+        padding: 1.5rem;
+        border-bottom: 2px solid rgba(16, 185, 129, 0.3);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .modal-header h2 {
+        margin: 0;
+        background: linear-gradient(135deg, #34d399, #fff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .close {
+        color: var(--text-secondary);
+        font-size: 2rem;
+        font-weight: bold;
+        cursor: pointer;
+        line-height: 1;
+    }
+    
+    .close:hover {
+        color: var(--micro-light-green);
+    }
+    
+    .modal-body {
+        padding: 1.5rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+        display: block;
+        color: var(--micro-light-green);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 0.75rem;
+        background: var(--glass-bg);
+        border: 2px solid rgba(16, 185, 129, 0.3);
+        border-radius: 8px;
+        color: white;
+        font-size: 1rem;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: var(--micro-green);
+    }
+    
+    .modal-footer {
+        padding: 1.5rem;
+        border-top: 2px solid rgba(16, 185, 129, 0.3);
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+    }
+    
+    .btn-secondary {
+        background: rgba(16, 185, 129, 0.1);
+        border: 2px solid rgba(16, 185, 129, 0.3);
+        color: var(--micro-light-green);
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-secondary:hover {
+        background: rgba(16, 185, 129, 0.2);
+        border-color: var(--micro-green);
+    }
+    
+    /* Mobile Optimization */
+    @media (max-width: 768px) {
+        .page-container {
+            padding: 0 !important;
+        }
+        
+        .page-header {
+            padding: 1rem !important;
+        }
+        
+        /* Make mobile title white */
+        .page-header h1 {
+            color: white !important;
+            background: none !important;
+            -webkit-background-clip: unset !important;
+            -webkit-text-fill-color: white !important;
+            background-clip: unset !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;
+        }
+        
+        .page-header h1 {
+            font-size: 1.5rem !important;
+        }
+        
+        .section.glass {
+            background: transparent !important;
+            border: none !important;
+            padding: 0.5rem 1rem !important;
+        }
+        
+        .glass {
+            padding: 1rem !important;
+        }
+        
+        .devices-grid {
+            display: flex !important;
+            overflow-x: auto !important;
+            scroll-snap-type: x mandatory !important;
+            gap: 1rem !important;
+            padding: 0 1rem !important;
+            margin-left: -1rem !important;
+            margin-right: -1rem !important;
+            scrollbar-width: none !important;
+        }
+        
+        .devices-grid::-webkit-scrollbar {
+            display: none !important;
+        }
+        
+        .device-card {
+            flex: 0 0 85% !important;
+            scroll-snap-align: center !important;
+            min-width: 280px !important;
+        }
+        
+        .btn {
+            width: 100% !important;
+            padding: 0.875rem 1rem !important;
+        }
+        
+        .device-actions {
+            flex-direction: column !important;
+        }
+    }
+</style>
+<script>
+// Set active navigation link with green styling
+document.addEventListener('DOMContentLoaded', function() {
+    setActiveNavLink();
+    loadDevices();
+});
+
+function setActiveNavLink() {
+    const currentPath = window.location.pathname;
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        const href = link.getAttribute('href');
+        
+        if (href === currentPath) {
+            link.classList.add('active');
+            link.style.background = 'rgba(16, 185, 129, 0.2)';
+            link.style.borderColor = '#10b981';
+            const icon = link.querySelector('i');
+            if (icon) {
+                icon.style.color = '#34d399';
+            }
+            const span = link.querySelector('span');
+            if (span) {
+                span.style.color = '#34d399';
+            }
+        }
+    });
+}
+
+// Device management functions
+let devices = [];
+
+async function loadDevices() {
+    try {
+        const response = await fetch('/api/microtisers/devices', {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            devices = data.devices || [];
+            updateDeviceStats(data.stats);
+            renderDevices();
+        } else {
+            console.error('Failed to load devices');
+            loadMockDevices();
+        }
+    } catch (error) {
+        console.error('Error loading devices:', error);
+        loadMockDevices();
+    }
+}
+
+function loadMockDevices() {
+    devices = [
+        {
+            id: 1,
+            name: 'WeAD Rooftop Display #1',
+            type: 'car_rooftop',
+            status: 'active',
+            location: 'San Francisco, CA',
+            lastActive: '2 minutes ago',
+            totalEarnings: 325.50,
+            todayEarnings: 15.30,
+            totalViews: 32500,
+            todayViews: 2450
+        },
+        {
+            id: 2,
+            name: 'WeAD Delivery Box Display #3',
+            type: 'motorcycle_delivery_box',
+            status: 'active',
+            location: 'San Francisco, CA',
+            lastActive: '15 minutes ago',
+            totalEarnings: 189.20,
+            todayEarnings: 8.80,
+            totalViews: 18900,
+            todayViews: 1820
+        },
+        {
+            id: 3,
+            name: 'WeAD Backpack OLED #2',
+            type: 'flexible_oled_backpack',
+            status: 'active',
+            location: 'Downtown SF',
+            lastActive: '30 minutes ago',
+            totalEarnings: 156.75,
+            todayEarnings: 6.40,
+            totalViews: 15600,
+            todayViews: 1340
+        },
+        {
+            id: 4,
+            name: 'WeAD Clothing Display - Jacket',
+            type: 'flexible_oled_clothing',
+            status: 'active',
+            location: 'Union Square, SF',
+            lastActive: '10 minutes ago',
+            totalEarnings: 98.50,
+            todayEarnings: 5.20,
+            totalViews: 9800,
+            todayViews: 520
+        },
+        {
+            id: 5,
+            name: 'WeAD Luggage Carrier Display',
+            type: 'luggage_carrier',
+            status: 'active',
+            location: 'SFO Airport',
+            lastActive: '5 minutes ago',
+            totalEarnings: 234.80,
+            todayEarnings: 12.50,
+            totalViews: 23400,
+            todayViews: 1250
+        },
+        {
+            id: 6,
+            name: 'WeAD Truck Display - Delivery Van',
+            type: 'truck_display',
+            status: 'inactive',
+            location: 'San Jose, CA',
+            lastActive: '2 hours ago',
+            totalEarnings: 445.75,
+            todayEarnings: 0,
+            totalViews: 44500,
+            todayViews: 0
+        }
+    ];
+    
+    updateDeviceStats({
+        total_devices: 6,
+        active_devices: 5,
+        total_earnings: 1450.50,
+        total_plays: 144700
+    });
+    
+    renderDevices();
+}
+
+function updateDeviceStats(stats) {
+    document.getElementById('total-devices').textContent = stats.total_devices || 0;
+    document.getElementById('active-devices').textContent = stats.active_devices || 0;
+    document.getElementById('total-device-earnings').textContent = `${stats.total_earnings || 0} WEAD`;
+    document.getElementById('total-device-plays').textContent = stats.total_plays || stats.total_views || 0;
+}
+
+function renderDevices() {
+    const container = document.getElementById('devices-container');
+    
+    if (devices.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-tv"></i>
+                <h3>No WeAD Displays Connected</h3>
+                <p>Connect your first WeAD Portable Display to start broadcasting micro-advertisements and earning WEAD tokens with every impression. Our display lineup includes flexible OLED wearables, vehicle-mounted screens, and drone advertising solutions.</p>
+                <button class="btn btn-primary" onclick="showRegisterModal()" style="margin-top: 1rem;">
+                    <i class="fas fa-plus"></i> Connect with WeAD Application
+                </button>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = devices.map(device => `
+        <div class="device-card ${device.status}">
+            <span class="device-status ${device.status}">${device.status}</span>
+            <div class="device-icon">
+                <i class="fas fa-${getDeviceIcon(device.type)}"></i>
+            </div>
+            <div class="device-info">
+                <h3>${device.name}</h3>
+                <p><i class="fas fa-map-marker-alt"></i> ${device.location}</p>
+                <p><i class="fas fa-clock"></i> Last active: ${device.lastActive}</p>
+            </div>
+            <div class="device-stats">
+                <div class="device-stat">
+                    <span class="value">${device.totalEarnings}</span>
+                    <span class="label">Total Earnings</span>
+                </div>
+                <div class="device-stat">
+                    <span class="value">${device.todayEarnings}</span>
+                    <span class="label">Today</span>
+                </div>
+                <div class="device-stat">
+                    <span class="value">${device.totalViews || device.totalPlays || 0}</span>
+                    <span class="label">Total Plays</span>
+                </div>
+                <div class="device-stat">
+                    <span class="value">${device.todayViews || device.impressions || 0}</span>
+                    <span class="label">Impressions</span>
+                </div>
+            </div>
+            <div class="device-actions">
+                <button class="btn-control" onclick="viewDevice(${device.id})">
+                    <i class="fas fa-chart-line"></i> View Details
+                </button>
+                <button class="btn-delete" onclick="deleteDevice(${device.id})">
+                    <i class="fas fa-unlink"></i> Disconnect
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function getDeviceIcon(type) {
+    const icons = {
+        'flexible_oled_clothing': 'tshirt',
+        'flexible_oled_backpack': 'shopping-bag',
+        'luggage_carrier': 'suitcase-rolling',
+        'car_rooftop': 'car',
+        'motorcycle_delivery_box': 'motorcycle',
+        'truck_display': 'truck',
+        'drone_display': 'helicopter',
+        'other': 'tv'
+    };
+    return icons[type] || 'tv';
+}
+
+function showRegisterModal() {
+    // TODO: Implement mobile app connection flow
+    // This should:
+    // 1. Check if WeAD Mobile App is installed
+    // 2. Trigger deep link to open mobile app
+    // 3. Mobile app will scan/pair with physical WeAD Display hardware
+    // 4. Mobile app sends device data back to dashboard via API
+    // 5. Dashboard displays newly connected device
+    
+    // For now, show manual registration form as fallback
+    document.getElementById('register-modal').style.display = 'block';
+}
+
+function closeRegisterModal() {
+    document.getElementById('register-modal').style.display = 'none';
+    document.getElementById('register-form').reset();
+}
+
+async function registerDevice() {
+    const form = document.getElementById('register-form');
+    const formData = new FormData(form);
+    
+    const deviceData = {
+        name: formData.get('device-name'),
+        type: formData.get('device-type'),
+        location: formData.get('device-location')
+    };
+    
+    try {
+        const response = await fetch('/api/microtisers/devices/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify(deviceData)
+        });
+        
+        if (response.ok) {
+            closeRegisterModal();
+            loadDevices();
+            showToast('Device registered successfully! 🎉', 'success');
+        } else {
+            showToast('Failed to register device', 'error');
+        }
+    } catch (error) {
+        console.error('Error registering device:', error);
+        showToast('Error registering device', 'error');
+    }
+}
+
+function viewDevice(deviceId) {
+    const device = devices.find(d => d.id === deviceId);
+    if (device) {
+        showToast(`Viewing details for ${device.name}`, 'info');
+        // TODO: Navigate to device details page or show modal with:
+        // - Detailed analytics (plays over time, impressions by hour)
+        // - Earnings breakdown
+        // - Location history
+        // - Performance metrics
+    }
+}
+
+function deleteDevice(deviceId) {
+    const device = devices.find(d => d.id === deviceId);
+    if (confirm(`Are you sure you want to disconnect "${device.name}"?\n\nNote: You can control and reconnect this display from the WeAD Mobile App.`)) {
+        devices = devices.filter(d => d.id !== deviceId);
+        renderDevices();
+        loadDevices(); // Refresh stats
+        showToast('Display disconnected successfully. Reconnect anytime via mobile app.', 'success');
+    }
+}
+
+function showToast(message, type = 'info') {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        background: ${type === 'success' ? 'rgba(16, 185, 129, 0.9)' : type === 'error' ? 'rgba(239, 68, 68, 0.9)' : 'rgba(59, 130, 246, 0.9)'};
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+// TODO: Mobile App Connection Functions (to be implemented)
+function connectWithMobileApp() {
+    // Step 1: Check if WeAD Mobile App is installed
+    // Try to open deep link: weadadvertise://connect-display
+    
+    // Step 2: If app not installed, prompt user to download
+    // Show modal with App Store / Google Play links
+    
+    // Step 3: Wait for mobile app to send device data via API
+    // API endpoint: POST /api/microtisers/devices/connect
+    // Expected data: { device_id, device_type, device_name, mac_address }
+    
+    // Step 4: Refresh device list when connection is successful
+    console.log('Mobile app connection feature - coming soon!');
+}
+
+function handleMobileAppCallback(deviceData) {
+    // This function will be called when mobile app successfully pairs with display
+    // and sends data back to dashboard
+    console.log('Device connected from mobile app:', deviceData);
+    loadDevices(); // Refresh the device list
+    showToast('WeAD Display connected successfully! 🎉', 'success');
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('register-modal');
+    if (event.target === modal) {
+        closeRegisterModal();
+    }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <h1><i class="fas fa-tv"></i> WeAD Portable Displays</h1>
+        <p>Manage your WeAD portable display hardware and track earnings</p>
+        
+        <!-- Demo Disclaimer -->
+        <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05)); border: 2px solid rgba(59, 130, 246, 0.3); border-radius: 12px; padding: 1rem 1.5rem; margin-top: 1.5rem; text-align: center;">
+            <i class="fas fa-info-circle" style="color: #3b82f6; margin-right: 0.5rem;"></i>
+            <span style="color: #93c5fd; font-size: 0.95rem; font-weight: 500;">
+                Demo Preview: Display devices and earnings shown are sample data. Actual WeAD portable display hardware and real earnings tracking will be available upon official platform launch.
+            </span>
+        </div>
+    </div>
+
+    <!-- Info Banner -->
+    <div class="info-banner">
+        <i class="fas fa-info-circle"></i>
+        <p>WeAD Portable Displays represent the next generation of mobile advertising hardware. Our product line includes ultra-thin flexible OLED screens designed for wearable applications such as clothing and backpacks, smart luggage carrier displays for airports and travel hubs, high-visibility rooftop displays for cars, delivery box screens for motorcycles, large-format truck displays, and innovative drone-mounted advertising solutions. Register your WeAD display devices to begin broadcasting micro-advertisements and earning WEAD tokens with every impression.</p>
+    </div>
+
+    <!-- Device Stats -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-mobile-alt"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="total-devices">0</h3>
+                <p>Total Devices</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-power-off"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="active-devices">0</h3>
+                <p>Active Devices</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-coins"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="total-device-earnings">0 WEAD</h3>
+                <p>Total Earnings</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-play-circle"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="total-device-plays">0</h3>
+                <p>Total Plays</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Devices List -->
+    <div class="content-card">
+        <div class="card-header">
+            <h2>My WeAD Displays</h2>
+            <div class="card-actions">
+                <button class="btn btn-primary" onclick="showRegisterModal()">
+                    <i class="fas fa-plus"></i> Connect with WeAD Application
+                </button>
+            </div>
+        </div>
+        <div class="card-content">
+            <div class="devices-grid" id="devices-container">
+                <!-- Devices will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Register Device Modal -->
+<div id="register-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Connect WeAD Display</h2>
+            <span class="close" onclick="closeRegisterModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="device-name">Device Name</label>
+                    <input type="text" id="device-name" name="device-name" placeholder="e.g., Rooftop Display #1" required>
+                </div>
+                <div class="form-group">
+                    <label for="device-type">WeAD Display Type</label>
+                    <select id="device-type" name="device-type" required>
+                        <option value="">Select display type</option>
+                        <option value="flexible_oled_clothing">Flexible OLED - Clothing</option>
+                        <option value="flexible_oled_backpack">Flexible OLED - Backpack</option>
+                        <option value="car_rooftop">Car Rooftop Display</option>
+                        <option value="motorcycle_delivery_box">Motorcycle Delivery Box Display</option>
+                        <option value="truck_display">Truck Display</option>
+                        <option value="drone_display">Drone-Mounted Display</option>
+                        <option value="other">Other WeAD Display</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="device-location">Location (Optional)</label>
+                    <input type="text" id="device-location" name="device-location" placeholder="e.g., San Francisco, CA">
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-secondary" onclick="closeRegisterModal()">Cancel</button>
+            <button type="button" class="btn btn-primary" onclick="registerDevice()">Connect Display</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

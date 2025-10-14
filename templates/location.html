@@ -1,0 +1,585 @@
+{% extends "base.html" %}
+
+{% block title %}Location Intelligence - WeAD Platform{% endblock %}
+
+{% block nav_links %}
+<a href="/" class="nav-link">
+    <i class="fas fa-home"></i>
+    <span>Home</span>
+</a>
+<a href="/advertisers" class="nav-link">
+    <i class="fas fa-tachometer-alt"></i>
+    <span>Dashboard</span>
+</a>
+<a href="/campaigns" class="nav-link">
+    <i class="fas fa-bullhorn"></i>
+    <span>Campaigns</span>
+</a>
+<a href="/analytics" class="nav-link">
+    <i class="fas fa-chart-line"></i>
+    <span>Analytics</span>
+</a>
+<a href="/devices" class="nav-link">
+    <i class="fas fa-tv"></i>
+    <span>Static Displays</span>
+</a>
+<a href="/location" class="nav-link">
+    <i class="fas fa-map-marker-alt"></i>
+    <span>Location</span>
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <h1><i class="fas fa-map-marker-alt"></i> Location Intelligence</h1>
+        <p>AI-powered location insights and optimal advertising recommendations</p>
+    </div>
+
+    <!-- Location Stats -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="total-locations">0</h3>
+                <p>Total Locations</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-star"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="optimal-locations">0</h3>
+                <p>Optimal Locations</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="avg-foot-traffic">0</h3>
+                <p>Avg Foot Traffic</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="stat-content">
+                <h3 id="conversion-rate">0%</h3>
+                <p>Conversion Rate</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Map -->
+    <div class="content-card">
+        <div class="card-header">
+            <h2>Location Map</h2>
+            <div class="card-actions">
+                <button class="btn btn-primary" onclick="showAddLocationModal()">
+                    <i class="fas fa-plus"></i> Add Location
+                </button>
+            </div>
+        </div>
+        <div class="card-content">
+            <div id="location-map" class="location-map"></div>
+        </div>
+    </div>
+
+    <!-- Optimal Locations -->
+    <div class="content-card">
+        <div class="card-header">
+            <h2>Optimal Locations</h2>
+            <div class="card-actions">
+                <select id="location-filter" onchange="filterLocations()">
+                    <option value="all">All Locations</option>
+                    <option value="high_traffic">High Traffic</option>
+                    <option value="optimal">Optimal</option>
+                    <option value="low_traffic">Low Traffic</option>
+                </select>
+            </div>
+        </div>
+        <div class="card-content">
+            <div id="optimal-locations-list" class="locations-list">
+                <!-- Locations will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Weather Impact -->
+    <div class="content-card">
+        <div class="card-header">
+            <h2>Weather Impact Analysis</h2>
+        </div>
+        <div class="card-content">
+            <canvas id="weather-chart"></canvas>
+        </div>
+    </div>
+
+    <!-- Location Insights -->
+    <div class="content-card">
+        <div class="card-header">
+            <h2>AI Insights</h2>
+        </div>
+        <div class="card-content">
+            <div id="ai-insights" class="insights-container">
+                <!-- AI insights will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Location Modal -->
+<div id="add-location-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Add New Location</h2>
+            <span class="close" onclick="closeAddLocationModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="add-location-form">
+                <div class="form-group">
+                    <label for="location-name">Location Name</label>
+                    <input type="text" id="location-name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="location-address">Address</label>
+                    <input type="text" id="location-address" name="address" required>
+                </div>
+                <div class="form-group">
+                    <label for="location-type">Location Type</label>
+                    <select id="location-type" name="type" required>
+                        <option value="shopping_mall">Shopping Mall</option>
+                        <option value="office_building">Office Building</option>
+                        <option value="restaurant">Restaurant</option>
+                        <option value="gym">Gym</option>
+                        <option value="hospital">Hospital</option>
+                        <option value="school">School</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="location-capacity">Expected Capacity</label>
+                    <input type="number" id="location-capacity" name="capacity" min="1" required>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeAddLocationModal()">Cancel</button>
+            <button type="button" class="btn btn-primary" onclick="addLocation()">Add Location</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// Location Intelligence JavaScript
+let locationData = {};
+let map;
+
+// Load location data on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadLocationData();
+    initializeMap();
+    loadOptimalLocations();
+    loadWeatherImpact();
+    loadAIInsights();
+});
+
+async function loadLocationData() {
+    try {
+        const response = await fetch('/api/location-intelligence/optimal-locations', {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            locationData = data;
+            updateLocationStats(data);
+        } else {
+            console.error('Failed to load location data');
+            loadMockLocationData();
+        }
+    } catch (error) {
+        console.error('Error loading location data:', error);
+        loadMockLocationData();
+    }
+}
+
+function loadMockLocationData() {
+    locationData = {
+        total_locations: 15,
+        optimal_locations: 8,
+        avg_foot_traffic: 1250,
+        conversion_rate: 3.2,
+        locations: [
+            {
+                id: 1,
+                name: "Downtown Shopping Mall",
+                address: "123 Main St, Downtown",
+                type: "shopping_mall",
+                foot_traffic: 2500,
+                conversion_rate: 4.5,
+                weather_impact: 0.8,
+                coordinates: [40.7128, -74.0060]
+            },
+            {
+                id: 2,
+                name: "Tech Office Complex",
+                address: "456 Tech Ave, Business District",
+                type: "office_building",
+                foot_traffic: 1800,
+                conversion_rate: 3.8,
+                weather_impact: 0.6,
+                coordinates: [40.7589, -73.9851]
+            },
+            {
+                id: 3,
+                name: "Fitness Center",
+                address: "789 Health Blvd, Midtown",
+                type: "gym",
+                foot_traffic: 1200,
+                conversion_rate: 2.9,
+                weather_impact: 0.9,
+                coordinates: [40.7505, -73.9934]
+            }
+        ]
+    };
+    
+    updateLocationStats(locationData);
+    displayOptimalLocations(locationData.locations);
+}
+
+function updateLocationStats(data) {
+    document.getElementById('total-locations').textContent = data.total_locations || 0;
+    document.getElementById('optimal-locations').textContent = data.optimal_locations || 0;
+    document.getElementById('avg-foot-traffic').textContent = (data.avg_foot_traffic || 0).toLocaleString();
+    document.getElementById('conversion-rate').textContent = `${data.conversion_rate || 0}%`;
+}
+
+function initializeMap() {
+    // Initialize Leaflet map
+    map = L.map('location-map').setView([40.7128, -74.0060], 12);
+    
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+    
+    // Add mock location markers
+    if (locationData.locations) {
+        locationData.locations.forEach(location => {
+            const marker = L.marker(location.coordinates).addTo(map);
+            marker.bindPopup(`
+                <b>${location.name}</b><br>
+                ${location.address}<br>
+                Foot Traffic: ${location.foot_traffic}<br>
+                Conversion Rate: ${location.conversion_rate}%
+            `);
+        });
+    }
+}
+
+function displayOptimalLocations(locations) {
+    const container = document.getElementById('optimal-locations-list');
+    
+    if (locations.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-map-marker-alt"></i>
+                <h3>No locations found</h3>
+                <p>Add your first location to get started</p>
+                <button class="btn btn-primary" onclick="showAddLocationModal()">
+                    <i class="fas fa-plus"></i> Add Location
+                </button>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = locations.map(location => `
+        <div class="location-card">
+            <div class="location-header">
+                <h3>${location.name}</h3>
+                <span class="location-score score-${getScoreClass(location.foot_traffic)}">
+                    ${getScoreText(location.foot_traffic)}
+                </span>
+            </div>
+            <div class="location-content">
+                <div class="location-details">
+                    <div class="detail-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>${location.address}</span>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-tag"></i>
+                        <span>${location.type.replace('_', ' ')}</span>
+                    </div>
+                </div>
+                <div class="location-stats">
+                    <div class="stat">
+                        <span class="label">Foot Traffic:</span>
+                        <span class="value">${location.foot_traffic.toLocaleString()}</span>
+                    </div>
+                    <div class="stat">
+                        <span class="label">Conversion Rate:</span>
+                        <span class="value">${location.conversion_rate}%</span>
+                    </div>
+                    <div class="stat">
+                        <span class="label">Weather Impact:</span>
+                        <span class="value">${(location.weather_impact * 100).toFixed(0)}%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="location-actions">
+                <button class="btn btn-sm btn-primary" onclick="viewLocation(${location.id})">
+                    <i class="fas fa-eye"></i> View
+                </button>
+                <button class="btn btn-sm btn-secondary" onclick="editLocation(${location.id})">
+                    <i class="fas fa-edit"></i> Edit
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function getScoreClass(footTraffic) {
+    if (footTraffic > 2000) return 'high';
+    if (footTraffic > 1000) return 'medium';
+    return 'low';
+}
+
+function getScoreText(footTraffic) {
+    if (footTraffic > 2000) return 'High Traffic';
+    if (footTraffic > 1000) return 'Medium Traffic';
+    return 'Low Traffic';
+}
+
+function filterLocations() {
+    const filter = document.getElementById('location-filter').value;
+    let filteredLocations = locationData.locations || [];
+    
+    if (filter !== 'all') {
+        if (filter === 'high_traffic') {
+            filteredLocations = filteredLocations.filter(loc => loc.foot_traffic > 2000);
+        } else if (filter === 'optimal') {
+            filteredLocations = filteredLocations.filter(loc => loc.foot_traffic > 1000 && loc.conversion_rate > 3);
+        } else if (filter === 'low_traffic') {
+            filteredLocations = filteredLocations.filter(loc => loc.foot_traffic <= 1000);
+        }
+    }
+    
+    displayOptimalLocations(filteredLocations);
+}
+
+async function loadOptimalLocations() {
+    try {
+        const response = await fetch('/api/location-intelligence/optimal-locations', {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            displayOptimalLocations(data.locations || []);
+        } else {
+            console.error('Failed to load optimal locations');
+        }
+    } catch (error) {
+        console.error('Error loading optimal locations:', error);
+    }
+}
+
+async function loadWeatherImpact() {
+    try {
+        const response = await fetch('/api/location-intelligence/weather-impact', {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            updateWeatherChart(data);
+        } else {
+            console.error('Failed to load weather impact');
+            loadMockWeatherData();
+        }
+    } catch (error) {
+        console.error('Error loading weather impact:', error);
+        loadMockWeatherData();
+    }
+}
+
+function loadMockWeatherData() {
+    const weatherData = {
+        sunny: 85,
+        cloudy: 70,
+        rainy: 45,
+        snowy: 30
+    };
+    
+    updateWeatherChart(weatherData);
+}
+
+function updateWeatherChart(data) {
+    const ctx = document.getElementById('weather-chart').getContext('2d');
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Sunny', 'Cloudy', 'Rainy', 'Snowy'],
+            datasets: [{
+                label: 'Ad Performance (%)',
+                data: [data.sunny || 85, data.cloudy || 70, data.rainy || 45, data.snowy || 30],
+                backgroundColor: [
+                    '#fbbf24',
+                    '#6b7280',
+                    '#3b82f6',
+                    '#ffffff'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100
+                }
+            }
+        }
+    });
+}
+
+async function loadAIInsights() {
+    try {
+        const response = await fetch('/api/location-intelligence/insights', {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            displayAIInsights(data.insights || []);
+        } else {
+            console.error('Failed to load AI insights');
+            displayMockAIInsights();
+        }
+    } catch (error) {
+        console.error('Error loading AI insights:', error);
+        displayMockAIInsights();
+    }
+}
+
+function displayMockAIInsights() {
+    const insights = [
+        {
+            type: 'recommendation',
+            title: 'Optimal Placement Strategy',
+            content: 'Based on foot traffic analysis, placing ads in shopping malls during peak hours (2-6 PM) shows 40% higher conversion rates.',
+            confidence: 0.85
+        },
+        {
+            type: 'trend',
+            title: 'Weather Impact Trend',
+            content: 'Ad performance drops by 35% during rainy weather. Consider indoor locations or weather-adaptive campaigns.',
+            confidence: 0.78
+        },
+        {
+            type: 'opportunity',
+            title: 'Untapped Market',
+            content: 'Office buildings in the business district show high engagement but low ad density. Opportunity for premium placement.',
+            confidence: 0.92
+        }
+    ];
+    
+    displayAIInsights(insights);
+}
+
+function displayAIInsights(insights) {
+    const container = document.getElementById('ai-insights');
+    
+    container.innerHTML = insights.map(insight => `
+        <div class="insight-card insight-${insight.type}">
+            <div class="insight-header">
+                <h3>${insight.title}</h3>
+                <span class="confidence-score">${(insight.confidence * 100).toFixed(0)}% confidence</span>
+            </div>
+            <div class="insight-content">
+                <p>${insight.content}</p>
+            </div>
+        </div>
+    `).join('');
+}
+
+function showAddLocationModal() {
+    document.getElementById('add-location-modal').style.display = 'block';
+}
+
+function closeAddLocationModal() {
+    document.getElementById('add-location-modal').style.display = 'none';
+    document.getElementById('add-location-form').reset();
+}
+
+async function addLocation() {
+    const form = document.getElementById('add-location-form');
+    const formData = new FormData(form);
+    
+    const locationData = {
+        name: formData.get('name'),
+        address: formData.get('address'),
+        type: formData.get('type'),
+        capacity: parseInt(formData.get('capacity'))
+    };
+    
+    try {
+        const response = await fetch('/api/location-intelligence/locations', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify(locationData)
+        });
+        
+        if (response.ok) {
+            closeAddLocationModal();
+            loadLocationData();
+        } else {
+            alert('Failed to add location');
+        }
+    } catch (error) {
+        console.error('Error adding location:', error);
+        alert('Error adding location');
+    }
+}
+
+function viewLocation(id) {
+    // Navigate to location detail page
+    window.location.href = `/location/${id}`;
+}
+
+function editLocation(id) {
+    // Open edit modal or navigate to edit page
+    console.log('Edit location:', id);
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('add-location-modal');
+    if (event.target === modal) {
+        closeAddLocationModal();
+    }
+}
+</script>
+{% endblock %}
+
+

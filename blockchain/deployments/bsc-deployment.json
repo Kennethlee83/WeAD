@@ -1,0 +1,24 @@
+{
+  "network": "BSC Mainnet",
+  "chainId": 56,
+  "timestamp": "2025-10-12T20:46:32.020Z",
+  "contracts": {
+    "WeADToken": {
+      "address": "0xCF99bF2cbD83A580437d39A5092C1665Faa9898B",
+      "status": "Existing - No changes"
+    },
+    "CrossChainBridge": {
+      "address": "0x58a5cf62179d26Ec090B0A37E11cD861dE3Bc5ac",
+      "status": "Existing - No changes"
+    },
+    "AdViewing": {
+      "address": "0x7b8F6Ae477F2fd0Cb467B28a07Dd93D8396B7A14",
+      "status": "Newly Deployed",
+      "platformFee": "500",
+      "minViewDuration": "5",
+      "maxViewDuration": "300"
+    }
+  },
+  "deployer": "0x01d3829a1b0CA3E1390724a0C5C419435720431e",
+  "transactionHash": "0xf700889f7ec12208b3c9a11b2c9045e19d3907de28e4ef97170e737bbf01f468"
+}

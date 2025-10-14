@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+
+{% block title %}WeAD - Home{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <!-- Page Title -->
+    <div class="page-header">
+        <h1 style="text-transform: none;">WeAD - WeADvertise</h1>
+        <p>Choose your path to start earning or advertising</p>
+    </div>
+    
+    <!-- Three Main Options -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem; margin: 4rem 0;">
+        
+        <!-- Microtisers Option -->
+        <a href="/microtisers" style="text-decoration: none;">
+            <div class="glass" style="padding: 3rem 2rem; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;">
+                <div style="font-size: 4rem; margin-bottom: 1.5rem; background: linear-gradient(135deg, #ff4500, #dc143c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h2 style="color: var(--quantum-primary); margin-bottom: 1rem; font-size: 2rem;">Microtisers</h2>
+                <p style="color: var(--text-secondary); font-size: 1.1rem; line-height: 1.6;">
+                    Display ads on your portable devices and earn WEAD tokens for every view
+                </p>
+                <div style="margin-top: 2rem;">
+                    <span style="display: inline-block; padding: 0.8rem 2rem; background: linear-gradient(135deg, #ff4500, #dc143c); color: white; border-radius: 25px; font-weight: 600;">
+                        Start Earning <i class="fas fa-arrow-right" style="margin-left: 0.5rem;"></i>
+                    </span>
+                </div>
+            </div>
+        </a>
+        
+        <!-- Advertisers Option -->
+        <a href="/advertisers" style="text-decoration: none;">
+            <div class="glass" style="padding: 3rem 2rem; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;">
+                <div style="font-size: 4rem; margin-bottom: 1.5rem; background: linear-gradient(135deg, #ff4500, #dc143c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                    <i class="fas fa-bullhorn"></i>
+                </div>
+                <h2 style="color: var(--quantum-primary); margin-bottom: 1rem; font-size: 2rem;">Advertisers</h2>
+                <p style="color: var(--text-secondary); font-size: 1.1rem; line-height: 1.6;">
+                    Create and manage advertising campaigns on micro-displays worldwide
+                </p>
+                <div style="margin-top: 2rem;">
+                    <span style="display: inline-block; padding: 0.8rem 2rem; background: linear-gradient(135deg, #ff4500, #dc143c); color: white; border-radius: 25px; font-weight: 600;">
+                        Create Campaign <i class="fas fa-arrow-right" style="margin-left: 0.5rem;"></i>
+                    </span>
+                </div>
+            </div>
+        </a>
+        
+        <!-- Fund Me Option -->
+        <a href="/fundme" style="text-decoration: none;">
+            <div class="glass" style="padding: 3rem 2rem; text-align: center; cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;">
+                <div style="font-size: 4rem; margin-bottom: 1.5rem; background: linear-gradient(135deg, #ff4500, #dc143c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                    <i class="fas fa-hand-holding-usd"></i>
+                </div>
+                <h2 style="color: var(--quantum-primary); margin-bottom: 1rem; font-size: 2rem;">Fund Me Page</h2>
+                <p style="color: var(--text-secondary); font-size: 1.1rem; line-height: 1.6;">
+                    Get funded by displaying ads while promoting your own cause or project
+                </p>
+                <div style="margin-top: 2rem;">
+                    <span style="display: inline-block; padding: 0.8rem 2rem; background: linear-gradient(135deg, #ff4500, #dc143c); color: white; border-radius: 25px; font-weight: 600;">
+                        Get Funded <i class="fas fa-arrow-right" style="margin-left: 0.5rem;"></i>
+                    </span>
+                </div>
+            </div>
+        </a>
+        
+    </div>
+    
+    <!-- Platform Stats -->
+    <div class="stats-grid" style="margin-top: 5rem;">
+        <div class="stat-card glass">
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-value">10,000+</div>
+            <div class="stat-label">Active Users</div>
+        </div>
+        
+        <div class="stat-card glass">
+            <div class="stat-icon">
+                <i class="fas fa-eye"></i>
+            </div>
+            <div class="stat-value">50M+</div>
+            <div class="stat-label">Ad Impressions</div>
+        </div>
+        
+        <div class="stat-card glass">
+            <div class="stat-icon">
+                <i class="fas fa-coins"></i>
+            </div>
+            <div class="stat-value">$2.5M</div>
+            <div class="stat-label">Tokens Distributed</div>
+        </div>
+        
+        <div class="stat-card glass">
+            <div class="stat-icon">
+                <i class="fas fa-globe"></i>
+            </div>
+            <div class="stat-value">120+</div>
+            <div class="stat-label">Countries</div>
+        </div>
+    </div>
+    
+    <!-- How It Works Section -->
+    <section class="section glass" style="margin-top: 5rem;">
+        <h2 class="section-title">How WeAD Works</h2>
+        <p class="section-subtitle">Three simple steps to start earning or advertising</p>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 3rem; margin-top: 3rem;">
+            <div style="text-align: center;">
+                <div style="width: 80px; height: 80px; margin: 0 auto 1.5rem; background: linear-gradient(135deg, #ff4500, #dc143c); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 800; color: white;">
+                    1
+                </div>
+                <h3 style="color: var(--quantum-primary); margin-bottom: 1rem;">Choose Your Path</h3>
+                <p style="color: var(--text-secondary);">Select whether you want to earn as a Microtiser, advertise your product, or get funded for your project</p>
+            </div>
+            
+            <div style="text-align: center;">
+                <div style="width: 80px; height: 80px; margin: 0 auto 1.5rem; background: linear-gradient(135deg, #ff4500, #dc143c); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 800; color: white;">
+                    2
+                </div>
+                <h3 style="color: var(--quantum-primary); margin-bottom: 1rem;">Connect Your Wallet</h3>
+                <p style="color: var(--text-secondary);">Connect your MetaMask wallet on BSC network to start transacting with WEAD tokens</p>
+            </div>
+            
+            <div style="text-align: center;">
+                <div style="width: 80px; height: 80px; margin: 0 auto 1.5rem; background: linear-gradient(135deg, #ff4500, #dc143c); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 800; color: white;">
+                    3
+                </div>
+                <h3 style="color: var(--quantum-primary); margin-bottom: 1rem;">Start Earning or Advertising</h3>
+                <p style="color: var(--text-secondary);">Display ads on your devices to earn, create campaigns to advertise, or get funded for your cause</p>
+            </div>
+        </div>
+    </section>
+    
+</div>
+
+<style>
+    .glass:hover {
+        transform: translateY(-5px);
+        border-color: var(--quantum-primary) !important;
+        box-shadow: 0 10px 40px rgba(255, 69, 0, 0.3);
+    }
+    
+    .stat-card {
+        transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(255, 69, 0, 0.2);
+    }
+</style>
+{% endblock %}
+
+
+
+
+
+
+

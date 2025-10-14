@@ -1,0 +1,1022 @@
+{% extends "base.html" %}
+
+{% block title %}STREAM VAULT - WeAD Platform{% endblock %}
+
+{% block nav_links %}
+<a href="/" class="nav-link">
+    <i class="fas fa-home"></i>
+    <span>Home</span>
+</a>
+<a href="/stream-vault" class="nav-link active">
+    <i class="fas fa-video"></i>
+    <span>STREAM VAULT</span>
+</a>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Stream Vault - Black Theme */
+    :root {
+        --quantum-primary: #000000 !important;
+        --primary: #000000 !important;
+        --secondary: #1a1a1a !important;
+        --glow-primary: #ffffff !important;
+        --glow-secondary: #cccccc !important;
+    }
+    
+    body {
+        background: #000000 !important;
+    }
+    
+    .page-container {
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(20, 20, 20, 0.9));
+    }
+    
+    h1 {
+        background: linear-gradient(135deg, #ffffff, #cccccc, #999999) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        background-clip: text !important;
+        text-shadow: none !important;
+        font-size: 4.5rem !important; /* Increased from 3.5rem to match other pages */
+        letter-spacing: 2px;
+        text-align: center !important; /* Center the title */
+    }
+    
+    h2, h3 {
+        color: white !important;
+    }
+    
+    .nav-link:hover,
+    .nav-link.active {
+        color: #ffffff !important;
+        border: 2px solid rgba(255, 255, 255, 0.5) !important;
+        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3) !important;
+    }
+    
+    .nav-link.active {
+        border: 2px solid rgba(255, 255, 255, 0.8) !important;
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.5), 0 0 40px rgba(255, 255, 255, 0.3) !important;
+    }
+    
+    /* Hero Section */
+    .hero-section {
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(20, 20, 20, 0.8));
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        padding: 3rem;
+        margin-bottom: 3rem;
+        text-align: center;
+    }
+    
+    .hero-section h2 {
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .hero-section p {
+        font-size: 1.2rem;
+        color: #cccccc;
+        line-height: 1.8;
+        max-width: 900px;
+        margin: 0 auto 2rem;
+    }
+    
+    /* Hosts Section */
+    .hosts-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        margin: 3rem 0;
+    }
+    
+    .host-card {
+        background: linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(0, 0, 0, 0.95));
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    
+    .host-card:hover {
+        border-color: rgba(255, 255, 255, 0.5);
+        transform: translateY(-8px);
+        box-shadow: 0 15px 50px rgba(255, 255, 255, 0.2);
+    }
+    
+    .host-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #ffffff, #cccccc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .host-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 0.5rem;
+    }
+    
+    .host-title {
+        color: #999999;
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .host-description {
+        color: #cccccc;
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+    
+    /* Subscription Section */
+    .subscription-section {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.8));
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 25px;
+        padding: 3rem;
+        margin: 3rem 0;
+        text-align: center;
+    }
+    
+    .subscription-price {
+        font-size: 3rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #ffffff, #cccccc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin: 2rem 0;
+    }
+    
+    .subscribe-button {
+        padding: 1.5rem 4rem;
+        background: linear-gradient(135deg, #ffffff, #cccccc);
+        color: #000000;
+        border: none;
+        border-radius: 30px;
+        font-weight: 700;
+        font-size: 1.3rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .subscribe-button:hover {
+        background: linear-gradient(135deg, #ffffff, #e0e0e0);
+        transform: translateY(-5px);
+        box-shadow: 0 10px 40px rgba(255, 255, 255, 0.4);
+    }
+    
+    /* Features Grid */
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin: 3rem 0;
+    }
+    
+    .feature-card {
+        background: rgba(20, 20, 20, 0.6);
+        border: 2px solid rgba(255, 255, 255, 0.15);
+        border-radius: 15px;
+        padding: 2rem;
+        text-align: center;
+    }
+    
+    .feature-icon {
+        font-size: 2.5rem;
+        color: #ffffff;
+        margin-bottom: 1rem;
+    }
+    
+    .feature-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 0.5rem;
+    }
+    
+    .feature-description {
+        color: #999999;
+        font-size: 0.9rem;
+    }
+    
+    /* Episodes Section */
+    .episodes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+    
+    .episode-card {
+        background: linear-gradient(135deg, rgba(20, 20, 20, 0.8), rgba(0, 0, 0, 0.95));
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+    
+    .episode-card:hover {
+        border-color: rgba(255, 255, 255, 0.5);
+        transform: translateY(-8px);
+        box-shadow: 0 15px 50px rgba(255, 255, 255, 0.2);
+    }
+    
+    .episode-thumbnail {
+        width: 100%;
+        aspect-ratio: 16/9;
+        background: linear-gradient(135deg, #1a1a1a, #000000);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+    
+    .play-overlay {
+        position: absolute;
+        font-size: 4rem;
+        color: rgba(255, 255, 255, 0.8);
+        transition: all 0.3s ease;
+    }
+    
+    .episode-card:hover .play-overlay {
+        color: #ffffff;
+        transform: scale(1.2);
+    }
+    
+    .episode-info {
+        padding: 1.5rem;
+    }
+    
+    .episode-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 0.5rem;
+    }
+    
+    .episode-meta {
+        display: flex;
+        gap: 1rem;
+        color: #999999;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+    
+    .episode-description {
+        color: #cccccc;
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+    
+    .locked-badge {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 20px;
+        color: #ffffff;
+        font-size: 0.85rem;
+        margin-top: 1rem;
+    }
+    
+    /* Stats */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+    
+    .stat-box {
+        background: rgba(20, 20, 20, 0.6);
+        border: 2px solid rgba(255, 255, 255, 0.15);
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+    }
+    
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #ffffff, #cccccc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .stat-label {
+        color: #999999;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
+    
+    /* Mobile Optimization */
+    @media (max-width: 768px) {
+        /* Prevent horizontal scrolling and fix viewport */
+        html, body {
+            overflow-x: hidden !important;
+            width: 100% !important;
+            max-width: 100vw !important;
+            position: relative !important;
+        }
+        
+        .page-container {
+            padding: 0 !important;
+            width: 100% !important;
+            max-width: 100vw !important;
+            overflow-x: hidden !important;
+        }
+        
+        .page-header {
+            padding: 1rem !important;
+            width: 100% !important;
+            max-width: 100vw !important;
+            overflow-x: hidden !important;
+        }
+        
+        /* Ensure all sections fit within viewport */
+        .section, .glass, .stats-grid, .episodes-grid, .tier-cards {
+            width: 100% !important;
+            max-width: 100vw !important;
+            overflow-x: hidden !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+        
+        .page-header h1 {
+            font-size: 1.5rem !important;
+            color: white !important; /* Make mobile title white */
+            background: none !important;
+            -webkit-background-clip: unset !important;
+            -webkit-text-fill-color: white !important;
+            background-clip: unset !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;
+        }
+        
+        .page-header p {
+            color: white !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+        }
+        
+        .section.glass {
+            background: transparent !important;
+            border: none !important;
+            padding: 0.5rem 1rem !important;
+        }
+        
+        /* Stats section mobile optimization */
+        .stats-grid {
+            display: flex !important;
+            overflow-x: auto !important;
+            scroll-snap-type: x mandatory !important;
+            gap: 0.75rem !important;
+            padding: 0 1rem !important;
+            margin: 2rem -1rem !important;
+            scrollbar-width: none !important;
+        }
+        
+        .stats-grid::-webkit-scrollbar {
+            display: none !important;
+        }
+        
+        .stat-box.glass {
+            flex: 0 0 70% !important;
+            scroll-snap-align: center !important;
+            min-width: 160px !important;
+            background: rgba(0, 0, 0, 0.9) !important;
+            border: 2px solid rgba(255, 255, 255, 0.3) !important;
+            backdrop-filter: none !important;
+            padding: 1.5rem 1rem !important;
+            box-shadow: 0 8px 32px rgba(255, 255, 255, 0.1) !important;
+            margin-bottom: 1rem !important;
+        }
+        
+        .stat-value {
+            color: white !important;
+            font-size: 2rem !important;
+            font-weight: 800 !important;
+            text-shadow: none !important;
+            -webkit-font-smoothing: antialiased !important;
+            -moz-osx-font-smoothing: grayscale !important;
+        }
+        
+        .stat-label {
+            color: white !important;
+            font-size: 0.9rem !important;
+            margin-top: 0.5rem !important;
+            text-shadow: none !important;
+            -webkit-font-smoothing: antialiased !important;
+            -moz-osx-font-smoothing: grayscale !important;
+        }
+        
+        .episodes-grid {
+            display: flex !important;
+            overflow-x: auto !important;
+            scroll-snap-type: x mandatory !important;
+            gap: 1rem !important;
+            padding: 0 1rem !important;
+            margin-left: -1rem !important;
+            margin-right: -1rem !important;
+            scrollbar-width: none !important;
+        }
+        
+        .episodes-grid::-webkit-scrollbar {
+            display: none !important;
+        }
+        
+        .episode-card {
+            flex: 0 0 85% !important;
+            scroll-snap-align: center !important;
+            min-width: 280px !important;
+        }
+        
+        .btn {
+            width: 100% !important;
+            padding: 0.875rem 1rem !important;
+        }
+        
+        .tier-card {
+            flex: 0 0 85% !important;
+            scroll-snap-align: center !important;
+            min-width: 280px !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1>STREAM VAULT</h1>
+        <p style="color: #cccccc; font-size: 1.2rem;">The Ultimate Web3 CEO Streaming Platform</p>
+        
+        <!-- Demo Disclaimer -->
+        <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05)); border: 2px solid rgba(59, 130, 246, 0.3); border-radius: 12px; padding: 1rem 1.5rem; margin-top: 1.5rem; text-align: center;">
+            <i class="fas fa-info-circle" style="color: #3b82f6; margin-right: 0.5rem;"></i>
+            <span style="color: #93c5fd; font-size: 0.95rem; font-weight: 500;">
+                Demo Preview: Episode content is sample data. Full CEO interview series will be available with premium subscription upon official launch.
+            </span>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero-section glass">
+        <h2>🎬 Exclusive Web3 CEO Interviews</h2>
+        <p>
+            Join Kenneth Lee (WeAD CEO), Rick (Business Expert), and Chris (Tech Visionary) as they deliver 
+            exclusive 45-60 minute episodes interviewing top Web3 CEOs and blockchain leaders 2-3 times weekly. 
+            Bridge traditional business with Web3 innovation through premium content and industry insights.
+        </p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+        <div class="stat-box glass">
+            <div class="stat-value">100+</div>
+            <div class="stat-label">Episodes</div>
+        </div>
+        <div class="stat-box glass">
+            <div class="stat-value">2-3x</div>
+            <div class="stat-label">Weekly</div>
+        </div>
+        <div class="stat-box glass">
+            <div class="stat-value">45-60</div>
+            <div class="stat-label">Minutes/Episode</div>
+        </div>
+        <div class="stat-box glass">
+            <div class="stat-value">20+</div>
+            <div class="stat-label">Years Experience</div>
+        </div>
+    </div>
+
+    <!-- Hosts Section -->
+    <h2 style="text-align: center; margin: 4rem 0 2rem;">Meet Your Hosts</h2>
+    <div class="hosts-section">
+        <div class="host-card glass">
+            <div class="host-icon">
+                <i class="fas fa-user-tie"></i>
+            </div>
+            <div class="host-name">Kenneth Lee</div>
+            <div class="host-title">WeAD CEO & Host</div>
+            <p class="host-description">
+                Visionary leader with 20+ years in Web3, driving innovation in quantum micro-advertising and blockchain technology.
+            </p>
+        </div>
+        
+        <div class="host-card glass">
+            <div class="host-icon">
+                <i class="fas fa-briefcase"></i>
+            </div>
+            <div class="host-name">Rick</div>
+            <div class="host-title">Business Expert</div>
+            <p class="host-description">
+                Strategic business advisor specializing in Web3 business models, market analysis, and growth strategies.
+            </p>
+        </div>
+        
+        <div class="host-card glass">
+            <div class="host-icon">
+                <i class="fas fa-laptop-code"></i>
+            </div>
+            <div class="host-name">Chris</div>
+            <div class="host-title">Tech Visionary</div>
+            <p class="host-description">
+                Technical expert in blockchain architecture, smart contracts, and emerging Web3 technologies.
+            </p>
+        </div>
+    </div>
+
+    <!-- Subscription Section -->
+    <div class="subscription-section glass">
+        <h2>🚀 Unlock Premium Access</h2>
+        <p style="color: #cccccc; font-size: 1.1rem; max-width: 700px; margin: 1rem auto;">
+            Get unlimited access to all episodes, exclusive behind-the-scenes content, and priority Q&A sessions with guests
+        </p>
+        <div class="subscription-price">
+            <i class="fas fa-coins" style="font-size: 2.5rem; margin-right: 1rem;"></i>
+            1,000 WEAD/Month
+        </div>
+        <button class="subscribe-button" onclick="subscribeNow()">
+            <i class="fas fa-crown"></i> Subscribe Now
+        </button>
+        <p style="margin-top: 2rem; color: #999999; font-size: 0.95rem;">
+            <i class="fas fa-check-circle" style="color: #22c55e;"></i> Cancel anytime • 
+            <i class="fas fa-check-circle" style="color: #22c55e;"></i> New episodes 2-3x weekly • 
+            <i class="fas fa-check-circle" style="color: #22c55e;"></i> Exclusive content
+        </p>
+    </div>
+
+    <!-- Features -->
+    <h2 style="text-align: center; margin: 4rem 0 2rem;">Platform Features</h2>
+    <div class="features-grid">
+        <div class="feature-card glass">
+            <div class="feature-icon">
+                <i class="fas fa-video"></i>
+            </div>
+            <div class="feature-title">Premium Production</div>
+            <p class="feature-description">
+                Professional studio quality with 4K video and crystal-clear audio
+            </p>
+        </div>
+        
+        <div class="feature-card glass">
+            <div class="feature-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="feature-title">Top Web3 CEOs</div>
+            <p class="feature-description">
+                Exclusive interviews with blockchain leaders and industry pioneers
+            </p>
+        </div>
+        
+        <div class="feature-card glass">
+            <div class="feature-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="feature-title">Market Analysis</div>
+            <p class="feature-description">
+                Deep dives into Web3 trends, market insights, and investment strategies
+            </p>
+        </div>
+        
+        <div class="feature-card glass">
+            <div class="feature-icon">
+                <i class="fas fa-mobile-alt"></i>
+            </div>
+            <div class="feature-title">Mobile Apps</div>
+            <p class="feature-description">
+                Watch on any device with our upcoming iOS and Android apps
+            </p>
+        </div>
+        
+        <div class="feature-card glass">
+            <div class="feature-icon">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <div class="feature-title">STEAM VAULT Academy</div>
+            <p class="feature-description">
+                Evolving into a comprehensive Web3 education platform
+            </p>
+        </div>
+        
+        <div class="feature-card glass">
+            <div class="feature-icon">
+                <i class="fas fa-globe"></i>
+            </div>
+            <div class="feature-title">Global Events</div>
+            <p class="feature-description">
+                Access to exclusive Web3 conferences and networking events
+            </p>
+        </div>
+    </div>
+
+    <!-- Episodes Section -->
+    <h2 style="text-align: center; margin: 4rem 0 2rem;">Latest Episodes</h2>
+    <div class="episodes-grid">
+        
+        <!-- Episode 1 -->
+        <div class="episode-card" onclick="playEpisode(1)">
+            <div class="episode-thumbnail">
+                <div class="play-overlay">
+                    <i class="fas fa-play-circle"></i>
+                </div>
+            </div>
+            <div class="episode-info">
+                <h3 class="episode-title">The Future of DeFi with Vitalik Buterin</h3>
+                <div class="episode-meta">
+                    <span><i class="fas fa-clock"></i> 52 min</span>
+                    <span><i class="fas fa-calendar"></i> 3 days ago</span>
+                </div>
+                <p class="episode-description">
+                    Ethereum co-founder discusses the evolution of decentralized finance and upcoming protocol upgrades.
+                </p>
+                <span class="locked-badge">
+                    <i class="fas fa-lock"></i> Premium Only
+                </span>
+            </div>
+        </div>
+
+        <!-- Episode 2 -->
+        <div class="episode-card" onclick="playEpisode(2)">
+            <div class="episode-thumbnail">
+                <div class="play-overlay">
+                    <i class="fas fa-play-circle"></i>
+                </div>
+            </div>
+            <div class="episode-info">
+                <h3 class="episode-title">NFT Market Trends 2025</h3>
+                <div class="episode-meta">
+                    <span><i class="fas fa-clock"></i> 48 min</span>
+                    <span><i class="fas fa-calendar"></i> 1 week ago</span>
+                </div>
+                <p class="episode-description">
+                    Leading NFT marketplace CEO shares insights on digital collectibles and creator economy.
+                </p>
+                <span class="locked-badge">
+                    <i class="fas fa-lock"></i> Premium Only
+                </span>
+            </div>
+        </div>
+
+        <!-- Episode 3 -->
+        <div class="episode-card" onclick="playEpisode(3)">
+            <div class="episode-thumbnail">
+                <div class="play-overlay">
+                    <i class="fas fa-play-circle"></i>
+                </div>
+            </div>
+            <div class="episode-info">
+                <h3 class="episode-title">Building on Layer 2 Solutions</h3>
+                <div class="episode-meta">
+                    <span><i class="fas fa-clock"></i> 55 min</span>
+                    <span><i class="fas fa-calendar"></i> 2 weeks ago</span>
+                </div>
+                <p class="episode-description">
+                    Technical deep dive into scaling solutions with Polygon and Arbitrum founders.
+                </p>
+                <span class="locked-badge">
+                    <i class="fas fa-lock"></i> Premium Only
+                </span>
+            </div>
+        </div>
+
+        <!-- Episode 4 -->
+        <div class="episode-card" onclick="playEpisode(4)">
+            <div class="episode-thumbnail">
+                <div class="play-overlay">
+                    <i class="fas fa-play-circle"></i>
+                </div>
+            </div>
+            <div class="episode-info">
+                <h3 class="episode-title">Web3 Gaming Revolution</h3>
+                <div class="episode-meta">
+                    <span><i class="fas fa-clock"></i> 50 min</span>
+                    <span><i class="fas fa-calendar"></i> 3 weeks ago</span>
+                </div>
+                <p class="episode-description">
+                    Exploring play-to-earn models and the future of blockchain gaming with industry leaders.
+                </p>
+                <span class="locked-badge">
+                    <i class="fas fa-lock"></i> Premium Only
+                </span>
+            </div>
+        </div>
+
+        <!-- Episode 5 -->
+        <div class="episode-card" onclick="playEpisode(5)">
+            <div class="episode-thumbnail">
+                <div class="play-overlay">
+                    <i class="fas fa-play-circle"></i>
+                </div>
+            </div>
+            <div class="episode-info">
+                <h3 class="episode-title">Tokenomics Masterclass</h3>
+                <div class="episode-meta">
+                    <span><i class="fas fa-clock"></i> 60 min</span>
+                    <span><i class="fas fa-calendar"></i> 1 month ago</span>
+                </div>
+                <p class="episode-description">
+                    Expert analysis of token economics, utility design, and sustainable crypto projects.
+                </p>
+                <span class="locked-badge">
+                    <i class="fas fa-lock"></i> Premium Only
+                </span>
+            </div>
+        </div>
+
+        <!-- Episode 6 -->
+        <div class="episode-card" onclick="playEpisode(6)">
+            <div class="episode-thumbnail">
+                <div class="play-overlay">
+                    <i class="fas fa-play-circle"></i>
+                </div>
+            </div>
+            <div class="episode-info">
+                <h3 class="episode-title">DAO Governance Best Practices</h3>
+                <div class="episode-meta">
+                    <span><i class="fas fa-clock"></i> 45 min</span>
+                    <span><i class="fas fa-calendar"></i> 1 month ago</span>
+                </div>
+                <p class="episode-description">
+                    How successful DAOs structure decision-making and community participation.
+                </p>
+                <span class="locked-badge">
+                    <i class="fas fa-lock"></i> Premium Only
+                </span>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Subscription Payment Modal -->
+<div id="subscriptionModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(5px); z-index: 10000; align-items: center; justify-content: center; padding: 2rem;">
+    <div style="background: linear-gradient(135deg, rgba(32, 32, 32, 0.95), rgba(0, 0, 0, 0.95)); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 20px; max-width: 600px; width: 100%; padding: 2.5rem; position: relative; max-height: 90vh; overflow-y: auto;">
+        <!-- Close Button -->
+        <button onclick="closeSubscriptionModal()" style="position: absolute; top: 1.5rem; right: 1.5rem; background: rgba(255, 255, 255, 0.1); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.5rem; transition: all 0.3s;">
+            ×
+        </button>
+        
+        <h2 style="color: white; margin-bottom: 2rem; text-align: center; font-size: 2rem;">
+            <i class="fas fa-crown"></i> Subscribe to STREAM VAULT
+        </h2>
+        
+        <!-- Subscription Details -->
+        <div style="background: rgba(255, 255, 255, 0.05); border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 15px; padding: 2rem; margin-bottom: 2rem; text-align: center;">
+            <div style="color: white; font-size: 3rem; font-weight: 700; margin-bottom: 1rem;">
+                <i class="fas fa-coins" style="color: #fbbf24;"></i> 1,000 WEAD
+            </div>
+            <div style="color: #94a3b8; font-size: 1.1rem;">per month</div>
+        </div>
+        
+        <!-- Benefits -->
+        <div style="background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 1.5rem; margin-bottom: 2rem;">
+            <h4 style="color: white; margin-bottom: 1rem; font-size: 1.2rem;">
+                <i class="fas fa-gift"></i> Subscription Benefits:
+            </h4>
+            <div style="color: #cbd5e1; line-height: 2; font-size: 1rem;">
+                <div><i class="fas fa-check-circle" style="color: #22c55e; margin-right: 0.5rem;"></i> All episodes unlocked</div>
+                <div><i class="fas fa-check-circle" style="color: #22c55e; margin-right: 0.5rem;"></i> New episodes 2-3x weekly</div>
+                <div><i class="fas fa-check-circle" style="color: #22c55e; margin-right: 0.5rem;"></i> Exclusive behind-the-scenes content</div>
+                <div><i class="fas fa-check-circle" style="color: #22c55e; margin-right: 0.5rem;"></i> Priority Q&A with guests</div>
+                <div><i class="fas fa-check-circle" style="color: #22c55e; margin-right: 0.5rem;"></i> Cancel anytime</div>
+            </div>
+        </div>
+        
+        <!-- WEAD Token Coming Soon Message -->
+        <div style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.1)); border: 2px solid #3b82f6; border-radius: 15px; padding: 1.5rem; margin-bottom: 2rem; text-align: center;">
+            <div style="font-size: 2.5rem; margin-bottom: 1rem;">⏰</div>
+            <h4 style="color: #3b82f6; margin-bottom: 1rem; font-size: 1.2rem;">
+                <i class="fas fa-clock"></i> Coming Soon: WEAD Tokens
+            </h4>
+            <div style="color: #cbd5e1; font-size: 1rem; line-height: 1.6; margin-bottom: 1rem;">
+                WEAD Token payments will be available soon!<br>
+                <strong style="color: #3b82f6;">Save 10% on all services</strong> when you pay with WEAD tokens.
+            </div>
+            <div style="color: #94a3b8; font-size: 0.9rem;">
+                For now, please use BNB or other payment methods.
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div style="display: flex; gap: 1rem;">
+            <button onclick="closeSubscriptionModal()" style="flex: 1; padding: 1rem; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 10px; color: white; font-weight: 600; cursor: pointer; font-size: 1rem; transition: all 0.3s;">
+                Cancel
+            </button>
+            <button onclick="confirmSubscription()" style="flex: 2; padding: 1rem; background: linear-gradient(135deg, #ffffff, #cccccc); border: none; border-radius: 10px; color: #000; font-weight: 700; cursor: pointer; font-size: 1rem; transition: all 0.3s;">
+                <i class="fas fa-lock"></i> Pay with MetaMask
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Subscribe function
+    // MetaMask Integration for Stream Vault
+    let userWalletAddress = null;
+    let isSubscribed = false;
+    const SUBSCRIPTION_COST = '1000'; // 1000 WEAD tokens
+    
+    // Check if user has active subscription
+    async function checkSubscription() {
+        const subscriptionStatus = localStorage.getItem('streamvault_subscription');
+        if (subscriptionStatus) {
+            const subscription = JSON.parse(subscriptionStatus);
+            const expiryDate = new Date(subscription.expiryDate);
+            if (expiryDate > new Date()) {
+                isSubscribed = true;
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    function subscribeNow() {
+        // Open subscription modal
+        document.getElementById('subscriptionModal').style.display = 'flex';
+    }
+    
+    function closeSubscriptionModal() {
+        document.getElementById('subscriptionModal').style.display = 'none';
+    }
+    
+    async function confirmSubscription() {
+        // Check if MetaMask is installed
+        if (typeof window.ethereum === 'undefined') {
+            alert('⚠️ MetaMask Not Found\n\nPlease install MetaMask extension to subscribe.\n\nVisit: https://metamask.io');
+            window.open('https://metamask.io/download/', '_blank');
+            return;
+        }
+        
+        try {
+            console.log('🔐 Starting STREAM VAULT subscription process...');
+            
+            // Request account access
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            userWalletAddress = accounts[0];
+            console.log('✅ Wallet connected:', userWalletAddress);
+            
+            // Switch to BSC Network
+            try {
+                await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: '0x38' }], // BSC Mainnet
+                });
+                console.log('✅ Switched to BSC Network');
+            } catch (switchError) {
+                if (switchError.code === 4902) {
+                    console.log('⚠️ BSC Network not found, adding...');
+                    await window.ethereum.request({
+                        method: 'wallet_addEthereumChain',
+                        params: [{
+                            chainId: '0x38',
+                            chainName: 'Binance Smart Chain',
+                            nativeCurrency: { name: 'BNB', symbol: 'BNB', decimals: 18 },
+                            rpcUrls: ['https://bsc-dataseed.binance.org/'],
+                            blockExplorerUrls: ['https://bscscan.com/']
+                        }]
+                    });
+                    console.log('✅ BSC Network added');
+                } else {
+                    throw switchError;
+                }
+            }
+            
+            // Show processing message
+            alert('🔄 Processing Payment...\n\nPlease confirm the transaction in MetaMask.\n\nThis will open MetaMask for approval.');
+            
+            // WEAD Token Contract Address on BSC (Update with your actual contract address)
+            const WEAD_TOKEN_ADDRESS = '0xCF99bF2cbD83A580437d39A5092C1665Faa9898B'; // WEAD Token on BSC Testnet
+            const SUBSCRIPTION_RECEIVER = '0x01d3829a1b0CA3E1390724a0C5C419435720431e'; // WeAD Platform Subscription Wallet
+            
+            // Token amount in wei (1000 WEAD with 18 decimals)
+            const amount = (1000 * Math.pow(10, 18)).toString(16);
+            
+            console.log('📤 Sending token transfer...');
+            console.log('Amount:', SUBSCRIPTION_COST, 'WEAD');
+            console.log('To:', SUBSCRIPTION_RECEIVER);
+            
+            // For production: Use actual ERC20 transfer method
+            // For demo: Simulate transaction
+            const isProduction = true; // Set to true when deploying
+            
+            let txHash;
+            
+            if (isProduction) {
+                // Production: Actual Web3 transfer
+                const data = '0xa9059cbb' + // transfer(address,uint256) method ID
+                             SUBSCRIPTION_RECEIVER.substring(2).padStart(64, '0') +
+                             amount.padStart(64, '0');
+                
+                txHash = await window.ethereum.request({
+                    method: 'eth_sendTransaction',
+                    params: [{
+                        from: userWalletAddress,
+                        to: WEAD_TOKEN_ADDRESS,
+                        data: data,
+                        value: '0x0'
+                    }]
+                });
+                
+                console.log('✅ Transaction sent:', txHash);
+                alert(`⏳ Transaction Submitted!\n\nTransaction Hash:\n${txHash}\n\nWaiting for blockchain confirmation...`);
+                
+                // Wait for transaction confirmation
+                await waitForTransaction(txHash);
+                
+            } else {
+                // Demo mode: Simulate transaction
+                console.log('⚠️ DEMO MODE: Simulating transaction...');
+                txHash = '0x' + Math.random().toString(16).substring(2, 66);
+                await new Promise(resolve => setTimeout(resolve, 2000));
+            }
+            
+            // Save subscription
+            const expiryDate = new Date();
+            expiryDate.setDate(expiryDate.getDate() + 30);
+            
+            const subscription = {
+                walletAddress: userWalletAddress,
+                service: 'streamvault',
+                cost: SUBSCRIPTION_COST,
+                expiryDate: expiryDate.toISOString(),
+                transactionHash: txHash,
+                timestamp: new Date().toISOString()
+            };
+            
+            localStorage.setItem('streamvault_subscription', JSON.stringify(subscription));
+            isSubscribed = true;
+            
+            console.log('✅ Subscription saved:', subscription);
+            
+            closeSubscriptionModal();
+            
+            // Refresh WEAD balance across all pages
+            if (window.refreshAllBalances) {
+                await window.refreshAllBalances();
+            }
+            
+            alert(
+                `✅ Subscription Successful!\n\n` +
+                `Service: STREAM VAULT Premium\n` +
+                `Cost: ${SUBSCRIPTION_COST} WEAD Tokens\n` +
+                `Valid Until: ${expiryDate.toLocaleDateString()}\n` +
+                `Transaction: ${txHash.substring(0, 10)}...\n\n` +
+                `🎉 You now have access to all premium episodes!\n\n` +
+                `Your WEAD balance has been updated.\n\n` +
+                `View on BSCScan: https://testnet.bscscan.com/tx/${txHash}`
+            );
+            
+            location.reload();
+            
+        } catch (error) {
+            console.error('❌ Subscription error:', error);
+            
+            let errorMsg = 'Subscription Failed';
+            if (error.code === 4001) {
+                errorMsg = 'You rejected the transaction';
+            } else if (error.code === -32603) {
+                errorMsg = 'Insufficient WEAD balance or gas';
+            } else if (error.message) {
+                errorMsg = error.message;
+            }
+            
+            alert(`❌ Subscription Failed\n\n${errorMsg}\n\nPlease try again or contact support.`);
+        }
+    }
+    
+    // Helper: Wait for transaction confirmation
+    async function waitForTransaction(txHash) {
+        console.log('⏳ Waiting for confirmation...');
+        // In production, implement proper transaction waiting
+        return new Promise(resolve => setTimeout(resolve, 3000));
+    }
+    
+    // Check subscription on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        checkSubscription();
+    });
+    
+    // Play episode function
+    function playEpisode(episodeId) {
+        alert(`Episode ${episodeId}\n\n🔒 This episode requires a premium subscription.\n\nSubscribe for 1,000 WEAD/month to unlock all episodes and exclusive content.`);
+        
+        // In production:
+        // Check if user is subscribed
+        // If yes: window.location.href = `/stream-vault/episode/${episodeId}`;
+        // If no: show subscription modal
+    }
+</script>
+
+{% endblock %}

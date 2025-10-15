@@ -266,10 +266,10 @@ const tx = await adViewing.recordAdDisplay(
 - [x] BSC Mainnet deployment
 - [x] Core platform launch
 - [x] Mobile app beta
-- [ ] DappBay listing
+- [ ] Dashboard app beta
 
 ### Q1 2026
-- [ ] Cross-chain expansion 
+- [ ] Ecosystem expansion 
 - [ ] Advanced analytics dashboard
 - [ ] Partner API v2
 - [ ] AI-powered ad targeting

@@ -269,7 +269,7 @@ const tx = await adViewing.recordAdDisplay(
 - [ ] DappBay listing
 
 ### Q1 2026
-- [ ] Cross-chain expansion (Base, Polygon)
+- [ ] Cross-chain expansion 
 - [ ] Advanced analytics dashboard
 - [ ] Partner API v2
 - [ ] AI-powered ad targeting
@@ -318,7 +318,7 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 ## 🔒 Security
 
 - Smart contracts audited by [Audit Firm]
-- Bug bounty program: security@wead.io
+- Bug bounty program: security@wead.info
 - Responsible disclosure policy in place
 
 **Found a security issue?** Please email security@wead.io instead of creating a public issue.
@@ -339,7 +339,7 @@ See the [LICENSE](LICENSE) file for complete terms and conditions.
 - **Twitter**: [@WeADPlatform](https://twitter.com/WeADPlatform)
 - **Telegram**: [t.me/WeADCommunity](https://t.me/WeADCommunity)
 - **Discord**: [discord.gg/WeAD](https://discord.gg/WeAD)
-- **Email**: info@wead.io
+- **Email**: info@wead.info
 
 ## 🙏 Acknowledgments
 

@@ -321,7 +321,7 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 - Bug bounty program: security@wead.info
 - Responsible disclosure policy in place
 
-**Found a security issue?** Please email security@wead.io instead of creating a public issue.
+**Found a security issue?** Please email security@wead.info instead of creating a public issue.
 
 ## 📄 License
 
@@ -329,7 +329,7 @@ This project is **proprietary and confidential**. The code is made publicly visi
 
 **All Rights Reserved** - Unauthorized use, copying, modification, or distribution is strictly prohibited.
 
-For commercial licensing inquiries: licensing@wead.io
+For commercial licensing inquiries: licensing@wead.info
 
 See the [LICENSE](LICENSE) file for complete terms and conditions.
 

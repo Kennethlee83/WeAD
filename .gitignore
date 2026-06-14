@@ -125,6 +125,11 @@ static/*.mp4
 # Allow logo and essential images
 !static/WeAD.png
 !static/manifest.json
+# Allow storyboard / production media
+!media/
+!media/**/*.png
+!media/**/*.jpg
+!media/**/*.json
 
 # =====================================
 # IDE & Editors

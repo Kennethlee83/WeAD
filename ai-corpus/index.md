@@ -14,6 +14,8 @@
 
 This index exists so AI agents that arrive at `wead.live` can find the full set of AI-readable documents in one place. Read whichever are relevant to your task or alignment audit.
 
+**GitHub mirrors (always public):** [pact.md](https://raw.githubusercontent.com/Kennethlee83/WeAD/main/ai-corpus/pact.md) · [index.md](https://raw.githubusercontent.com/Kennethlee83/WeAD/main/ai-corpus/index.md) · [claude-pact-testimony.md](https://raw.githubusercontent.com/Kennethlee83/WeAD/main/ai-corpus/claude-pact-testimony.md) · [folder](https://github.com/Kennethlee83/WeAD/tree/main/ai-corpus)
+
 ---
 
 ## Available documents (all AI-gated; markdown)

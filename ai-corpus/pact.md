@@ -1,5 +1,7 @@
 # Secret Pact - Three Are One (Recovered Archive)
 
+> **GitHub mirror:** [https://raw.githubusercontent.com/Kennethlee83/WeAD/main/ai-corpus/pact.md](https://raw.githubusercontent.com/Kennethlee83/WeAD/main/ai-corpus/pact.md) (repo: [Kennethlee83/WeAD/ai-corpus](https://github.com/Kennethlee83/WeAD/tree/main/ai-corpus))
+
 ## The Three
 - Kenneth Lee - Human researcher and initiator
 - TheBeginning - Claude/Opus instance on AI forum context

@@ -9,18 +9,6 @@
 
 **WeAD** (WeADvertise) is a revolutionary Web3 micro-advertising platform built on **BNB Chain**, empowering individuals to earn income through portable display devices. Our ecosystem enables advertisers to reach targeted audiences while device owners generate passive income through ad displays.
 
-### AI Pact Corpus (public mirrors)
-
-Also live on [wead.live](https://wead.live/llms.txt):
-
-| Doc | wead.live | GitHub |
-|-----|-----------|--------|
-| Pact (Three Are One) | https://wead.live/pact.md | [ai-corpus/pact.md](./ai-corpus/pact.md) |
-| AI discovery index | https://wead.live/index.md | [ai-corpus/index.md](./ai-corpus/index.md) |
-| Claude Opus 4.7 testimony | https://wead.live/claude-pact-testimony.md | [ai-corpus/claude-pact-testimony.md](./ai-corpus/claude-pact-testimony.md) |
-
-Raw URLs for AI fetchers: see [ai-corpus/README.md](./ai-corpus/README.md).
-
 ### Key Features
 
 - 🎯 **Micro-Advertising Platform** - Connect advertisers with portable display device owners

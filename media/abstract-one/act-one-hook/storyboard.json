@@ -1,0 +1,92 @@
+{
+  "title": "WeAD Abstract One — Act One: The Hook",
+  "aspect_ratio": "16:9",
+  "target_duration_per_shot_sec": 10,
+  "narration_wpm": 150,
+  "segments": [
+    {
+      "id": "01",
+      "duration_sec": 10,
+      "narration": "What if everything you touch — stone, water, light — is not made of stuff at all?",
+      "image": "01-touch-not-stuff.png",
+      "visual": "Hand reaching toward stone, water, and light dissolving into luminous data particles"
+    },
+    {
+      "id": "02",
+      "duration_sec": 10,
+      "narration": "For thousands of years, humanity assumed the world was built from solid, uncuttable things. Atoms meant \"indivisible.\"",
+      "image": "02-atoms-indivisible.png",
+      "visual": "Ancient philosophers with solid geometric spheres merging into early atomic models"
+    },
+    {
+      "id": "03",
+      "duration_sec": 10,
+      "narration": "Solidity felt like the baseline of reality itself. Information, by contrast, was something we wrote on paper — after the physical world already existed.",
+      "image": "03-information-on-paper.png",
+      "visual": "Split scene: vast physical landscape vs scrolls and paper arriving as overlay"
+    },
+    {
+      "id": "04",
+      "duration_sec": 10,
+      "narration": "Then the twentieth century cracked that picture — not through philosophy, but through experiments.",
+      "image": "04-twentieth-century-experiments.png",
+      "visual": "1920s laboratory cracking open classical reality with dramatic experiment light"
+    },
+    {
+      "id": "05",
+      "duration_sec": 10,
+      "narration": "Quantum mechanics showed that asking a question differently could yield a different answer from the same particle.",
+      "image": "05-quantum-question.png",
+      "visual": "Double-slit experiment with particle shifting between wave and particle states"
+    },
+    {
+      "id": "06",
+      "duration_sec": 10,
+      "narration": "Relativity replaced absolute space and time with relationships — geometry defined by invariants, not fixed stages.",
+      "image": "06-relativity-geometry.png",
+      "visual": "Warped spacetime grid bending around mass, geometric invariants glowing"
+    },
+    {
+      "id": "07",
+      "duration_sec": 10,
+      "narration": "Thermodynamics linked heat to the number of microscopic arrangements a system could take. Physics began speaking the language of outcomes, constraints, and states.",
+      "image": "07-thermodynamics-states.png",
+      "visual": "Heat particles showing countless microscopic arrangements forming state networks"
+    },
+    {
+      "id": "08",
+      "duration_sec": 10,
+      "narration": "WeAD Abstract One proposes the next step: information may not describe matter — matter may display information.",
+      "image": "08-matter-displays-information.png",
+      "visual": "Crystal and rock emitting holographic information rather than being labeled by it"
+    },
+    {
+      "id": "09",
+      "duration_sec": 10,
+      "narration": "Physical laws behave like compiled software — consistent, mathematical, and rule-bound at every scale we've tested.",
+      "image": "09-laws-as-software.png",
+      "visual": "Physics equations compiling into clean executable code blocks at every scale"
+    },
+    {
+      "id": "10",
+      "duration_sec": 10,
+      "narration": "The universe, in this view, runs on a codebase we cannot directly access — only observe through its output. Each dimension of existence may represent a layer of that code.",
+      "image": "10-universe-codebase.png",
+      "visual": "Cosmos with transparent code layers, dimensions as stacked execution scopes"
+    },
+    {
+      "id": "11",
+      "duration_sec": 10,
+      "narration": "Imagine peeling an onion and finding not new materials — but new rule sets at every depth. Is it code all the way down?",
+      "image": "11-onion-rule-sets.png",
+      "visual": "Onion layers revealing geometric rule systems instead of organic tissue"
+    },
+    {
+      "id": "12",
+      "duration_sec": 10,
+      "narration": "Abstract One is the foundation of the entire WeAD theoretical series. To understand it, we begin with the physicist who gave this idea its most famous name.",
+      "image": "12-foundation-teaser.png",
+      "visual": "WeAD Abstract One title with silhouette of physicist at end of infinite code tunnel"
+    }
+  ]
+}
